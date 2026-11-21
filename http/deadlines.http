@@ -1,0 +1,8 @@
+### 21 days after birth (81.5% variant), shifted from Christmas Eve
+GET {{baseUrl}}/api/v1/deadlines?event=2026-12-03&type=AFTER&days=21
+
+### 3 months after birth
+GET {{baseUrl}}/api/v1/deadlines?event=2026-11-30&type=AFTER&months=3
+
+### At least 21 days before parental leave starts
+GET {{baseUrl}}/api/v1/deadlines?event=2026-06-25&type=BEFORE&days=21

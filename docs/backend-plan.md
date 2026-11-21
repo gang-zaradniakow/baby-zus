@@ -85,8 +85,8 @@ Moduł udostępnia innym tylko **publiczne API** (pakiet główny modułu: inter
 - Panel admina (PR 13): na razie tylko podgląd parametrów, bez edycji.
 
 **`calendar` — terminy**
-- `PolishHolidays` (Wielkanoc metodą Meeusa, Wigilia od 2025), `WorkingDays`.
-- `DeadlinePolicy.after / before / afterMonths` → VO `Deadline(type, raw, legal, shifted, reason, safe)`.
+- Domena: `PolishHolidays` (Wielkanoc metodą Meeusa, Wigilia od 2025), `WorkingDays` (`isDayOff`, `dayOffReason`, `onOrAfter`, `onOrBefore`), `DeadlinePolicy` (`daysAfter`, `monthsAfter`, `daysBefore`) → VO `Deadline(type, raw, legal, shifted, reason, safe)`. Bez persystencji; beany domeny rejestruje `infrastructure.config`.
+- Publikowane: `application.query.CalculateDeadlineQuery` (dokładnie jedno z `days`/`months`, `BEFORE` tylko w dniach), `application.dto.DeadlineDto`, `api.model.DeadlineType`.
 
 **`benefits` — kalkulacje (sama domena, bez zapisu)**
 - `insurance`: VO `InsuranceTitles` (etat, zlecenie, firma, KRUS z atrybutami). Polityka `InsuranceTitleResolver` (zbieg tytułów) → `ResolvedInsurance(mainTitle, base, parts, checks, krus, debt)`.
@@ -354,7 +354,7 @@ Lombok w warstwie `domain` jest dozwolony, bo działa tylko w czasie kompilacji 
 |---|---|---|
 | Parametry | `GET /legal-parameters` | publiczny |
 | | `PUT /admin/legal-parameters`, `POST /admin/legal-parameters/reset`, `GET /admin/legal-parameters/history`, `POST /admin/auth` | ADMIN |
-| Terminy | `GET /deadlines?event=&days=&type=after\|before\|months` | publiczny |
+| Terminy | `GET /deadlines?event=&type=AFTER\|BEFORE&days=` albo `&months=` | publiczny |
 | Kalkulacje | `POST /calculations/sickness-in-pregnancy`, `POST /calculations/maternity`, `POST /calculations/benefit-base` (Z-3) | publiczny |
 | Przewodnik | `POST /guide/preview` (ankieta gościa) | publiczny |
 | | `GET /me/guide?childId=`, `PUT /me/children/{id}/tasks/{key}`, `POST /me/survey`, `GET/POST /me/children`, `PUT /me/active-child`, `POST/DELETE /me/support-mode` | USER |
@@ -429,7 +429,7 @@ Od PR 05 każdy PR z endpointem zaczyna się od wpisu w `openapi.yaml` (patrz 2.
 | # | PR | Zawartość | Testy | P |
 |---|---|---|---|---|
 | 05 | Parametry prawne (odczyt) | Parametry w kodzie (`LegalState2026`), `ParameterSet`, `LegalParameters`, port i adapter z kodu, publikowane zapytania `GetCurrentLegalParametersQuery` i `GetLegalParametersEffectiveOnQuery`, `GET /legal-parameters` | Jednostkowe modelu, repozytorium i handlerów, IT | P0 |
-| 06 | Kalendarz i terminy | `PolishHolidays`, `DeadlinePolicy`, zapytanie `CalculateDeadline`, `GET /deadlines` | Parametryzowane (Wigilia, sobota, Boże Ciało, `before` w niedzielę), IT | P0 |
+| 06 | Kalendarz i terminy | `PolishHolidays`, `WorkingDays`, `DeadlinePolicy`, zapytanie `CalculateDeadlineQuery`, `GET /deadlines` | Parametryzowane (Wigilia, sobota, Boże Ciało, `before` w niedzielę), IT | P0 |
 | 07 | Harness testów golden | `tools/golden/generate.mjs`, format fixture, bazowa klasa testu, fixture terminów | Golden: terminy | P0 |
 | 08 | Zbieg tytułów i podstawa z Z-3 | `InsuranceTitles`, `InsuranceTitleResolver`, `BenefitBaseCalculator`, `POST /calculations/benefit-base` | Jednostkowe + golden `resolvePerson`, `podstawaZ3` | P0 |
 | 09 | Wymiary urlopów | `LeaveDimensions`, `AdoptionLeavePolicy`, `SupplementaryLeavePolicy` | Jednostkowe + golden `adoptWeeks`, `uzupelniajacy` | P0 |

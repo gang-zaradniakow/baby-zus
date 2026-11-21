@@ -5,8 +5,8 @@ on:
 
 env:
   REGISTRY: git.hack.kulesz.pl
-  IMAGE: git.hack.kulesz.pl/zespol/java-app
-  SERVICE: java-app
+  IMAGE: git.hack.kulesz.pl/zespol/baby-zus-backend
+  SERVICE: baby-zus-backend
 
 jobs:
   deploy-prod:

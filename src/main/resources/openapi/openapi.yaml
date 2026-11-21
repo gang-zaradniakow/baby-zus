@@ -20,6 +20,8 @@ tags:
     description: Technical endpoints.
   - name: LegalParameters
     description: Legal parameters (rates, amounts, leave dimensions) used by all calculations.
+  - name: Deadlines
+    description: Statutory deadlines counted with the Polish calendar of public holidays.
 
 paths:
   /api/v1/ping:
@@ -55,6 +57,64 @@ paths:
                 $ref: '#/components/schemas/LegalParametersResponse'
         '404':
           description: No parameter set is in force yet (`code` = `legal-parameters-not-found`).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/deadlines:
+    get:
+      tags: [Deadlines]
+      operationId: calculateDeadline
+      summary: Calculate a statutory deadline
+      description: |
+        Counts a deadline from an event using the Polish calendar (Saturdays, Sundays, public holidays incl.
+        Christmas Eve since 2025). Give exactly one of `days` or `months`; `BEFORE` accepts only `days`.
+        - `AFTER` + `days`: "within X days of the event", e.g. 21 days after birth for the 81.5% variant.
+        - `AFTER` + `months`: "within X months of the event", e.g. 3 months.
+        - `BEFORE` + `days`: "at least X days before the event", e.g. 21 days before parental leave starts.
+      parameters:
+        - name: event
+          in: query
+          required: true
+          description: Day of the event (birth, start of leave...).
+          schema:
+            type: string
+            format: date
+          example: '2026-11-21'
+        - name: type
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/DeadlineType'
+        - name: days
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+            maximum: 3660
+          example: 21
+        - name: months
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+            maximum: 120
+      responses:
+        '200':
+          description: Calculated deadline.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deadline'
+        '400':
+          description: Missing or contradictory parameters (`code` = `validation-failed`).
           content:
             application/problem+json:
               schema:
@@ -191,16 +251,20 @@ components:
           type: string
           description: Polish, user-facing.
 
+    DeadlineType:
+      type: string
+      description: |
+        `AFTER` = "within X days/months of an event" (a deadline ending on a day off moves to the next working day);
+        `BEFORE` = "at least X days before an event" (counted backwards, never moved forward).
+      enum: [AFTER, BEFORE]
+
     Deadline:
       type: object
-      description: |
-        Statutory deadline. `AFTER` = "within X days of an event" (moved to the next working day when it ends on a
-        day off); `BEFORE` = "at least X days before" (never moved forward).
+      description: Statutory deadline with the legally valid day and the recommended day to act.
       required: [type, raw, legal, shifted, safe]
       properties:
         type:
-          type: string
-          enum: [AFTER, BEFORE]
+          $ref: '#/components/schemas/DeadlineType'
         raw:
           type: string
           format: date

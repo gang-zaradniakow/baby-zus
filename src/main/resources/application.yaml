@@ -15,6 +15,21 @@ spring:
     virtual:
       enabled: true
 
+zusbaby:
+  web:
+    # comma-separated frontend origins allowed by CORS; default = prototype served by server.py
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:8765,http://127.0.0.1:8765}
+
+# API contract is the static src/main/resources/openapi/openapi.yaml, not generated from code.
+# Swagger UI needs springdoc's api-docs endpoint to be on, so it stays enabled but documents no paths
+# (/v3/api-docs is intentionally empty); the UI shows only /openapi.yaml.
+springdoc:
+  api-docs:
+    enabled: true
+  paths-to-match: /__generated-docs-disabled__
+  swagger-ui:
+    url: /openapi.yaml
+
 info:
   app:
     version: ${APP_VERSION:dev}

@@ -278,8 +278,8 @@ Spring Boot 4.0.9, Java 25, Maven (jest). Do dodania:
 - `spring-boot-starter-security` + `oauth2-resource-server` (JWT)
 - `spring-boot-starter-thymeleaf` (strona mock mObywatel, szablony pism) + OpenHTMLtoPDF
 - Spring Modulith (core, jpa, test) w wersji zgodnej z Boot 4
-- Swagger UI wskazujący na statyczny `openapi.yaml` (springdoc-openapi-starter-webmvc-ui z `springdoc.swagger-ui.url`, linia 3.x dla Boot 4). Specyfikacji nie generujemy z kodu, bo źródłem jest plik.
-- ArchUnit, Testcontainers PostgreSQL (`@ServiceConnection`), `swagger-request-validator-mockmvc` (zgodność odpowiedzi ze specyfikacją w testach IT)
+- Swagger UI wskazujący na statyczny `openapi.yaml` (springdoc-openapi-starter-webmvc-ui 3.0.x, linia dla Boot 4.0, `springdoc.swagger-ui.url=/openapi.yaml`). Specyfikacji nie generujemy z kodu, bo źródłem jest plik. Swagger UI wymaga włączonego endpointu `api-docs`, więc zostaje włączony, ale z `springdoc.paths-to-match` ustawionym na nieistniejącą ścieżkę: `/v3/api-docs` jest celowo pusty (sprawdza to test IT).
+- ArchUnit, Testcontainers PostgreSQL (`@ServiceConnection`), `openapi-request-validator-mockmvc` 3.0.0 (dawniej `swagger-request-validator-mockmvc`; zgodność żądań i odpowiedzi ze specyfikacją w testach IT, helper `OpenApiContract.matchesContract()`)
 
 ### 2.9 API first
 
@@ -315,7 +315,7 @@ Konfiguracja pluginu (szkic):
           <openApiNullable>false</openApiNullable>
           <dateLibrary>java8</dateLibrary>
           <documentationProvider>none</documentationProvider>
-          <!-- flaga zgodności ze Spring Boot 4 (useSpringBoot3 / useSpringBoot4): ustalamy w PR 04 wg wersji generatora -->
+          <useSpringBoot4>true</useSpringBoot4>   <!-- generator 7.27.0 -->
         </configOptions>
       </configuration>
     </execution>
@@ -324,7 +324,7 @@ Konfiguracja pluginu (szkic):
 ```
 
 Zasady specyfikacji:
-- Jeden plik `openapi.yaml` (OpenAPI 3.1), tag na moduł (`LegalParameters`, `Calculations`, `Guide`…), `operationId` w camelCase = nazwa metody w interfejsie.
+- Jeden plik `openapi.yaml` (OpenAPI 3.0.3: generator i walidator w pełni obsługują 3.0, a 3.1 tylko częściowo), tag na moduł (`LegalParameters`, `Calculations`, `Guide`…), `operationId` w camelCase = nazwa metody w interfejsie.
 - Wspólne schematy w `components`: `ProblemDetail` (z `gentleMessage`), `Money` (string dziesiętny), `Check`, `Deadline`.
 - Gdy plik urośnie, dzielimy go na pliki per tag przez `$ref`. Wejście generatora się nie zmienia.
 - Wygenerowane DTO to klasy (generator `spring` nie tworzy rekordów). Nie wychodzą poza `infrastructure.web`, bo mapper zamienia je na rekordy.
@@ -393,7 +393,7 @@ Dane mock eZUS i person trzymamy w `resources/mock/` (JSON), nie w bazie, bo to 
 | Mapery | MapStruct w obie strony | JUnit |
 | Modułowe | Granice, publikacja i obsługa zdarzeń | `@ApplicationModuleTest`, `Scenario` |
 | Architektury | `domain` bez Springa i JPA; kontrolery wołają tylko `Pipeline` i implementują `*Api`; handlery z `application.command` mają `@Transactional`, a z `application.query` `@Transactional(readOnly = true)`; brak setterów w `domain` | ArchUnit + `ApplicationModules.verify()` |
-| Integracyjne (`*IT`) | REST end-to-end, Flyway, JPA, security, PDF; żądania i odpowiedzi walidowane względem `openapi.yaml` | Testcontainers PostgreSQL, `MockMvcTester`, `swagger-request-validator-mockmvc`, failsafe |
+| Integracyjne (`*IT`) | REST end-to-end, Flyway, JPA, security, PDF; żądania i odpowiedzi walidowane względem `openapi.yaml` | Testcontainers PostgreSQL, `MockMvc` + `OpenApiContract.matchesContract()`, failsafe |
 
 ## 6. Sposób pracy (ja + agent)
 

@@ -59,6 +59,9 @@ class ArchitectureTest {
     @ArchTest
     static final ArchRule controllersUseOnlyPipeline = CqrsRules.controllersUseOnlyPipeline;
 
+    @ArchTest
+    static final ArchRule controllersImplementGeneratedApi = ApiFirstRules.controllersImplementGeneratedApi;
+
     private static DescribedPredicate<JavaCall<?>> javaTimeNow() {
         return DescribedPredicate.describe("java.time *.now()",
                 call -> call.getTargetOwner().getPackageName().equals("java.time")

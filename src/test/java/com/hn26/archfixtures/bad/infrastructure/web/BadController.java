@@ -4,7 +4,10 @@ import com.hn26.archfixtures.bad.application.command.MutableCommand;
 import com.hn26.archfixtures.bad.application.command.MutableCommandHandler;
 import org.springframework.web.bind.annotation.RestController;
 
-/** Violation: controller calls a handler directly instead of the Pipeline. */
+/**
+ * Violations: controller calls a handler directly instead of the Pipeline and
+ * does not implement a generated *Api.
+ */
 @RestController
 class BadController {
 

@@ -1,0 +1,144 @@
+openapi: 3.0.3
+info:
+  title: mZUS dla Rodzica — backend API
+  version: 0.1.0
+  description: |
+    Backend of the "mZUS dla Rodzica" prototype (HackNation 2026). Contract-first: every endpoint is described here
+    before it is implemented; Spring interfaces are generated from this file.
+
+    Conventions:
+    - all paths start with `/api/v1`,
+    - dates are ISO-8601 (`2026-11-21`), moments are ISO-8601 with offset,
+    - money is a decimal string with two places (`"4147.10"`),
+    - every error is an RFC 9457 problem with `code` (stable, for the frontend) and `gentleMessage`
+      (Polish text that can be shown to the user as is).
+servers:
+  - url: /
+tags:
+  - name: System
+    description: Technical endpoints.
+
+paths:
+  /api/v1/ping:
+    get:
+      tags: [System]
+      operationId: ping
+      summary: Check that the API is up
+      description: Returns a fixed status and the current server time (from DateTimeGenerator).
+      responses:
+        '200':
+          description: API is up.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PingResponse'
+        default:
+          $ref: '#/components/responses/Problem'
+
+components:
+  responses:
+    Problem:
+      description: Error described as an RFC 9457 problem.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+
+  schemas:
+    PingResponse:
+      type: object
+      required: [status, time]
+      properties:
+        status:
+          type: string
+          enum: [UP]
+        time:
+          type: string
+          format: date-time
+          description: Current server time.
+
+    ProblemDetail:
+      type: object
+      description: RFC 9457 problem with the application-specific `code` and `gentleMessage`.
+      required: [status, code, gentleMessage]
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        status:
+          type: integer
+          format: int32
+        detail:
+          type: string
+        instance:
+          type: string
+        code:
+          type: string
+          description: Stable machine-readable error code, e.g. `validation-failed`.
+          example: validation-failed
+        gentleMessage:
+          type: string
+          description: Calm Polish explanation that can be shown to the user as is.
+          example: Wygląda na to, że część danych jest niepełna lub niepoprawna. Sprawdź je i spróbuj jeszcze raz.
+        errors:
+          type: array
+          description: Invalid fields (only for validation errors).
+          items:
+            $ref: '#/components/schemas/FieldError'
+
+    FieldError:
+      type: object
+      required: [field, message]
+      properties:
+        field:
+          type: string
+        message:
+          type: string
+
+    Money:
+      type: string
+      description: Amount in PLN with exactly two decimal places.
+      pattern: '^-?\d+\.\d{2}$'
+      example: '4147.10'
+
+    Check:
+      type: object
+      description: One explained result of a rule shown next to a calculation.
+      required: [level, message]
+      properties:
+        level:
+          type: string
+          enum: [OK, INFO, NO]
+        message:
+          type: string
+          description: Polish, user-facing.
+
+    Deadline:
+      type: object
+      description: |
+        Statutory deadline. `AFTER` = "within X days of an event" (moved to the next working day when it ends on a
+        day off); `BEFORE` = "at least X days before" (never moved forward).
+      required: [type, raw, legal, shifted, safe]
+      properties:
+        type:
+          type: string
+          enum: [AFTER, BEFORE]
+        raw:
+          type: string
+          format: date
+          description: Day counted from the event, before any shift.
+        legal:
+          type: string
+          format: date
+          description: Last legally valid day.
+        shifted:
+          type: boolean
+          description: Whether the legal day was moved because the raw day was a day off.
+        reason:
+          type: string
+          description: Why the raw day is a day off (holiday name, `sobota`, `niedziela`).
+        safe:
+          type: string
+          format: date
+          description: Recommended day to submit.

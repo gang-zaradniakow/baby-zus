@@ -19,7 +19,7 @@ class ModularityTest {
     @Test
     void detectsAllBoundedContexts() {
         assertThat(MODULES.stream().map(ApplicationModule::getIdentifier).map(Object::toString)).containsExactlyInAnyOrder(
-                "shared", "legalrules", "calendar", "benefits", "guide", "applications", "correspondence",
+                "shared", "api", "legalrules", "calendar", "benefits", "guide", "applications", "correspondence",
                 "insuredaccount", "identity", "knowledge");
     }
 

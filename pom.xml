@@ -24,6 +24,10 @@
     <pipelinr.version>0.11</pipelinr.version>
     <mapstruct.version>1.6.3</mapstruct.version>
     <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
+    <openapi-generator.version>7.27.0</openapi-generator.version>
+    <!-- springdoc 3.0.x is the line for Spring Boot 4.0.x -->
+    <springdoc.version>3.0.3</springdoc.version>
+    <openapi-request-validator.version>3.0.0</openapi-request-validator.version>
   </properties>
 
   <dependencyManagement>
@@ -62,9 +66,23 @@
       <optional>true</optional>
     </dependency>
 
+    <!-- Swagger UI showing the static openapi.yaml (the spec is not generated from code) -->
+    <dependency>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+      <version>${springdoc.version}</version>
+    </dependency>
+
     <dependency>
       <groupId>org.springframework.modulith</groupId>
       <artifactId>spring-modulith-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.atlassian.oai</groupId>
+      <artifactId>openapi-request-validator-mockmvc</artifactId>
+      <version>${openapi-request-validator.version}</version>
       <scope>test</scope>
     </dependency>
 
@@ -145,6 +163,45 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.openapitools</groupId>
+        <artifactId>openapi-generator-maven-plugin</artifactId>
+        <version>${openapi-generator.version}</version>
+        <executions>
+          <execution>
+            <id>generate-api</id>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <inputSpec>${project.basedir}/src/main/resources/openapi/openapi.yaml</inputSpec>
+              <generatorName>spring</generatorName>
+              <apiPackage>com.hn26.zaradniaki.zusbaby.api</apiPackage>
+              <modelPackage>com.hn26.zaradniaki.zusbaby.api.model</modelPackage>
+              <modelNameSuffix>Dto</modelNameSuffix>
+              <generateApiTests>false</generateApiTests>
+              <generateModelTests>false</generateModelTests>
+              <generateApiDocumentation>false</generateApiDocumentation>
+              <generateModelDocumentation>false</generateModelDocumentation>
+              <generateSupportingFiles>false</generateSupportingFiles>
+              <configOptions>
+                <useSpringBoot4>true</useSpringBoot4>
+                <interfaceOnly>true</interfaceOnly>
+                <useTags>true</useTags>
+                <skipDefaultInterface>true</skipDefaultInterface>
+                <useResponseEntity>true</useResponseEntity>
+                <useBeanValidation>true</useBeanValidation>
+                <openApiNullable>false</openApiNullable>
+                <dateLibrary>java8</dateLibrary>
+                <documentationProvider>none</documentationProvider>
+                <annotationLibrary>none</annotationLibrary>
+                <sourceFolder>src/gen/java</sourceFolder>
+                <hideGenerationTimestamp>true</hideGenerationTimestamp>
+              </configOptions>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>

@@ -1,11 +1,12 @@
 package com.hn26.archfixtures.good.infrastructure.web;
 
 import an.awesome.pipelinr.Pipeline;
+import com.hn26.archfixtures.good.api.ChildApi;
 import com.hn26.archfixtures.good.application.query.GetChild;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-class GoodController {
+class GoodController implements ChildApi {
 
     private final Pipeline pipeline;
 
@@ -13,7 +14,8 @@ class GoodController {
         this.pipeline = pipeline;
     }
 
-    String child(String id) {
+    @Override
+    public String child(String id) {
         return pipeline.send(new GetChild(id));
     }
 }

@@ -1,0 +1,1 @@
+-- Initial schema baseline. Each module adds its own tables in later migrations.

@@ -1,6 +1,19 @@
 spring:
   application:
     name: zus-baby-backend
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/zusbaby}
+    username: ${DB_USERNAME:zusbaby}
+    password: ${DB_PASSWORD:zusbaby}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    locations: classpath:db/migration
+  threads:
+    virtual:
+      enabled: true
 
 info:
   app:

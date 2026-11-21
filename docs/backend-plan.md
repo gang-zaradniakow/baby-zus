@@ -39,7 +39,7 @@
   - Obliczenia (kalkulatory, terminy, przewodnik gościa) to zapytania bezstanowe, które wołają usługi domenowe.
 - **Zdarzenia między modułami** publikuje Spring Modulith (`@ApplicationModuleListener`, rejestr publikacji). Zdarzenia wewnątrz jednego modułu mogą iść przez `Notification` z PipelinR.
 - **Mapowanie MapStruct** (sekcja 2.5).
-- **Czas** zawsze z `Clock`. Persony mają daty względne, a testy używają `Clock.fixed`.
+- **Czas** zawsze z interfejsu `DateTimeGenerator` (`shared.time`: `now()`, `today()`, `zone()`), nigdy z `LocalDate.now()`. Produkcyjnie działa `ClockDateTimeGenerator` na `Clock` w strefie Europe/Warsaw. Persony mają daty względne, a testy używają `FixedDateTimeGenerator` (zatrzymany czas, `advanceDays`, `setDay`). Reguła ArchUnit zabrania `now()` z `java.time` poza `shared.time`.
 - **Pieniądze** jako VO `Money` (`BigDecimal`). Stopy jako `Rate`, tygodnie jako `Weeks`.
 - **Kod po angielsku**, słownik pojęć PL↔EN w sekcji 9 (docelowo `docs/glossary.md`).
 
@@ -405,7 +405,7 @@ Dane mock eZUS i person trzymamy w `resources/mock/` (JSON), nie w bazie, bo to 
   - `ApplicationModules.verify()` i ArchUnit przechodzą.
   - Nowe lub zmienione endpointy są najpierw opisane w `openapi.yaml` (pierwszy commit PR), a kontroler implementuje wygenerowany interfejs.
   - Opis PR zawiera przykład z katalogu `http/`.
-- Gałęzie `feature/NN-krotka-nazwa` z `main`, PR-y w kolejności z sekcji 7.
+- Gałęzie `NN-krotka-nazwa` z `main` (np. `02-ddd-skeleton`), **bez prefiksów** typu `feature/` czy `hotfix/`. PR-y w kolejności z sekcji 7.
 
 ## 7. Plan PR-ów
 
@@ -416,8 +416,8 @@ Od PR 05 każdy PR z endpointem zaczyna się od wpisu w `openapi.yaml` (patrz 2.
 ### Faza 0 — fundament
 | # | PR | Zawartość | Testy | P |
 |---|---|---|---|---|
-| 01 | Infrastruktura projektu | JPA, Flyway, validation, Postgres, `compose.yaml`, profile `local`/`test`/`demo`, poprawka `spring.application.name`, bean `Clock` | `ContextLoadsIT` (Testcontainers) | P0 |
-| 02 | Szkielet DDD i modułów | Spring Modulith, pakiety modułów, shared kernel (`Money`, `Rate`, `Weeks`, `DateRange`, `Check`), `ProblemDetail` + `gentleMessage` | Jednostkowe VO, `ModularityTest`, reguły ArchUnit | P0 |
+| 01 | Infrastruktura projektu | JPA, Flyway, validation, Postgres, `compose.yaml`, poprawka `spring.application.name`, bean `Clock`, `DateTimeGenerator` + `FixedDateTimeGenerator` (testy) | `ContextLoadsIT` (Testcontainers) | P0 |
+| 02 | Szkielet DDD i modułów | Spring Modulith, pakiety modułów, shared kernel (`Money`, `Rate`, `Weeks`, `DateRange`, `Check`), `ProblemDetail` + `gentleMessage` | Jednostkowe VO, `ModularityTest`, reguły ArchUnit (w tym zakaz `java.time.*.now()` poza `shared.time`) | P0 |
 | 03 | CQRS, mapowanie, Lombok | Lombok, PipelinR (konfiguracja `Pipeline`, middleware logowania i walidacji, konwencja `application.command` / `application.query`), MapStruct (`@MapperConfig`, `ValueObjectMappers`), kolejność procesorów adnotacji, reguły ArchUnit (transakcje handlerów, brak setterów w `domain`) | Jednostkowe middleware, test przykładowego handlera (rekord `Command<R>`) i mappera | P0 |
 | 04 | API first | `openapi.yaml` z `info`, wspólnymi schematami (`ProblemDetail`, `Money`, `Check`, `Deadline`) i endpointem `GET /api/v1/ping`, `openapi-generator-maven-plugin`, pierwszy kontroler implementujący `*Api`, pakiet `api` jako moduł OPEN w Modulith, Swagger UI na statycznym pliku, walidator specyfikacji w IT, CORS, katalog `http/`, `docs/glossary.md`, reguła ArchUnit „kontroler implementuje `*Api`” | `PingIT` z walidacją względem specyfikacji | P0 |
 
@@ -443,7 +443,7 @@ Od PR 05 każdy PR z endpointem zaczyna się od wpisu w `openapi.yaml` (patrz 2.
 |---|---|---|---|---|
 | 14 | Treści: Wiedza | Eksport `wiedza.js` → JSON, rozdziały, artykuły, wyszukiwarka | Jednostkowe normalizacji i wyszukiwania, IT | P1 |
 | 15 | Treści: słowniki | Formularze, ciekawostki, karty tygodnia, organizacje, telefony, linki, katalog świadczeń | IT | P1 |
-| 16 | Przewodnik gościa | `Survey`, `TimelinePolicy`, `AlertPolicy`, `BenefitPlanPolicy`, `WeekCardPolicy`, `PreviewGuide`, `POST /guide/preview` | Snapshot osi czasu dla każdej persony (`Clock.fixed`), IT | P0 |
+| 16 | Przewodnik gościa | `Survey`, `TimelinePolicy`, `AlertPolicy`, `BenefitPlanPolicy`, `WeekCardPolicy`, `PreviewGuide`, `POST /guide/preview` | Snapshot osi czasu dla każdej persony (`FixedDateTimeGenerator`), IT | P0 |
 
 ### Faza 4 — logowanie i eZUS
 | # | PR | Zawartość | Testy | P |

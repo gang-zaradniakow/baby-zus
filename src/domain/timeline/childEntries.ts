@@ -1,4 +1,4 @@
-import { maternityLeaveWeeks } from '@/domain/benefits/leaveWeeks';
+import { maternityLeaveWeeks } from '@/domain/calculator/maternityLeaveWeeks';
 import { addDays, addMonths, addWeeks, endOfMonth } from '@/domain/dates/calendarDate';
 import {
   deadlineAfterDays,

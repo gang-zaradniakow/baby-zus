@@ -1,4 +1,4 @@
-import { maternityLeaveWeeks } from './leaveWeeks';
+import { maternityLeaveWeeks } from './maternityLeaveWeeks';
 
 describe('maternityLeaveWeeks', () => {
   it.each([

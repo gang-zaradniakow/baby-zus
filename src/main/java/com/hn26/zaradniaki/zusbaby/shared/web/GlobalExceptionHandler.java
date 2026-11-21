@@ -2,6 +2,7 @@ package com.hn26.zaradniaki.zusbaby.shared.web;
 
 import com.hn26.zaradniaki.zusbaby.shared.domain.DomainException;
 import com.hn26.zaradniaki.zusbaby.shared.domain.NotFoundException;
+import jakarta.validation.ConstraintViolationException;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +46,19 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(DomainException.class)
     ProblemDetail handleDomain(DomainException ex) {
         return problem(HttpStatus.UNPROCESSABLE_CONTENT, ex.code(), ex.gentleMessage());
+    }
+
+    /**
+     * Constraint violated on a command or query record (see ValidationMiddleware).
+     */
+    @ExceptionHandler(ConstraintViolationException.class)
+    ProblemDetail handleConstraintViolation(ConstraintViolationException ex) {
+        ProblemDetail problem = problem(HttpStatus.BAD_REQUEST, VALIDATION_CODE, VALIDATION_MESSAGE);
+        problem.setProperty("errors", ex.getConstraintViolations().stream()
+                .map(violation -> Map.of("field", violation.getPropertyPath().toString(), "message",
+                        violation.getMessage()))
+                .toList());
+        return problem;
     }
 
     @ExceptionHandler(Exception.class)

@@ -4,7 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.hn26.zaradniaki.zusbaby.shared.domain.DomainException;
 import com.hn26.zaradniaki.zusbaby.shared.domain.NotFoundException;
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
+import jakarta.validation.Validation;
 import jakarta.validation.constraints.NotBlank;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +59,14 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
+    void mapsInvalidCommandTo400WithViolatedFields() {
+        assertThat(mvc.get().uri("/test/invalid-command")).hasStatus(HttpStatus.BAD_REQUEST).bodyJson()
+                .hasPathSatisfying("$.code", code -> code.assertThat().isEqualTo("validation-failed"))
+                .hasPathSatisfying("$.gentleMessage", message -> message.assertThat().isNotNull())
+                .hasPathSatisfying("$.errors[0].field", field -> field.assertThat().isEqualTo("name"));
+    }
+
+    @Test
     void addsGentleMessageToUnknownPath() {
         assertThat(mvc.get().uri("/test/no-such-path")).hasStatus(HttpStatus.NOT_FOUND).bodyJson()
                 .hasPathSatisfying("$.code", code -> code.assertThat().isEqualTo("not-found"))
@@ -90,6 +100,13 @@ class GlobalExceptionHandlerTest {
         @GetMapping("/test/crash")
         void crash() {
             throw new IllegalStateException("secret internal state");
+        }
+
+        @GetMapping("/test/invalid-command")
+        void invalidCommand() {
+            try (var factory = Validation.buildDefaultValidatorFactory()) {
+                throw new ConstraintViolationException(factory.getValidator().validate(new NameRequest(" ")));
+            }
         }
 
         @PostMapping("/test/validate")

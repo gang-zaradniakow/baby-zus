@@ -44,6 +44,21 @@ class ArchitectureTest {
             .haveModifier(JavaModifier.PUBLIC).because("aggregates must not expose setters (plan, section 2.10)")
             .allowEmptyShould(true);
 
+    @ArchTest
+    static final ArchRule handlersLiveInCommandOrQueryPackage = CqrsRules.handlersLiveInCommandOrQueryPackage;
+
+    @ArchTest
+    static final ArchRule commandsAndQueriesAreRecords = CqrsRules.commandsAndQueriesAreRecords;
+
+    @ArchTest
+    static final ArchRule commandHandlersAreTransactional = CqrsRules.commandHandlersAreTransactional;
+
+    @ArchTest
+    static final ArchRule queryHandlersAreReadOnly = CqrsRules.queryHandlersAreReadOnly;
+
+    @ArchTest
+    static final ArchRule controllersUseOnlyPipeline = CqrsRules.controllersUseOnlyPipeline;
+
     private static DescribedPredicate<JavaCall<?>> javaTimeNow() {
         return DescribedPredicate.describe("java.time *.now()",
                 call -> call.getTargetOwner().getPackageName().equals("java.time")

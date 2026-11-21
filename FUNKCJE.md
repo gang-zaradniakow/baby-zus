@@ -29,7 +29,7 @@ rework nie zostanie zrobiony.
 | 2 | `feat/guest-survey` | Ankieta gościa — do 9 kroków (rola, etap, data, [data urodzenia przy adopcji], liczba dzieci, sytuacje specjalne, zatrudnienie, [płatnik], drugi rodzic, imiona) | ✅ |
 | 3 | `feat/knowledge-base` | Zakładka Wiedza — 7 rozdziałów, 30 artykułów Poradnika ZUS, wyszukiwarka | ✅ |
 | 4 | `feat/calculator` | Zintegrowany kalkulator zasiłku (zbieg tytułów, Z-3, adopcja, „za życiem”, wcześniak, praca na urlopie) | ✅ |
-| 5 | `feat/more-hub` | Więcej jako hub: Moje dane z ZUS, Wiadomości, Dzieci, Kontakt, Ustawienia, O aplikacji, Wsparcie, Panel demo, Panel administracyjny (mock) | ⏳ |
+| 5 | `feat/more-hub` | Więcej jako hub: Moje dane z ZUS, Wiadomości, Dzieci, Kontakt, Ustawienia, O aplikacji, Wsparcie, Panel demo, Panel administracyjny (mock), tryb wsparcia | ✅ |
 | 6 | `feat/assistant` | Asystent — wyszukiwanie w bazie wiedzy (bez AI) | ⏳ |
 | 7 | `feat/wizards` | Kreatory wniosków/urlopów + „Sprawdź sprawę” (mock, bez PDF) | ⏳ |
 
@@ -224,19 +224,43 @@ usunięty lokalnie i na `origin`, nie scalony do `main`. Wzorce z niego (np. jed
 Na dziś bez logiki — sam nagłówek i opis (`ScreenLayout` bez treści):
 
 - **Asystent** (`src/screens/AssistantScreen.tsx`) — Faza 6 rework: wyszukiwanie w bazie wiedzy.
-- **Wiadomości** (`src/screens/MessagesScreen.tsx`) — usunięty z navbaru w Fazie 1 (`BenefitsScreen`
-  usunięty całkowicie), Faza 5 wraca jako podekran Więcej.
 - Test zaślepek: `src/screens/placeholderScreens.test.tsx` (sprawdza tylko nagłówek).
 
-## Więcej (profil, wylogowanie) **[Faza 5 rozbuduje w hub]**
+## Więcej (hub) i ekrany po zalogowaniu
 
-- **Branch/commit:** `6209bbc test(screens): MoreScreen — wylogowanie czyści sesję` (main);
-  rozróżnienie Wyloguj/Usuń moje odpowiedzi w Fazie 1
-  (`e910bc7 feat(screens): MoreScreen rozróżnia Wyloguj i Usuń moje odpowiedzi`,
-  branch `feat/guest-mode`).
-- **Czym jest:** Zakładka „Więcej”. Zalogowany widzi „Wyloguj” (czyści tylko `isSignedIn`,
-  profil zostaje). Gość (niezalogowany) widzi „Usuń moje odpowiedzi i zacznij od nowa”
-  (`resetProfile` — czyści profil i postęp zadań; to jego odpowiednik pełnego resetu, bo nie
-  ma się z czego wylogować). Faza 5 rozbuduje to w menu: Moje dane z ZUS, Wiadomości, Dzieci,
-  Kontakt, Ustawienia, O aplikacji, Wsparcie, Panel demo, Panel administracyjny.
-- **Pliki:** `src/screens/MoreScreen.tsx` (+ `.test.tsx`).
+- **Branch/commit:** Faza 5, branch `feat/more-hub`: `6ac1060` (hub, Kontakt, Wsparcie, O aplikacji),
+  `08c5bf9` (Ustawienia), `d45b81e` (konto eZUS, pisma, przykładowe osoby), `49e8362` (Moje dane z ZUS,
+  Wiadomości, Panel demo), `78f6631` (Panel administracyjny), `9cb915c` (tryb wsparcia, sytuacja, profil dziecka).
+- **Czym jest:** Zakładka „Więcej” jako hub (port `vMore`) ze stosem podekranów:
+  - **Konto:** gość — „Zaloguj przez mObywatel”, „Wypełnij ankietę / Zmień odpowiedzi” (ankieta od zera),
+    „Usuń moje odpowiedzi”; zalogowany — karta konta, „Moje sprawy w ZUS”, „Wyloguj”.
+  - **Moje dane z ZUS** (po zalogowaniu): chorobowe tak/nie, tytuły ubezpieczenia, e-ZLA, zaległość
+    wobec progu 1%; „Przelicz zasiłek na tych danych” — kalkulator po zalogowaniu bierze podstawę i
+    zaległość z eZUS.
+  - **Wiadomości** (po zalogowaniu): Korespondencja (licznik nieprzeczytanych) i Archiwum; pismo z
+    „tłumaczem pism” (co to oznacza, co zrobić), otwarcie = przeczytane, do archiwum / przywróć.
+  - **Profil dziecka** i **„Moja sytuacja się zmieniła”** → **tryb wsparcia po stracie**: Start bez osi
+    czasu i odliczania, tylko świadczenia po stracie, kontakt z człowiekiem, organizacje; po potwierdzeniu,
+    zawsze odwracalny.
+  - **Kontakt** (e-wizyta i mama@zus.pl — zaślepki, infolinia), **Wsparcie** (organizacje, telefony,
+    strony), **Ustawienia** (motyw jasny/ciemny/systemowy, rozmiar tekstu A/A+/A++ — w całej aplikacji),
+    **O aplikacji** (bez AI w aplikacji — uczciwie).
+  - **Panel demo:** 6 przykładowych osób z prototypu (podmiana profilu + logowanie), własna ankieta, reset.
+  - **Panel administracyjny** (hasło demo `zus2026`): parametry prawne bez zmiany kodu — od razu w
+    kalkulatorach, rejestr zmian (w pamięci, bez REST).
+- **Pliki:**
+  - `src/screens/MoreScreen/` (hub), `ContactScreen/`, `SupportScreen/`, `AboutScreen/`, `SettingsScreen/`,
+    `ZusDataScreen/`, `MessagesScreen/`, `DocumentScreen/`, `DemoScreen/`, `AdminScreen/`, `SituationScreen/`,
+    `LossScreen/`, `ChildrenScreen/`; trasy `src/app/(tabs)/wiecej/` (Stack), adresy w `features/more/moreRoutes.ts`.
+  - `src/domain/zus/` — `ZusAccount`, `buildZusAccount` (port `zusData`), `ZusDocument`, `buildZusDocuments`.
+  - `src/data/demo/personas.ts`, `data/supportOrganizations.ts`, `data/zusContact.ts`, `data/support/supportItems.ts`.
+  - `src/features/zus/` (`useZusData`, wiersze tytułów i e-ZLA), `features/more/components/` (`MoreSection`,
+    `LoginRequired`), `features/support/components/SupportHome`, `features/admin/` (pola i opis zmian),
+    `features/calculator/applyZusAccount.ts`.
+  - `src/params/` — `LegalParamsProvider` / `useLegalParams` (parametry prawne z Panelu administracyjnego).
+  - Sesja: `personaId`/`applyPersona`, przeczytane i przeniesione pisma, `supportMode`.
+  - Motyw: `mode` (system/light/dark) i `textScale`; `AppText` skaluje typografię (`theme/scaleTextStyle`).
+- **Świadomie pominięte:** tryb spokojny i powiadomienia w Ustawieniach (nie ma jeszcze czego wyciszać),
+  kilka profili dzieci naraz (profil ma jedno dziecko — u Zofii z prototypu bez drugiej ciąży), szkice
+  i UPO w Wiadomościach (Faza 7), checklista dowodowa JDG, symulacje rejestru PESEL i offline z Panelu demo.
+

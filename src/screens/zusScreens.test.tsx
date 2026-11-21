@@ -68,7 +68,7 @@ describe('Ekrany po zalogowaniu i Panel demo', () => {
   });
 
   it('Kasia: nowe pismo o zaległości → otwarcie oznacza przeczytane → archiwum', async () => {
-    const { user, app } = await choosePersona(/^Kasia/);
+    const { user } = await choosePersona(/^Kasia/);
     await act(() => router.push('/wiecej/wiadomosci'));
     await screen.findByRole('radio', { name: 'Korespondencja (1)' });
 

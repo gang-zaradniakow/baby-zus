@@ -11,6 +11,7 @@ import { ARTICLES } from '@/data/knowledge/articles';
 import { CHAPTERS } from '@/data/knowledge/chapters';
 import { ZUS_LINKS } from '@/data/knowledge/zusLinks';
 import { nextArticleInChapter } from '@/domain/knowledge/nextArticleInChapter';
+import { calculatorHref } from '@/features/calculator/situationParam';
 import { ArticleBlockView } from '@/features/knowledge/components/ArticleBlockView';
 import { knowledgeRoutes } from '@/features/knowledge/knowledgeRoutes';
 import { useTheme } from '@/theme';
@@ -36,6 +37,7 @@ export function ArticleScreen() {
 
   const chapter = CHAPTERS.find((c) => c.id === article.chapterId);
   const next = nextArticleInChapter(ARTICLES, article);
+  const { calculator } = article;
 
   return (
     <ScreenLayout
@@ -51,8 +53,8 @@ export function ArticleScreen() {
           ))}
         </View>
 
-        {article.calculator ? (
-          <Button title="Policz w kalkulatorze" icon={Calculator} onPress={() => router.navigate('/kalkulator')} />
+        {calculator ? (
+          <Button title="Policz w kalkulatorze" icon={Calculator} onPress={() => router.navigate(calculatorHref(calculator))} />
         ) : null}
 
         {article.links.length > 0 ? (

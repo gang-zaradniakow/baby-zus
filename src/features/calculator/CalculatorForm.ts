@@ -1,10 +1,10 @@
 import type { AdoptionKind } from '@/domain/calculator/adoptionLeaveWeeks';
 import type { BenefitVariant, FatherPlan, WorkOnLeave } from '@/domain/calculator/BenefitSimulation';
+import type { CalculatorSituation } from '@/domain/calculator/CalculatorSituation';
 import type { PersonTitles } from '@/domain/calculator/PersonTitles';
 import type { Z3Month } from '@/domain/calculator/resolveZ3Base';
 
-/** Co liczymy: L4 w ciąży, zasiłek macierzyński po porodzie albo po przyjęciu dziecka. */
-export type CalculatorSituation = 'pregnancy' | 'birth' | 'adoption';
+export type { CalculatorSituation };
 
 /** Jedna osoba w formularzu: wszystkie tytuły (włączone lub nie) i ewentualnie Z-3. */
 export type PersonForm = {

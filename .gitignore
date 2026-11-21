@@ -42,3 +42,5 @@ yarn-error.*
 
 # testy — raport pokrycia (jest --coverage)
 coverage/
+
+/.idea

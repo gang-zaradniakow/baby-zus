@@ -12,6 +12,8 @@ export type LegalParams = {
   minBenefitBase: number;
   /** Limit podstawy przy dobrowolnym chorobowym: 250% prognozowanego wynagrodzenia − 13,71% (MAX_PODSTAWA_DOBR). */
   maxVoluntaryBase: number;
+  /** Standardowa podstawa składek przedsiębiorcy: 60% prognozowanego przeciętnego wynagrodzenia (JDG_PODSTAWA_STD). */
+  businessStandardBase: number;
   /** Świadczenie rodzicielskie i zarazem minimum zasiłku macierzyńskiego na rękę (SW_RODZICIELSKIE). */
   parentalBenefitMonthly: number;
   /** Ile tygodni wypłaca się świadczenie rodzicielskie: 1, 2, 3, 4, 5+ dzieci (SW_RODZ_WEEKS). */
@@ -73,6 +75,7 @@ export const LEGAL_PARAMS: LegalParams = {
   socialContributionRate: 0.1371,
   minBenefitBase: 4147.1,
   maxVoluntaryBase: 20321.3,
+  businessStandardBase: 5652,
   parentalBenefitMonthly: 1000,
   parentalBenefitWeeks: [52, 65, 67, 69, 71],
   debtLimit: 48.06,

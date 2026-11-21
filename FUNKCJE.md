@@ -28,7 +28,7 @@ rework nie zostanie zrobiony.
 | 1 | `feat/guest-mode` | Nowe taby, tryb gościa (profil bez logowania), RootNavigator bez wymuszonych strażników | ✅ |
 | 2 | `feat/guest-survey` | Ankieta gościa — do 9 kroków (rola, etap, data, [data urodzenia przy adopcji], liczba dzieci, sytuacje specjalne, zatrudnienie, [płatnik], drugi rodzic, imiona) | ✅ |
 | 3 | `feat/knowledge-base` | Zakładka Wiedza — 7 rozdziałów, 30 artykułów Poradnika ZUS, wyszukiwarka | ✅ |
-| 4 | `feat/calculator` | Zintegrowany kalkulator zasiłku (zbieg tytułów, Z-3, adopcja, „za życiem”, wcześniak, praca na urlopie) | ⏳ |
+| 4 | `feat/calculator` | Zintegrowany kalkulator zasiłku (zbieg tytułów, Z-3, adopcja, „za życiem”, wcześniak, praca na urlopie) | ✅ |
 | 5 | `feat/more-hub` | Więcej jako hub: Moje dane z ZUS, Wiadomości, Dzieci, Kontakt, Ustawienia, O aplikacji, Wsparcie, Panel demo, Panel administracyjny (mock) | ⏳ |
 | 6 | `feat/assistant` | Asystent — wyszukiwanie w bazie wiedzy (bez AI) | ⏳ |
 | 7 | `feat/wizards` | Kreatory wniosków/urlopów + „Sprawdź sprawę” (mock, bez PDF) | ⏳ |
@@ -139,6 +139,39 @@ rework nie zostanie zrobiony.
   „Wniosek” (Faza 7), „Kontakt z ZUS”/„Wsparcie” (Faza 5), „Zapytaj asystenta” przy braku wyników
   (Faza 6), karty „na ten tydzień/miesiąc” na Starcie (`CARDS_POR`).
 
+## Kalkulator zasiłku
+
+- **Branch/commit:** Faza 4, branch `feat/calculator`: silnik `7c50e4c` (parametry prawne, wymiary
+  urlopów), `63421c4` (zbieg tytułów, Z-3, świadczenie zastępcze), `7787c62` (L4 w ciąży), `90405f1`
+  (symulacja dla obojga rodziców); UI `404d84f` (klocki formularza, suwak), `d995dfa` (stan formularza
+  z ankiety), `bb0f11d` (ekran).
+- **Czym jest:** Port zintegrowanego kalkulatora z prototypu (`js/calc.js` + `vSim`/`simOut`), pełny
+  formularz jak w prototypie. Trzy sytuacje: **L4 w ciąży** (wynagrodzenie od pracodawcy 33/14 dni,
+  zasiłek do 270 dni, świadczenie rehabilitacyjne, okres wyczekiwania), **poród** i **adopcja / rodzina
+  zastępcza** (macierzyński, rodzicielski, ojcowski, 81,5% vs 100% + 70%, przejęcie macierzyńskiego
+  przez tatę, 9 tyg. nieprzenoszalnych, wcześniak, „Za życiem”, praca na urlopie, limit wieku przy
+  adopcji). Zbieg tytułów (etat / zlecenie / firma / KRUS), podstawa z Z-3, minimum 1000 zł na rękę,
+  świadczenie z gminy/KRUS, gdy brak ubezpieczenia. Formularz wypełniany z ankiety; „Policz” w artykule
+  otwiera właściwą sytuację (`/kalkulator?sytuacja=ciaza|porod|adopcja`).
+- **Pliki:**
+  - `src/data/legalParams.ts` — parametry prawne 2026 (z `K` prototypu); każda funkcja silnika bierze
+    je jako argument (Panel administracyjny w Fazie 5 będzie mógł je nadpisać).
+  - `src/domain/calculator/` — `maternityLeaveWeeks`, `parentalLeaveWeeks`, `adoptionLeaveWeeks`,
+    `supplementaryLeaveWeeks`, `resolvePerson` (+ `PersonTitles`), `resolveZ3Base`, `toNetAmount`,
+    `allowanceInstead`, `pregnancySickPay`, `concurrentTitlesSickPay`, `simulateBenefit` (+
+    `BenefitSimulation`, `priceSegments`), `CalcCheck`, `CalculatorSituation`.
+  - `src/features/calculator/` — `CalculatorForm` (typ), `personForm` (czyste zmiany osoby),
+    `createCalculatorForm` (wartości z ankiety), `resolvePersonForm`, `computeCalculation`,
+    `useCalculatorForm`, `situationParam`; `components/` — formularz i wyniki (oś czasu urlopów,
+    lista odcinków, wyjaśnienia).
+  - `src/components/molecules/SegmentedControl`, `ToggleChip`, `NumberField`, `Accordion`,
+    `SliderField` (`@react-native-community/slider`); `atoms/Card`, `TextButton`.
+  - `src/utils/formatMoney.ts`, `formatPercent.ts`, `parseDecimal.ts`.
+  - `src/screens/CalculatorScreen/`; trasa `src/app/(tabs)/kalkulator.tsx`.
+- **Uwaga:** `maternityLeaveWeeks` przeniesione z `domain/benefits` (oś czasu na Starcie korzysta
+  teraz z parametrów prawnych). Szczegóły wcześniaka nie są jeszcze zbierane w ankiecie — kalkulator
+  startuje z wartościami prototypu (32. tydzień, 1800 g, 21 dni) do poprawienia w „Więcej opcji”.
+
 ## Oś czasu (ekran Start)
 
 - **Branch/commit:** `afde31e feat(timeline): oś czasu urzędowych kroków na ekranie Start` (main)
@@ -191,7 +224,6 @@ usunięty lokalnie i na `origin`, nie scalony do `main`. Wzorce z niego (np. jed
 Na dziś bez logiki — sam nagłówek i opis (`ScreenLayout` bez treści):
 
 - **Asystent** (`src/screens/AssistantScreen.tsx`) — Faza 6 rework: wyszukiwanie w bazie wiedzy.
-- **Kalkulator** (`src/screens/CalculatorScreen.tsx`, nowy w Fazie 1) — Faza 4 rework: silnik kalkulatora.
 - **Wiadomości** (`src/screens/MessagesScreen.tsx`) — usunięty z navbaru w Fazie 1 (`BenefitsScreen`
   usunięty całkowicie), Faza 5 wraca jako podekran Więcej.
 - Test zaślepek: `src/screens/placeholderScreens.test.tsx` (sprawdza tylko nagłówek).

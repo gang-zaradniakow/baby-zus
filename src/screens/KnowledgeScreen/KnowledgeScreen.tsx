@@ -3,11 +3,13 @@ import { useState } from 'react';
 import { View } from 'react-native';
 
 import { AppText } from '@/components/atoms/AppText';
+import { TextButton } from '@/components/atoms/TextButton';
 import { SearchField } from '@/components/molecules/SearchField';
 import { ScreenLayout } from '@/components/templates/ScreenLayout';
 import { ARTICLES } from '@/data/knowledge/articles';
 import { CHAPTERS } from '@/data/knowledge/chapters';
 import { MIN_QUERY_LENGTH, searchArticles } from '@/domain/knowledge/searchArticles';
+import { assistantHref } from '@/features/assistant/assistantHref';
 import { ArticleList } from '@/features/knowledge/components/ArticleList';
 import { ChapterList } from '@/features/knowledge/components/ChapterList';
 import { knowledgeRoutes } from '@/features/knowledge/knowledgeRoutes';
@@ -37,9 +39,12 @@ export function KnowledgeScreen() {
         ) : results.length > 0 ? (
           <ArticleList articles={results} onSelect={(article) => router.push(knowledgeRoutes.article(article.id))} />
         ) : (
-          <AppText color={colors.textMuted} accessibilityLiveRegion="polite">
-            Nic nie znaleźliśmy. Spróbuj innego słowa, np. „zasiłek” albo „urlop”.
-          </AppText>
+          <View style={styles.empty}>
+            <AppText color={colors.textMuted} accessibilityLiveRegion="polite">
+              Nic nie znaleźliśmy. Spróbuj innego słowa, np. „zasiłek” albo „urlop”.
+            </AppText>
+            <TextButton title="Zapytaj asystenta" onPress={() => router.navigate(assistantHref(query))} />
+          </View>
         )}
       </View>
     </ScreenLayout>

@@ -1,6 +1,6 @@
 /**
- * Co pokazujemy w trybie wsparcia po stracie (z prototypu: `vSupportHome`). Linki do kreatora Z-12
- * i do Asystenta z prototypu prowadzą na razie do artykułów Wiedzy i Kontaktu (Fazy 6–7).
+ * Co pokazujemy w trybie wsparcia po stracie (z prototypu: `vSupportHome`). Link do kreatora Z-12
+ * prowadzi na razie do artykułu Wiedzy (Faza 7).
  */
 export type SupportItem = {
   title: string;
@@ -26,8 +26,8 @@ export const SUPPORT_ITEMS: Record<LossKind, readonly SupportItem[]> = {
     },
     {
       title: 'Jeśli nie było zaświadczenia o martwym urodzeniu',
-      description: 'Lekarz może wystawić zwolnienie lekarskie. Napisz do nas — pomożemy ustalić, co Ci przysługuje.',
-      href: '/wiecej/kontakt',
+      description: 'Lekarz może wystawić zwolnienie lekarskie. Zapytaj nas — pomożemy ustalić, co Ci przysługuje.',
+      href: `/asystent?pytanie=${encodeURIComponent('Straciłam ciążę — co mi przysługuje?')}`,
     },
   ],
   childDeath: [

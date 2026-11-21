@@ -7,20 +7,21 @@ import { styles } from './ToggleChip.styles';
 
 type Props = {
   label: string;
-  selected: boolean;
+  /** Brak — zwykły przycisk-„pigułka” (np. podpowiedź pytania), bez stanu zaznaczenia. */
+  selected?: boolean;
   onPress: () => void;
 };
 
-/** Mały przełącznik-„pigułka” do wyboru kilku opcji naraz (np. etat + zlecenie). */
+/** Mały przełącznik-„pigułka” do wyboru kilku opcji naraz (np. etat + zlecenie) albo przycisk-podpowiedź. */
 export function ToggleChip({ label, selected, onPress }: Props) {
   const { colors } = useTheme();
 
   return (
     <Pressable
       onPress={onPress}
-      accessibilityRole="checkbox"
+      accessibilityRole={selected === undefined ? 'button' : 'checkbox'}
       accessibilityLabel={label}
-      accessibilityState={{ checked: selected }}
+      accessibilityState={selected === undefined ? undefined : { checked: selected }}
       style={[
         styles.chip,
         selected

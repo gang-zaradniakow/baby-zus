@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { Archive, ArchiveRestore } from 'lucide-react-native';
+import { Archive, ArchiveRestore, MessageCircleQuestion } from 'lucide-react-native';
 import { useEffect } from 'react';
 import { View } from 'react-native';
 
@@ -10,6 +10,7 @@ import { RichText } from '@/components/atoms/RichText';
 import { ScreenLayout } from '@/components/templates/ScreenLayout';
 import { fromISODate } from '@/domain/dates/calendarDate';
 import { formatDate } from '@/domain/dates/formatDate';
+import { assistantHref } from '@/features/assistant/assistantHref';
 import { moreRoutes } from '@/features/more/moreRoutes';
 import { useZusData } from '@/features/zus/useZusData';
 import { useSession } from '@/session';
@@ -52,6 +53,12 @@ export function DocumentScreen() {
             {doc.body}
           </AppText>
         </Card>
+        <Button
+          title="Zapytaj asystenta"
+          variant="secondary"
+          icon={MessageCircleQuestion}
+          onPress={() => router.navigate(assistantHref(doc.title))}
+        />
         <Button
           title={doc.isArchived ? 'Przywróć z archiwum' : 'Do archiwum'}
           variant="secondary"

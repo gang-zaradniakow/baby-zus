@@ -6,4 +6,7 @@ export const styles = StyleSheet.create({
   content: {
     gap: spacing.lg,
   },
+  empty: {
+    gap: spacing.sm,
+  },
 });

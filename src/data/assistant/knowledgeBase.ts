@@ -3,7 +3,7 @@ import type { KnowledgeEntry } from '@/domain/assistant/KnowledgeEntry';
 /**
  * Baza wiedzy Asystenta — wygenerowane z prototypu (js/kb.js). Każda odpowiedź ma źródło (Poradnik ZUS
  * dla rodziców, stan prawny 1.04.2026; KP; ustawa zasiłkowa). Słowa kluczowe bez polskich znaków;
- * „=fraza” — tylko dokładne dopasowanie słów. Linki do kreatorów wniosków pominięte (Faza 7).
+ * „=fraza” — tylko dokładne dopasowanie słów. Checklista dowodowa JDG z prototypu pominięta.
  */
 export const KNOWLEDGE_BASE: readonly KnowledgeEntry[] = [
   {
@@ -297,7 +297,12 @@ export const KNOWLEDGE_BASE: readonly KnowledgeEntry[] = [
       },
     ],
     source: 'UZ art. 30a ust. 1; Poradnik, s. 34',
-    actions: [],
+    actions: [
+      {
+        label: 'Złóż wniosek',
+        href: '/wiecej/wniosek/w-81',
+      },
+    ],
   },
   {
     id: 'mac-ile',
@@ -373,7 +378,12 @@ export const KNOWLEDGE_BASE: readonly KnowledgeEntry[] = [
       },
     ],
     source: 'Poradnik, s. 34–35; opis wyzwania ZUS (HackNation 2026)',
-    actions: [],
+    actions: [
+      {
+        label: 'Kreator wniosków',
+        href: '/wiecej/wnioski',
+      },
+    ],
   },
   {
     id: 'jdg-zua',
@@ -533,7 +543,12 @@ export const KNOWLEDGE_BASE: readonly KnowledgeEntry[] = [
       },
     ],
     source: 'art. 182¹a–182¹d KP; Poradnik, s. 31–32',
-    actions: [],
+    actions: [
+      {
+        label: 'Wniosek o urlop rodzicielski',
+        href: '/wiecej/wniosek/w-rodzicielski',
+      },
+    ],
   },
   {
     id: 'rodz6',
@@ -628,7 +643,12 @@ export const KNOWLEDGE_BASE: readonly KnowledgeEntry[] = [
       },
     ],
     source: 'art. 182³ KP; Poradnik, s. 32–33',
-    actions: [],
+    actions: [
+      {
+        label: 'Wniosek o urlop ojcowski',
+        href: '/wiecej/wniosek/w-ojcowski',
+      },
+    ],
   },
   {
     id: 'przejecie',
@@ -786,7 +806,12 @@ export const KNOWLEDGE_BASE: readonly KnowledgeEntry[] = [
       },
     ],
     source: 'art. 183 KP; UZ art. 29; Poradnik, s. 30',
-    actions: [],
+    actions: [
+      {
+        label: 'Wniosek o urlop',
+        href: '/wiecej/wniosek/w-adopcja',
+      },
+    ],
   },
   {
     id: 'zazyciem',
@@ -911,7 +936,12 @@ export const KNOWLEDGE_BASE: readonly KnowledgeEntry[] = [
       },
     ],
     source: 'Poradnik, s. 35–36; zus.pl',
-    actions: [],
+    actions: [
+      {
+        label: 'Wniosek Z-12',
+        href: '/wiecej/wniosek/w-pogrzebowy',
+      },
+    ],
   },
   {
     id: 'opiekunczy',
@@ -942,7 +972,12 @@ export const KNOWLEDGE_BASE: readonly KnowledgeEntry[] = [
       },
     ],
     source: 'Poradnik, s. 36–39',
-    actions: [],
+    actions: [
+      {
+        label: 'Wniosek Z-15A',
+        href: '/wiecej/wniosek/w-opiekunczy',
+      },
+    ],
   },
   {
     id: 'wychowawczy',
@@ -1154,7 +1189,12 @@ export const KNOWLEDGE_BASE: readonly KnowledgeEntry[] = [
       },
     ],
     source: 'Opis wyzwania ZUS (HackNation 2026); Poradnik, s. 25–38',
-    actions: [],
+    actions: [
+      {
+        label: 'Kreator wniosków',
+        href: '/wiecej/wnioski',
+      },
+    ],
   },
   {
     id: 'kontrola',
@@ -1383,6 +1423,11 @@ export const KNOWLEDGE_BASE: readonly KnowledgeEntry[] = [
       },
     ],
     source: 'gov.pl — rejestr stanu cywilnego; Poradnik ZUS, s. 34',
-    actions: [],
+    actions: [
+      {
+        label: 'Wniosek o odpis',
+        href: '/wiecej/wniosek/w-odpis',
+      },
+    ],
   },
 ];

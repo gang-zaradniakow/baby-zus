@@ -1,6 +1,5 @@
 /**
- * Co pokazujemy w trybie wsparcia po stracie (z prototypu: `vSupportHome`). Link do kreatora Z-12
- * prowadzi na razie do artykułu Wiedzy (Faza 7).
+ * Co pokazujemy w trybie wsparcia po stracie (z prototypu: `vSupportHome`).
  */
 export type SupportItem = {
   title: string;
@@ -21,8 +20,8 @@ export const SUPPORT_ITEMS: Record<LossKind, readonly SupportItem[]> = {
     },
     {
       title: 'Zasiłek pogrzebowy — 7000 zł',
-      description: 'Pełna kwota dla rodziców, nawet przy niższych kosztach. Wniosek Z-12 do 12 miesięcy od pochówku.',
-      href: '/wiedza/artykul/pogrzebowy',
+      description: 'Pełna kwota dla rodziców, nawet przy niższych kosztach. Wniosek Z-12 do 12 miesięcy od pochówku — możemy go przygotować razem.',
+      href: '/wiecej/wniosek/w-pogrzebowy',
     },
     {
       title: 'Jeśli nie było zaświadczenia o martwym urodzeniu',
@@ -39,8 +38,8 @@ export const SUPPORT_ITEMS: Record<LossKind, readonly SupportItem[]> = {
     },
     {
       title: 'Zasiłek pogrzebowy — 7000 zł',
-      description: 'Wniosek Z-12 w ciągu 12 miesięcy od pochówku.',
-      href: '/wiedza/artykul/pogrzebowy',
+      description: 'Wniosek Z-12 w ciągu 12 miesięcy od pochówku. Możemy go przygotować razem.',
+      href: '/wiecej/wniosek/w-pogrzebowy',
     },
     {
       title: 'Rozmowa z ekspertem ZUS',

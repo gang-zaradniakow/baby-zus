@@ -1,6 +1,6 @@
 import * as Linking from 'expo-linking';
 import { router, useLocalSearchParams } from 'expo-router';
-import { Calculator } from 'lucide-react-native';
+import { Calculator, FilePenLine } from 'lucide-react-native';
 import { View } from 'react-native';
 
 import { AppText } from '@/components/atoms/AppText';
@@ -14,6 +14,7 @@ import { nextArticleInChapter } from '@/domain/knowledge/nextArticleInChapter';
 import { calculatorHref } from '@/features/calculator/situationParam';
 import { ArticleBlockView } from '@/features/knowledge/components/ArticleBlockView';
 import { knowledgeRoutes } from '@/features/knowledge/knowledgeRoutes';
+import { moreRoutes } from '@/features/more/moreRoutes';
 import { useTheme } from '@/theme';
 
 import { styles } from './ArticleScreen.styles';
@@ -37,7 +38,7 @@ export function ArticleScreen() {
 
   const chapter = CHAPTERS.find((c) => c.id === article.chapterId);
   const next = nextArticleInChapter(ARTICLES, article);
-  const { calculator } = article;
+  const { calculator, wizard } = article;
 
   return (
     <ScreenLayout
@@ -55,6 +56,15 @@ export function ArticleScreen() {
 
         {calculator ? (
           <Button title="Policz w kalkulatorze" icon={Calculator} onPress={() => router.navigate(calculatorHref(calculator))} />
+        ) : null}
+
+        {wizard ? (
+          <Button
+            title="Przygotuj wniosek"
+            variant="secondary"
+            icon={FilePenLine}
+            onPress={() => router.navigate(moreRoutes.wizard(wizard))}
+          />
         ) : null}
 
         {article.links.length > 0 ? (

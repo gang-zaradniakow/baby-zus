@@ -13,4 +13,7 @@ export const moreRoutes = {
   situation: '/wiecej/sytuacja',
   loss: '/wiecej/strata',
   children: '/wiecej/dzieci',
+  wizards: '/wiecej/wnioski',
+  wizard: (wizardId: string) => `/wiecej/wniosek/${wizardId}`,
+  result: (documentId: string) => `/wiecej/dokument/${documentId}`,
 } as const;

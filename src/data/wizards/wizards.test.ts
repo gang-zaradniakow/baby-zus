@@ -1,3 +1,4 @@
+import { ARTICLES } from '@/data/knowledge/articles';
 import { formatDate } from '@/domain/dates/formatDate';
 import { checkStep } from '@/domain/wizards/checkStep';
 import { createWizardContext } from '@/domain/wizards/createWizardContext';
@@ -105,5 +106,13 @@ describe('kreatory wniosków', () => {
     const result = wizard('w-ojcowski').build({ parts: '1', start: '01.12.2026' }, ctx);
     expect(ctx.applicantName).toBe('Jan Przykładowa');
     if (result.kind === 'letter') expect(result.letter.paragraphs[0]).toMatch(/Staś \(data urodzenia: 10\.11\.2026\)/);
+  });
+});
+
+describe('kreatory a reszta aplikacji', () => {
+  it('artykuły Wiedzy wskazują istniejące kreatory', () => {
+    for (const article of ARTICLES) {
+      if (article.wizard) expect(findWizard(article.wizard)).not.toBeNull();
+    }
   });
 });

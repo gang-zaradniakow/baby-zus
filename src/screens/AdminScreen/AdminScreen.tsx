@@ -16,15 +16,13 @@ import { MoreSection } from '@/features/more/components/MoreSection';
 import { moreRoutes } from '@/features/more/moreRoutes';
 import { useLegalParams } from '@/params';
 import { useTheme } from '@/theme';
+import { formatTime } from '@/utils/formatTime';
 
 import { styles } from './AdminScreen.styles';
 
 /** Hasło demonstracyjne z prototypu — w produkcji logowanie pracownika ZUS i role. */
 const DEMO_PASSWORD = 'zus2026';
 
-/** „14:05” bez Intl (Hermes na Androidzie nie zawsze ma polskie dane lokalizacji). */
-const formatTime = (date: Date) =>
-  `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
 
 /**
  * Panel administracyjny (mock): zmiana parametrów prawnych bez zmiany kodu — zapis obowiązuje od razu

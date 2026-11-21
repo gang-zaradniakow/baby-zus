@@ -70,7 +70,7 @@ describe('Ekrany po zalogowaniu i Panel demo', () => {
   it('Kasia: nowe pismo o zaległości → otwarcie oznacza przeczytane → archiwum', async () => {
     const { user } = await choosePersona(/^Kasia/);
     await act(() => router.push('/wiecej/wiadomosci'));
-    await screen.findByRole('radio', { name: 'Korespondencja (1)' });
+    await screen.findByRole('radio', { name: 'Z ZUS (1)' });
 
     await user.press(screen.getByRole('button', { name: /^Informacja o braku wypłaty zasiłku/ }));
     expect(screen.getByText('Co to oznacza? (tłumacz pism)')).toBeOnTheScreen();
@@ -80,7 +80,7 @@ describe('Ekrany po zalogowaniu i Panel demo', () => {
     expect(screen.getByRole('button', { name: 'Przywróć z archiwum' })).toBeOnTheScreen();
 
     await user.press(screen.getByRole('button', { name: 'Wiadomości' }));
-    expect(screen.getByRole('radio', { name: 'Korespondencja' })).toBeOnTheScreen(); // już bez licznika
+    expect(screen.getByRole('radio', { name: 'Z ZUS' })).toBeOnTheScreen(); // już bez licznika
     await user.press(screen.getByRole('radio', { name: 'Archiwum' }));
     expect(screen.getByRole('button', { name: /^Informacja o braku wypłaty zasiłku/ })).toBeOnTheScreen();
   });

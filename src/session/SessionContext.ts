@@ -1,6 +1,7 @@
 import { createContext } from 'react';
 
 import type { ParentProfile } from '@/domain/profile/ParentProfile';
+import type { SentDocument } from '@/domain/wizards/SentDocument';
 
 /** Tryb wsparcia po stracie: Start bez odliczania i gratulacji, tylko to, co pomaga. */
 export type SupportMode = 'none' | 'pregnancyLoss' | 'childDeath';
@@ -32,6 +33,9 @@ export type SessionValue = {
   supportMode: SupportMode;
   /** Włącza / wyłącza tryb wsparcia — zawsze po potwierdzeniu przez użytkownika. */
   setSupportMode: (mode: SupportMode) => void;
+  /** Pisma i wnioski z kreatorów — „Moje dokumenty” (najnowsze pierwsze). */
+  sentDocuments: readonly SentDocument[];
+  addSentDocument: (document: SentDocument) => void;
 };
 
 export const SessionContext = createContext<SessionValue>({
@@ -51,4 +55,6 @@ export const SessionContext = createContext<SessionValue>({
   toggleDocumentArchived: () => {},
   supportMode: 'none',
   setSupportMode: () => {},
+  sentDocuments: [],
+  addSentDocument: () => {},
 });

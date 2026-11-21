@@ -1,10 +1,19 @@
 import { ARTICLES } from '@/data/knowledge/articles';
+import { findWizard } from '@/data/wizards';
 import { articleTexts } from '@/domain/knowledge/articleTexts';
 
 import { KNOWLEDGE_BASE } from './knowledgeBase';
 
 /** Trasy poza artykułami Wiedzy, do których mogą prowadzić przyciski pod odpowiedzią. */
-const KNOWN_ROUTES = ['/wiedza', '/kalkulator', '/wiecej/kontakt', '/wiecej/wsparcie', '/wiecej/wiadomosci', '/wiecej/strata'];
+const KNOWN_ROUTES = [
+  '/wiedza',
+  '/kalkulator',
+  '/wiecej/kontakt',
+  '/wiecej/wsparcie',
+  '/wiecej/wiadomosci',
+  '/wiecej/strata',
+  '/wiecej/wnioski',
+];
 
 describe('baza wiedzy Asystenta', () => {
   it('51 wpisów z prototypu, unikalne id, każdy ze źródłem i odpowiedzią', () => {
@@ -16,11 +25,13 @@ describe('baza wiedzy Asystenta', () => {
     }
   });
 
-  it('przyciski prowadzą do istniejących artykułów albo znanych ekranów', () => {
+  it('przyciski prowadzą do istniejących artykułów, kreatorów albo znanych ekranów', () => {
     const articleIds = new Set(ARTICLES.map((a) => a.id));
     for (const { href } of KNOWLEDGE_BASE.flatMap((e) => e.actions)) {
       const article = href.match(/^\/wiedza\/artykul\/(.+)$/);
+      const wizard = href.match(/^\/wiecej\/wniosek\/(.+)$/);
       if (article) expect(articleIds).toContain(article[1]);
+      else if (wizard) expect(findWizard(wizard[1])).not.toBeNull();
       else expect(KNOWN_ROUTES).toContain(href);
     }
   });

@@ -3,17 +3,17 @@ import { render, screen, userEvent } from '@testing-library/react-native';
 import { SpecialSituationsStep } from './SpecialSituationsStep';
 
 describe('SpecialSituationsStep', () => {
-  it('pokazuje trzy opcjonalne sytuacje', async () => {
+  it('pokazuje cztery opcjonalne sytuacje', async () => {
     await render(<SpecialSituationsStep selected={[]} onToggle={jest.fn()} />);
 
     expect(screen.getByRole('header', { name: 'Sytuacje szczególne' })).toBeOnTheScreen();
-    expect(screen.getAllByRole('checkbox')).toHaveLength(3);
+    expect(screen.getAllByRole('checkbox')).toHaveLength(4);
   });
 
   it('zaznacza wybrane sytuacje', async () => {
-    await render(<SpecialSituationsStep selected={['single']} onToggle={jest.fn()} />);
+    await render(<SpecialSituationsStep selected={['preterm']} onToggle={jest.fn()} />);
 
-    expect(screen.getByRole('checkbox', { name: 'Samodzielne wychowywanie' })).toBeChecked();
+    expect(screen.getByRole('checkbox', { name: 'Wcześniak / dziecko w szpitalu' })).toBeChecked();
     expect(screen.getByRole('checkbox', { name: 'Jeden z rodziców pracuje za granicą (UE)' })).not.toBeChecked();
   });
 

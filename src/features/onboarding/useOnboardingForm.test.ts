@@ -20,7 +20,15 @@ describe('useOnboardingForm', () => {
     const { result } = await renderForm();
 
     expect(result.current.step).toBe(1);
-    expect(result.current.draft).toEqual({ stage: null, eventDateText: '', employment: [], special: [] });
+    expect(result.current.draft).toEqual({
+      role: 'mama',
+      stage: null,
+      eventDateText: '',
+      childrenCount: 1,
+      employment: [],
+      partner: 'track',
+      special: [],
+    });
     expect(result.current.canContinue).toBe(false);
   });
 
@@ -93,10 +101,10 @@ describe('useOnboardingForm', () => {
   it('krok 4 — sytuacje szczególne są opcjonalne i można je przełączać', async () => {
     const { result } = await renderForm();
 
-    await act(() => result.current.toggleSpecialSituation('single'));
-    expect(result.current.draft.special).toEqual(['single']);
+    await act(() => result.current.toggleSpecialSituation('preterm'));
+    expect(result.current.draft.special).toEqual(['preterm']);
 
-    await act(() => result.current.toggleSpecialSituation('single'));
+    await act(() => result.current.toggleSpecialSituation('preterm'));
     expect(result.current.draft.special).toEqual([]);
   });
 
@@ -123,9 +131,12 @@ describe('useOnboardingForm', () => {
     await act(() => result.current.finish());
 
     expect(onComplete).toHaveBeenCalledWith({
+      role: 'mama',
       stage: 'dziecko',
       eventDate: toISODate(birthDate),
+      childrenCount: 1,
       employment: ['jdg'],
+      partner: 'track',
       special: ['abroad'],
     });
   });

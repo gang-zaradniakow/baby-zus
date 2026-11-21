@@ -51,14 +51,17 @@ describe('OnboardingScreen — przejście przez kreator', () => {
 
     // Krok 4 — sytuacje szczególne (opcjonalne) i zakończenie.
     expect(screen.getByRole('header', { name: 'Sytuacje szczególne' })).toBeOnTheScreen();
-    await user.press(screen.getByRole('checkbox', { name: 'Samodzielne wychowywanie' }));
+    await user.press(screen.getByRole('checkbox', { name: 'Wcześniak / dziecko w szpitalu' }));
     await user.press(screen.getByRole('button', { name: 'Zakończ i uruchom asystenta' }));
 
     expect(session().profile).toEqual({
+      role: 'mama',
       stage: 'dziecko',
       eventDate: toISODate(birthDate),
+      childrenCount: 1,
       employment: ['uop'],
-      special: ['single'],
+      partner: 'track',
+      special: ['preterm'],
     });
   });
 

@@ -15,6 +15,6 @@ describe('createTimelineContext', () => {
 
   it('samodzielne wychowywanie wyłącza śledzenie drugiego rodzica', () => {
     expect(createTimelineContext(makeProfile()).tracksPartner).toBe(true);
-    expect(createTimelineContext(makeProfile({ special: ['single'] })).tracksPartner).toBe(false);
+    expect(createTimelineContext(makeProfile({ partner: 'single' })).tracksPartner).toBe(false);
   });
 });

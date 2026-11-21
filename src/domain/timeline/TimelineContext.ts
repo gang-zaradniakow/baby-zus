@@ -9,7 +9,7 @@ export type TimelineContext = {
   /** Termin porodu / data urodzenia / data przyjęcia. */
   eventDate: Date;
   insurance: InsuranceFlags;
-  /** Czy pokazujemy uprawnienia drugiego rodzica (nie — przy samodzielnym wychowywaniu). */
+  /** Czy pokazujemy uprawnienia drugiego rodzica (tylko gdy rodzic tego chce). */
   tracksPartner: boolean;
   /** Kto wypłaca zasiłek macierzyński: ZUS (sama firma) albo pracodawca. */
   benefitPayer: Institution;
@@ -22,7 +22,7 @@ export function createTimelineContext(profile: ParentProfile): TimelineContext {
   return {
     eventDate: fromISODate(profile.eventDate),
     insurance,
-    tracksPartner: !profile.special.includes('single'),
+    tracksPartner: profile.partner === 'track',
     benefitPayer: onlyBusiness ? 'ZUS' : 'PRAC',
   };
 }

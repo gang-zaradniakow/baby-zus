@@ -45,7 +45,7 @@ describe('buildTimeline', () => {
     });
 
     it('samodzielny rodzic nie widzi pozycji taty', () => {
-      const items = buildTimeline(makeProfile({ special: ['single'] }), today, new Set());
+      const items = buildTimeline(makeProfile({ partner: 'single' }), today, new Set());
       expect(ids(items)).not.toContain('ojcowski');
       expect(ids(items)).not.toContain('tata9');
     });

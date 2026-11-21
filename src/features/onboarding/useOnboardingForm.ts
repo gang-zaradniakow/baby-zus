@@ -2,9 +2,12 @@ import { useState } from 'react';
 
 import { toISODate } from '@/domain/dates/calendarDate';
 import type {
+  ChildrenCount,
   EmploymentId,
   ParentProfile,
+  ParentRole,
   ParentStage,
+  PartnerMode,
   SpecialSituationId,
 } from '@/domain/profile/ParentProfile';
 import { toggleEmployment } from '@/domain/profile/toggleEmployment';
@@ -18,14 +21,26 @@ export const ONBOARDING_STEPS = 4;
 export type OnboardingStep = 1 | 2 | 3 | 4;
 
 type Draft = {
+  role: ParentRole;
   stage: ParentStage | null;
   /** Tekst z pola daty — może być niepełny w trakcie wpisywania. */
   eventDateText: string;
+  childrenCount: ChildrenCount;
   employment: EmploymentId[];
+  partner: PartnerMode;
   special: SpecialSituationId[];
 };
 
-const EMPTY_DRAFT: Draft = { stage: null, eventDateText: '', employment: [], special: [] };
+// TODO(Faza 2): role/childrenCount/partner dostaną własne kroki ankiety — do tego czasu domyślne.
+const EMPTY_DRAFT: Draft = {
+  role: 'mama',
+  stage: null,
+  eventDateText: '',
+  childrenCount: 1,
+  employment: [],
+  partner: 'track',
+  special: [],
+};
 
 /** Stan kreatora onboardingu: bieżący krok, odpowiedzi i walidacja. Bez widoku. */
 export function useOnboardingForm(onComplete: (profile: ParentProfile) => void) {
@@ -61,9 +76,12 @@ export function useOnboardingForm(onComplete: (profile: ParentProfile) => void) 
   const finish = () => {
     if (!draft.stage || !eventDate.date) return;
     onComplete({
+      role: draft.role,
       stage: draft.stage,
       eventDate: toISODate(eventDate.date),
+      childrenCount: draft.childrenCount,
       employment: draft.employment,
+      partner: draft.partner,
       special: draft.special,
     });
   };

@@ -3,6 +3,7 @@ import type { OnboardingForm } from '../useOnboardingForm';
 import { ChildrenCountStep } from './ChildrenCountStep';
 import { EmploymentStep } from './EmploymentStep';
 import { EventDateStep } from './EventDateStep';
+import { PayerStep } from './PayerStep';
 import { RoleStep } from './RoleStep';
 import { SpecialSituationsStep } from './SpecialSituationsStep';
 import { StageStep } from './StageStep';
@@ -31,5 +32,7 @@ export function OnboardingStepContent({ form }: Props) {
       return <SpecialSituationsStep selected={form.draft.special} onToggle={form.toggleSpecialSituation} />;
     case 'employment':
       return <EmploymentStep selected={form.draft.employment} onToggle={form.toggleEmploymentOption} />;
+    case 'payer':
+      return <PayerStep selected={form.draft.payerSize} onSelect={form.selectPayerSize} />;
   }
 }

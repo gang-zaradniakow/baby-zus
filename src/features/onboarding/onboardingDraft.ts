@@ -1,6 +1,7 @@
 import type {
   ChildrenCount,
   EmploymentId,
+  PayerSize,
   ParentRole,
   ParentStage,
   PartnerMode,
@@ -15,6 +16,7 @@ export type OnboardingDraft = {
   eventDateText: string;
   childrenCount: ChildrenCount | null;
   employment: EmploymentId[];
+  payerSize: PayerSize | null;
   // TODO(Faza 2): partner dostanie własny krok ankiety — do tego czasu domyślnie 'track'.
   partner: PartnerMode;
   special: SpecialSituationId[];
@@ -26,6 +28,7 @@ export const EMPTY_DRAFT: OnboardingDraft = {
   eventDateText: '',
   childrenCount: null,
   employment: [],
+  payerSize: null,
   partner: 'track',
   special: [],
 };

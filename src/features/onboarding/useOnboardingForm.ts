@@ -7,8 +7,10 @@ import type {
   ParentProfile,
   ParentRole,
   ParentStage,
+  PayerSize,
   SpecialSituationId,
 } from '@/domain/profile/ParentProfile';
+import { hasExternalPayer } from '@/domain/profile/hasExternalPayer';
 import { toggleEmployment } from '@/domain/profile/toggleEmployment';
 import { validateEventDate } from '@/domain/profile/validateEventDate';
 import { useToday } from '@/hooks/useToday';
@@ -42,6 +44,7 @@ export function useOnboardingForm(onComplete: (profile: ParentProfile) => void) 
   const selectRole = (role: ParentRole) => pickAndAdvance({ role });
   const selectStage = (stage: ParentStage) => pickAndAdvance({ stage });
   const selectChildrenCount = (childrenCount: ChildrenCount) => pickAndAdvance({ childrenCount });
+  const selectPayerSize = (payerSize: PayerSize) => pickAndAdvance({ payerSize });
 
   const setEventDateText = (eventDateText: string) => setDraft((d) => ({ ...d, eventDateText }));
 
@@ -58,16 +61,20 @@ export function useOnboardingForm(onComplete: (profile: ParentProfile) => void) 
     count: draft.childrenCount !== null,
     special: true,
     employment: draft.employment.length > 0,
+    payer: draft.payerSize !== null,
   };
 
   const finish = () => {
     if (!draft.role || !draft.stage || !eventDate.date || !draft.childrenCount) return;
+    // Odpowiedź o płatniku liczy się tylko, gdy krok był widoczny (np. po zmianie etatu na firmę — nie).
+    const payerSize = hasExternalPayer(draft.employment) ? (draft.payerSize ?? undefined) : undefined;
     onComplete({
       role: draft.role,
       stage: draft.stage,
       eventDate: toISODate(eventDate.date),
       childrenCount: draft.childrenCount,
       employment: draft.employment,
+      ...(payerSize && { payerSize }),
       partner: draft.partner,
       special: draft.special,
     });
@@ -87,6 +94,7 @@ export function useOnboardingForm(onComplete: (profile: ParentProfile) => void) 
     selectRole,
     selectStage,
     selectChildrenCount,
+    selectPayerSize,
     setEventDateText,
     toggleEmploymentOption,
     toggleSpecialSituation,

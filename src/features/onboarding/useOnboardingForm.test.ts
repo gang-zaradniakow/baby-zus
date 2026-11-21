@@ -90,21 +90,57 @@ describe('useOnboardingForm', () => {
     });
   });
 
-  describe('krok „zatrudnienie”', () => {
-    it('jest ostatni i wymaga przynajmniej jednej formy', async () => {
-      const { result } = await renderForm();
+  describe('krok „zatrudnienie” i „płatnik”', () => {
+    /** Przechodzi ankietę aż do kroku zatrudnienia. */
+    async function goToEmployment(result: Form) {
       await goToDate(result);
       await act(() => result.current.setEventDateText(formatDate(birthDate)));
       await act(() => result.current.goNext());
       await act(() => result.current.selectChildrenCount(1));
       await act(() => result.current.goNext());
+    }
+
+    it('zatrudnienie wymaga przynajmniej jednej formy', async () => {
+      const { result } = await renderForm();
+      await goToEmployment(result);
 
       expect(result.current.step).toBe('employment');
-      expect(result.current.isLastStep).toBe(true);
       expect(result.current.canContinue).toBe(false);
 
-      await act(() => result.current.toggleEmploymentOption('uop'));
+      await act(() => result.current.toggleEmploymentOption('jdg'));
       expect(result.current.canContinue).toBe(true);
+      expect(result.current.isLastStep).toBe(true); // sama firma — bez pytania o płatnika
+    });
+
+    it('przy umowie o pracę pojawia się krok „płatnik”, a jego odpowiedź trafia do profilu', async () => {
+      const { result, onComplete } = await renderForm();
+      await goToEmployment(result);
+
+      await act(() => result.current.toggleEmploymentOption('uop'));
+      expect(result.current.isLastStep).toBe(false);
+      await act(() => result.current.goNext());
+
+      expect(result.current.step).toBe('payer');
+      expect(result.current.canContinue).toBe(false);
+      await act(() => result.current.selectPayerSize('maly'));
+      await act(() => result.current.finish());
+
+      expect(onComplete).toHaveBeenCalledWith(expect.objectContaining({ employment: ['uop'], payerSize: 'maly' }));
+    });
+
+    it('odpowiedź o płatniku znika z profilu, gdy etat zamieniono na firmę', async () => {
+      const { result, onComplete } = await renderForm();
+      await goToEmployment(result);
+      await act(() => result.current.toggleEmploymentOption('uop'));
+      await act(() => result.current.goNext());
+      await act(() => result.current.selectPayerSize('duzy'));
+      await act(() => result.current.goBack());
+
+      await act(() => result.current.toggleEmploymentOption('uop'));
+      await act(() => result.current.toggleEmploymentOption('jdg'));
+      await act(() => result.current.finish());
+
+      expect(onComplete).toHaveBeenCalledWith(expect.not.objectContaining({ payerSize: expect.anything() }));
     });
 
     it('„brak ubezpieczenia” wyklucza pozostałe formy', async () => {

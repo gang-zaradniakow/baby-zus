@@ -13,6 +13,10 @@ describe('createTimelineContext', () => {
     expect(createTimelineContext(makeProfile({ employment: ['uop', 'jdg'] })).benefitPayer).toBe('PRAC');
   });
 
+  it('przy płatniku do 20 osób zasiłek wypłaca ZUS', () => {
+    expect(createTimelineContext(makeProfile({ employment: ['uop'], payerSize: 'maly' })).benefitPayer).toBe('ZUS');
+  });
+
   it('samodzielne wychowywanie wyłącza śledzenie drugiego rodzica', () => {
     expect(createTimelineContext(makeProfile()).tracksPartner).toBe(true);
     expect(createTimelineContext(makeProfile({ partner: 'single' })).tracksPartner).toBe(false);

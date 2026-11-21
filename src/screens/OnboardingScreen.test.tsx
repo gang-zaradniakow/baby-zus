@@ -53,9 +53,14 @@ describe('OnboardingScreen — przejście przez ankietę', () => {
     await user.press(screen.getByRole('checkbox', { name: 'Wcześniak / dziecko w szpitalu' }));
     await user.press(screen.getByRole('button', { name: 'Dalej' }));
 
-    // Zatrudnienie — ostatni krok.
+    // Zatrudnienie — przy umowie o pracę dochodzi krok „Płatnik”.
     expect(screen.getByRole('header', { name: 'Forma zatrudnienia' })).toBeOnTheScreen();
     await user.press(screen.getByRole('checkbox', { name: 'Umowa o pracę' }));
+    await user.press(screen.getByRole('button', { name: 'Dalej' }));
+
+    // Płatnik — ostatni krok.
+    expect(screen.getByRole('progressbar', { name: 'Krok 7 z 7' })).toBeOnTheScreen();
+    await user.press(screen.getByRole('radio', { name: /21 osób lub więcej/ }));
     await user.press(screen.getByRole('button', { name: 'Zakończ i uruchom asystenta' }));
 
     expect(session().profile).toEqual({
@@ -64,6 +69,7 @@ describe('OnboardingScreen — przejście przez ankietę', () => {
       eventDate: toISODate(birthDate),
       childrenCount: 2,
       employment: ['uop'],
+      payerSize: 'duzy',
       partner: 'track',
       special: ['preterm'],
     });

@@ -1,6 +1,7 @@
 import { fromISODate } from '@/domain/dates/calendarDate';
 import { getInsuranceFlags, type InsuranceFlags } from '@/domain/profile/insuranceFlags';
 import type { ParentProfile } from '@/domain/profile/ParentProfile';
+import { resolveBenefitPayer } from '@/domain/profile/resolveBenefitPayer';
 
 import type { Institution } from './TimelineItem';
 
@@ -11,18 +12,15 @@ export type TimelineContext = {
   insurance: InsuranceFlags;
   /** Czy pokazujemy uprawnienia drugiego rodzica (tylko gdy rodzic tego chce). */
   tracksPartner: boolean;
-  /** Kto wypłaca zasiłek macierzyński: ZUS (sama firma) albo pracodawca. */
+  /** Kto wypłaca zasiłek macierzyński: ZUS (sama firma, mały płatnik) albo pracodawca. */
   benefitPayer: Institution;
 };
 
 export function createTimelineContext(profile: ParentProfile): TimelineContext {
-  const insurance = getInsuranceFlags(profile.employment);
-  const onlyBusiness = insurance.hasBusiness && !insurance.hasEmploymentContract;
-
   return {
     eventDate: fromISODate(profile.eventDate),
-    insurance,
+    insurance: getInsuranceFlags(profile.employment),
     tracksPartner: profile.partner === 'track',
-    benefitPayer: onlyBusiness ? 'ZUS' : 'PRAC',
+    benefitPayer: resolveBenefitPayer(profile),
   };
 }

@@ -39,4 +39,9 @@ describe('OnboardingFooter', () => {
 
     expect(form.finish).toHaveBeenCalledTimes(1);
   });
+
+  it('ostatni krok jednokrotnego wyboru: „Zakończ” jest, ale wyłączony bez odpowiedzi', async () => {
+    await render(<OnboardingFooter form={makeForm({ autoAdvances: true, isLastStep: true, canContinue: false })} />);
+    expect(screen.getByRole('button', { name: 'Zakończ i uruchom asystenta' })).toBeDisabled();
+  });
 });

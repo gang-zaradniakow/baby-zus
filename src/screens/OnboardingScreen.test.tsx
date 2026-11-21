@@ -25,7 +25,7 @@ describe('OnboardingScreen — przejście przez ankietę', () => {
   it('pierwszy krok: pytanie o rolę, bez przycisku „Wróć” i „Dalej”', async () => {
     await renderOnboarding();
 
-    expect(screen.getByRole('progressbar', { name: 'Krok 1 z 6' })).toBeOnTheScreen();
+    expect(screen.getByRole('progressbar', { name: 'Krok 1 z 7' })).toBeOnTheScreen();
     expect(screen.getByRole('header', { name: 'Kim jesteś dla dziecka?' })).toBeOnTheScreen();
     expect(screen.queryByRole('button', { name: 'Wróć' })).not.toBeOnTheScreen();
     expect(screen.queryByRole('button', { name: 'Dalej' })).not.toBeOnTheScreen();
@@ -40,7 +40,7 @@ describe('OnboardingScreen — przejście przez ankietę', () => {
     await user.press(screen.getByRole('radio', { name: /Maluch jest na świecie/ }));
 
     // Data urodzenia; „Dalej” odblokowuje się dopiero po poprawnej dacie.
-    expect(screen.getByRole('progressbar', { name: 'Krok 3 z 6' })).toBeOnTheScreen();
+    expect(screen.getByRole('progressbar', { name: 'Krok 3 z 7' })).toBeOnTheScreen();
     expect(screen.getByRole('button', { name: 'Dalej' })).toBeDisabled();
     await user.type(screen.getByLabelText('Data urodzenia'), formatDate(birthDate).replace(/\./g, ''));
     await user.press(screen.getByRole('button', { name: 'Dalej' }));
@@ -58,9 +58,12 @@ describe('OnboardingScreen — przejście przez ankietę', () => {
     await user.press(screen.getByRole('checkbox', { name: 'Umowa o pracę' }));
     await user.press(screen.getByRole('button', { name: 'Dalej' }));
 
-    // Płatnik — ostatni krok.
-    expect(screen.getByRole('progressbar', { name: 'Krok 7 z 7' })).toBeOnTheScreen();
+    // Płatnik.
     await user.press(screen.getByRole('radio', { name: /21 osób lub więcej/ }));
+
+    // Drugi rodzic — ostatni krok.
+    expect(screen.getByRole('progressbar', { name: 'Krok 8 z 8' })).toBeOnTheScreen();
+    await user.press(screen.getByRole('radio', { name: /Wychowuję dziecko sama/ }));
     await user.press(screen.getByRole('button', { name: 'Zakończ i uruchom asystenta' }));
 
     expect(session().profile).toEqual({
@@ -70,7 +73,7 @@ describe('OnboardingScreen — przejście przez ankietę', () => {
       childrenCount: 2,
       employment: ['uop'],
       payerSize: 'duzy',
-      partner: 'track',
+      partner: 'single',
       special: ['preterm'],
     });
   });
@@ -94,7 +97,7 @@ describe('OnboardingScreen — przejście przez ankietę', () => {
     await user.press(screen.getByRole('radio', { name: /Opiekunem/ }));
     await user.press(screen.getByRole('button', { name: 'Wróć' }));
 
-    expect(screen.getByRole('progressbar', { name: 'Krok 1 z 6' })).toBeOnTheScreen();
+    expect(screen.getByRole('progressbar', { name: 'Krok 1 z 7' })).toBeOnTheScreen();
     expect(screen.getByRole('radio', { name: /Opiekunem/ })).toBeChecked();
   });
 });

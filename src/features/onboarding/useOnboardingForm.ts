@@ -7,6 +7,7 @@ import type {
   ParentProfile,
   ParentRole,
   ParentStage,
+  PartnerMode,
   PayerSize,
   SpecialSituationId,
 } from '@/domain/profile/ParentProfile';
@@ -45,6 +46,7 @@ export function useOnboardingForm(onComplete: (profile: ParentProfile) => void) 
   const selectStage = (stage: ParentStage) => pickAndAdvance({ stage });
   const selectChildrenCount = (childrenCount: ChildrenCount) => pickAndAdvance({ childrenCount });
   const selectPayerSize = (payerSize: PayerSize) => pickAndAdvance({ payerSize });
+  const selectPartner = (partner: PartnerMode) => pickAndAdvance({ partner });
 
   const setEventDateText = (eventDateText: string) => setDraft((d) => ({ ...d, eventDateText }));
 
@@ -62,10 +64,11 @@ export function useOnboardingForm(onComplete: (profile: ParentProfile) => void) 
     special: true,
     employment: draft.employment.length > 0,
     payer: draft.payerSize !== null,
+    partner: draft.partner !== null,
   };
 
   const finish = () => {
-    if (!draft.role || !draft.stage || !eventDate.date || !draft.childrenCount) return;
+    if (!draft.role || !draft.stage || !eventDate.date || !draft.childrenCount || !draft.partner) return;
     // Odpowiedź o płatniku liczy się tylko, gdy krok był widoczny (np. po zmianie etatu na firmę — nie).
     const payerSize = hasExternalPayer(draft.employment) ? (draft.payerSize ?? undefined) : undefined;
     onComplete({
@@ -95,6 +98,7 @@ export function useOnboardingForm(onComplete: (profile: ParentProfile) => void) 
     selectStage,
     selectChildrenCount,
     selectPayerSize,
+    selectPartner,
     setEventDateText,
     toggleEmploymentOption,
     toggleSpecialSituation,

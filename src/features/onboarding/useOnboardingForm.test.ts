@@ -30,7 +30,7 @@ describe('useOnboardingForm', () => {
 
     expect(result.current.step).toBe('role');
     expect(result.current.stepNumber).toBe(1);
-    expect(result.current.totalSteps).toBe(6);
+    expect(result.current.totalSteps).toBe(7);
     expect(result.current.isFirstStep).toBe(true);
     expect(result.current.autoAdvances).toBe(true);
     expect(result.current.draft).toEqual(EMPTY_DRAFT);
@@ -109,7 +109,8 @@ describe('useOnboardingForm', () => {
 
       await act(() => result.current.toggleEmploymentOption('jdg'));
       expect(result.current.canContinue).toBe(true);
-      expect(result.current.isLastStep).toBe(true); // sama firma — bez pytania o płatnika
+      await act(() => result.current.goNext());
+      expect(result.current.step).toBe('partner'); // sama firma — bez pytania o płatnika
     });
 
     it('przy umowie o pracę pojawia się krok „płatnik”, a jego odpowiedź trafia do profilu', async () => {
@@ -123,9 +124,13 @@ describe('useOnboardingForm', () => {
       expect(result.current.step).toBe('payer');
       expect(result.current.canContinue).toBe(false);
       await act(() => result.current.selectPayerSize('maly'));
+      expect(result.current.step).toBe('partner');
+      await act(() => result.current.selectPartner('notrack'));
       await act(() => result.current.finish());
 
-      expect(onComplete).toHaveBeenCalledWith(expect.objectContaining({ employment: ['uop'], payerSize: 'maly' }));
+      expect(onComplete).toHaveBeenCalledWith(
+        expect.objectContaining({ employment: ['uop'], payerSize: 'maly', partner: 'notrack' }),
+      );
     });
 
     it('odpowiedź o płatniku znika z profilu, gdy etat zamieniono na firmę', async () => {
@@ -138,6 +143,7 @@ describe('useOnboardingForm', () => {
 
       await act(() => result.current.toggleEmploymentOption('uop'));
       await act(() => result.current.toggleEmploymentOption('jdg'));
+      await act(() => result.current.selectPartner('track'));
       await act(() => result.current.finish());
 
       expect(onComplete).toHaveBeenCalledWith(expect.not.objectContaining({ payerSize: expect.anything() }));
@@ -173,7 +179,8 @@ describe('useOnboardingForm', () => {
     for (let i = 0; i < 10; i += 1) {
       await act(() => result.current.goNext());
     }
-    expect(result.current.step).toBe('employment');
+    expect(result.current.step).toBe('partner');
+    expect(result.current.isLastStep).toBe(true);
   });
 
   it('finish przekazuje gotowy profil z datą w formacie ISO', async () => {
@@ -185,6 +192,7 @@ describe('useOnboardingForm', () => {
     await act(() => result.current.selectChildrenCount(3));
     await act(() => result.current.toggleSpecialSituation('abroad'));
     await act(() => result.current.toggleEmploymentOption('jdg'));
+    await act(() => result.current.selectPartner('single'));
     await act(() => result.current.finish());
 
     expect(onComplete).toHaveBeenCalledWith({
@@ -193,7 +201,7 @@ describe('useOnboardingForm', () => {
       eventDate: toISODate(birthDate),
       childrenCount: 3,
       employment: ['jdg'],
-      partner: 'track',
+      partner: 'single',
       special: ['abroad'],
     });
   });
@@ -207,6 +215,8 @@ describe('useOnboardingForm', () => {
     await act(() => result.current.finish());
     await act(() => result.current.setEventDateText(formatDate(dueDate)));
     await act(() => result.current.finish()); // wciąż brak liczby dzieci
+    await act(() => result.current.selectChildrenCount(1));
+    await act(() => result.current.finish()); // wciąż brak odpowiedzi o drugim rodzicu
 
     expect(onComplete).not.toHaveBeenCalled();
   });

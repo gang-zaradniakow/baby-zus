@@ -2,7 +2,7 @@ import { hasExternalPayer } from '@/domain/profile/hasExternalPayer';
 
 import type { OnboardingDraft } from './onboardingDraft';
 
-export type OnboardingStepId = 'role' | 'stage' | 'date' | 'count' | 'special' | 'employment' | 'payer';
+export type OnboardingStepId = 'role' | 'stage' | 'date' | 'count' | 'special' | 'employment' | 'payer' | 'partner';
 
 type StepRule = {
   id: OnboardingStepId;
@@ -21,6 +21,7 @@ const STEP_RULES: readonly StepRule[] = [
   { id: 'special' },
   { id: 'employment' },
   { id: 'payer', autoAdvance: true, showIf: (draft) => hasExternalPayer(draft.employment) },
+  { id: 'partner', autoAdvance: true },
 ];
 
 /** Kroki, które ten rodzic powinien zobaczyć przy obecnych odpowiedziach. */

@@ -19,6 +19,8 @@ export const typography = {
   input: { fontSize: 20, fontWeight: '700', letterSpacing: 2 },
   navLabel: { fontSize: 10, fontWeight: '700' },
   navLabelActive: { fontSize: 10, fontWeight: '900' },
+  /** Tylko wewnątrz innego tekstu (pogrubienie w akapicie) — rozmiar dziedziczy po rodzicu. */
+  strong: { fontWeight: '800' },
 } satisfies Record<string, TextStyle>;
 
 export type TypographyVariant = keyof typeof typography;

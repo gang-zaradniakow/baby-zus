@@ -1,0 +1,537 @@
+[
+ {
+  "q": "Co potrafisz?",
+  "kind": "kb",
+  "id": "hello",
+  "related": []
+ },
+ {
+  "q": "Ile dostanę na L4 w ciąży?",
+  "kind": "kb",
+  "id": "l4-b",
+  "related": [
+   "mac-ile",
+   "l4-jdg",
+   "zwzm"
+  ]
+ },
+ {
+  "q": "Co oznacza kod 1 i kod 2 na zwolnieniu?",
+  "kind": "kb",
+  "id": "l4-kody",
+  "related": [
+   "ojcowski"
+  ]
+ },
+ {
+  "q": "Czy na L4 mogę odpisać na maila albo wystawić fakturę?",
+  "kind": "kb",
+  "id": "l4-praca",
+  "related": [
+   "l4-b",
+   "l4-jdg",
+   "odpis"
+  ]
+ },
+ {
+  "q": "Kto płaci za moje zwolnienie — pracodawca czy ZUS?",
+  "kind": "kb",
+  "id": "l4-kto",
+  "related": []
+ },
+ {
+  "q": "Mam firmę — czy dostanę zasiłek chorobowy w ciąży?",
+  "kind": "kb",
+  "id": "l4-b",
+  "related": [
+   "l4-jdg",
+   "mac-ile",
+   "wyczekiwanie"
+  ]
+ },
+ {
+  "q": "Ile trwa urlop macierzyński?",
+  "kind": "kb",
+  "id": "mac-wymiar",
+  "related": [
+   "rodz",
+   "jdg-zua",
+   "przejecie"
+  ]
+ },
+ {
+  "q": "Czy mogę zacząć macierzyński przed porodem?",
+  "kind": "kb",
+  "id": "mac-przed",
+  "related": [
+   "mac-wymiar",
+   "pozor",
+   "jdg-zua"
+  ]
+ },
+ {
+  "q": "Co lepiej wybrać: 81,5% czy 100% + 70%?",
+  "kind": "kb",
+  "id": "mac-81",
+  "related": []
+ },
+ {
+  "q": "Do kiedy muszę złożyć wniosek o 81,5%?",
+  "kind": "kb",
+  "id": "mac-81",
+  "related": [
+   "mac-21",
+   "mac-gdzie"
+  ]
+ },
+ {
+  "q": "Ile wyniesie mój zasiłek macierzyński?",
+  "kind": "kb",
+  "id": "mac-wymiar",
+  "related": [
+   "mac-gdzie",
+   "jdg-zua",
+   "mac-min"
+  ]
+ },
+ {
+  "q": "Jaki jest najniższy zasiłek macierzyński?",
+  "kind": "kb",
+  "id": "mac-min",
+  "related": [
+   "mac-wymiar",
+   "mac-gdzie",
+   "jdg-zua"
+  ]
+ },
+ {
+  "q": "Gdzie złożyć wniosek o zasiłek macierzyński?",
+  "kind": "kb",
+  "id": "mac-gdzie",
+  "related": [
+   "mac-wymiar",
+   "mac-21",
+   "jdg-zua"
+  ]
+ },
+ {
+  "q": "Czy po zasiłku macierzyńskim muszę znowu zgłosić się do chorobowego?",
+  "kind": "kb",
+  "id": "jdg-zua",
+  "related": [
+   "mac-wymiar",
+   "wyczekiwanie"
+  ]
+ },
+ {
+  "q": "Mam zaległość w składkach — czy dostanę zasiłek?",
+  "kind": "kb",
+  "id": "jdg-dlug",
+  "related": [
+   "mac-ile",
+   "mac-gdzie",
+   "pit"
+  ]
+ },
+ {
+  "q": "Mam ulgę na start — czy dostanę macierzyński?",
+  "kind": "kb",
+  "id": "ulga",
+  "related": [
+   "mac-wymiar",
+   "jdg-zua",
+   "mac-ile"
+  ]
+ },
+ {
+  "q": "Pracuję na umowie zlecenia — czy dostanę macierzyński?",
+  "kind": "kb",
+  "id": "zlecenie",
+  "related": [
+   "mac-wymiar",
+   "jdg-zua",
+   "matka-nieub"
+  ]
+ },
+ {
+  "q": "Nie pracuję albo studiuję — co mi przysługuje?",
+  "kind": "kb",
+  "id": "brak",
+  "related": []
+ },
+ {
+  "q": "Ile trwa urlop rodzicielski i jak go podzielić?",
+  "kind": "kb",
+  "id": "rodz",
+  "related": [
+   "tata9",
+   "mac-wymiar"
+  ]
+ },
+ {
+  "q": "Czy mogę wziąć rodzicielski w 6 częściach?",
+  "kind": "kb",
+  "id": "rodz6",
+  "related": [
+   "rodz",
+   "mac-przed",
+   "przedawnienie"
+  ]
+ },
+ {
+  "q": "Czy mogę pracować na urlopie rodzicielskim?",
+  "kind": "kb",
+  "id": "rodz",
+  "related": [
+   "tata9",
+   "rodz-praca"
+  ]
+ },
+ {
+  "q": "Ile urlopu rodzicielskiego ma tata?",
+  "kind": "kb",
+  "id": "tata9",
+  "related": [
+   "rodz"
+  ]
+ },
+ {
+  "q": "Urlop ojcowski — ile i do kiedy?",
+  "kind": "kb",
+  "id": "ojcowski",
+  "related": [
+   "rodz"
+  ]
+ },
+ {
+  "q": "Czy tata może przejąć część mojego macierzyńskiego?",
+  "kind": "kb",
+  "id": "przejecie",
+  "related": [
+   "tata9",
+   "rodz6",
+   "mac-wymiar"
+  ]
+ },
+ {
+  "q": "Mama jest w szpitalu — czy tata przejmie opiekę i zasiłek?",
+  "kind": "kb",
+  "id": "szpital",
+  "related": [
+   "tata9",
+   "matka-nieub",
+   "mac-gdzie"
+  ]
+ },
+ {
+  "q": "Mama nie jest ubezpieczona — czy tata dostanie zasiłek?",
+  "kind": "kb",
+  "id": "matka-nieub",
+  "related": [
+   "tata9",
+   "mac-ile",
+   "mac-gdzie"
+  ]
+ },
+ {
+  "q": "Moje dziecko jest wcześniakiem — czy przysługuje dodatkowy urlop?",
+  "kind": "kb",
+  "id": "wczesniak",
+  "related": [
+   "rodz",
+   "opiekunczy",
+   "smierc"
+  ]
+ },
+ {
+  "q": "Adoptujemy dziecko / jesteśmy rodziną zastępczą — co nam przysługuje?",
+  "kind": "kb",
+  "id": "adopcja",
+  "related": [
+   "opiekunczy",
+   "smierc",
+   "wczesniak"
+  ]
+ },
+ {
+  "q": "Dziecko ma zaświadczenie „Za życiem” — czy urlop jest dłuższy?",
+  "kind": "kb",
+  "id": "zazyciem",
+  "related": [
+   "rodz",
+   "opiekunczy",
+   "smierc"
+  ]
+ },
+ {
+  "q": "Urodziły się bliźnięta — ile trwają urlopy?",
+  "kind": "kb",
+  "id": "blizneta",
+  "related": []
+ },
+ {
+  "q": "Straciłam ciążę — co mi przysługuje?",
+  "kind": "kb",
+  "id": "strata",
+  "related": []
+ },
+ {
+  "q": "Moje dziecko zmarło — co z zasiłkiem?",
+  "kind": "kb",
+  "id": "smierc",
+  "related": [
+   "opiekunczy",
+   "jdg-zua"
+  ]
+ },
+ {
+  "q": "Ile wynosi zasiłek pogrzebowy i jak go dostać?",
+  "kind": "kb",
+  "id": "pogrzebowy",
+  "related": [
+   "mac-gdzie"
+  ]
+ },
+ {
+  "q": "Dziecko zachorowało — czy dostanę zasiłek opiekuńczy?",
+  "kind": "kb",
+  "id": "opiekunczy",
+  "related": [
+   "mac-ile",
+   "mac-gdzie",
+   "smierc"
+  ]
+ },
+ {
+  "q": "Jak działa urlop wychowawczy?",
+  "kind": "kb",
+  "id": "wychowawczy",
+  "related": [
+   "rodz"
+  ]
+ },
+ {
+  "q": "Czy pracodawca może mnie zwolnić w ciąży?",
+  "kind": "kb",
+  "id": "ochrona",
+  "related": [
+   "l4-b",
+   "zwzm"
+  ]
+ },
+ {
+  "q": "Mój pracodawca ogłosił likwidację — co z zasiłkiem?",
+  "kind": "kb",
+  "id": "likwidacja",
+  "related": [
+   "jdg-zua"
+  ]
+ },
+ {
+  "q": "Czy mogę zatrudnić się tuż przed porodem, żeby dostać zasiłek?",
+  "kind": "kb",
+  "id": "pozor",
+  "related": [
+   "mac-przed",
+   "mac-gdzie",
+   "przedawnienie"
+  ]
+ },
+ {
+  "q": "Do kiedy mogę złożyć wniosek o zasiłek?",
+  "kind": "kb",
+  "id": "mac-gdzie",
+  "related": [
+   "mac-21",
+   "mac-min",
+   "przedawnienie"
+  ]
+ },
+ {
+  "q": "Mam 17 lat i jestem w ciąży — czy mogę sama złożyć wniosek?",
+  "kind": "kb",
+  "id": "maloletnia",
+  "related": [
+   "mac-21",
+   "mac-gdzie",
+   "l4-b"
+  ]
+ },
+ {
+  "q": "Jak porozmawiać z człowiekiem z ZUS?",
+  "kind": "kb",
+  "id": "kontakt",
+  "related": []
+ },
+ {
+  "q": "Czy aplikacja działa bez internetu?",
+  "kind": "kb",
+  "id": "offline",
+  "related": []
+ },
+ {
+  "q": "Co oznaczają skróty ZAM, ZAS-53, Z-3, Z-15A?",
+  "kind": "kb",
+  "id": "formularze",
+  "related": [
+   "opiekunczy"
+  ]
+ },
+ {
+  "q": "ZUS wszczął postępowanie wyjaśniające w mojej firmie — co przygotować?",
+  "kind": "kb",
+  "id": "kontrola",
+  "related": []
+ },
+ {
+  "q": "Czy od zasiłku płacę podatek i składki?",
+  "kind": "kb",
+  "id": "pit",
+  "related": [
+   "jdg-zua"
+  ]
+ },
+ {
+  "q": "Co się dzieje z danymi, które wpisuję w czacie?",
+  "kind": "kb",
+  "id": "prywatnosc",
+  "related": []
+ },
+ {
+  "q": "Co po 270 dniach zwolnienia w ciąży?",
+  "kind": "kb",
+  "id": "l4-b",
+  "related": [
+   "rehab",
+   "zwzm"
+  ]
+ },
+ {
+  "q": "Straciłam pracę w ciąży — czy coś mi przysługuje?",
+  "kind": "kb",
+  "id": "zwzm",
+  "related": [
+   "l4-b",
+   "strata"
+  ]
+ },
+ {
+  "q": "Od kiedy mam prawo do zasiłku chorobowego?",
+  "kind": "kb",
+  "id": "wyczekiwanie",
+  "related": [
+   "jdg-zua"
+  ]
+ },
+ {
+  "q": "Gdzie szukać wsparcia po stracie dziecka albo przy wcześniaku?",
+  "kind": "kb",
+  "id": "organizacje",
+  "related": [
+   "wczesniak",
+   "opiekunczy",
+   "smierc"
+  ]
+ },
+ {
+  "q": "Jak zamówić odpis aktu urodzenia?",
+  "kind": "kb",
+  "id": "odpis",
+  "related": [
+   "mac-gdzie"
+  ]
+ },
+ {
+  "q": "ile dostanę na L4 w ciąży",
+  "kind": "kb",
+  "id": "l4-b",
+  "related": [
+   "mac-ile",
+   "l4-jdg",
+   "zwzm"
+  ]
+ },
+ {
+  "q": "kod 1 na zwolnieniu",
+  "kind": "kb",
+  "id": "l4-kody",
+  "related": []
+ },
+ {
+  "q": "czy mogę wystawić fakturę na L4",
+  "kind": "kb",
+  "id": "l4-praca",
+  "related": [
+   "l4-b",
+   "l4-jdg"
+  ]
+ },
+ {
+  "q": "urlop ojcowski ile tygodni",
+  "kind": "kb",
+  "id": "ojcowski",
+  "related": [
+   "mac-wymiar",
+   "rodz",
+   "tata9"
+  ]
+ },
+ {
+  "q": "co to jest 81,5%",
+  "kind": "kb",
+  "id": "mac-81",
+  "related": []
+ },
+ {
+  "q": "zasiłek pogrzebowy",
+  "kind": "kb",
+  "id": "pogrzebowy",
+  "related": [
+   "mac-gdzie"
+  ]
+ },
+ {
+  "q": "straciłam ciążę",
+  "kind": "kb",
+  "id": "strata",
+  "related": []
+ },
+ {
+  "q": "jak długo trwa urlop rodzicielski",
+  "kind": "kb",
+  "id": "rodz",
+  "related": [
+   "mac-wymiar",
+   "tata9"
+  ]
+ },
+ {
+  "q": "bliźnięta macierzyński",
+  "kind": "kb",
+  "id": "mac-wymiar",
+  "related": [
+   "jdg-zua",
+   "blizneta"
+  ]
+ },
+ {
+  "q": "Z-3",
+  "kind": "fallback",
+  "id": null,
+  "related": []
+ },
+ {
+  "q": "xyz qwerty",
+  "kind": "fallback",
+  "id": null,
+  "related": []
+ },
+ {
+  "q": "cześć",
+  "kind": "kb",
+  "id": "rodz6",
+  "related": [
+   "hello"
+  ]
+ }
+]

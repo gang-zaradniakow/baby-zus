@@ -1,15 +1,12 @@
 import { day } from '@/testing/dates';
+import { makeProfile } from '@/testing/profiles';
 
 import { describeStage } from './describeStage';
 import type { ParentProfile } from './ParentProfile';
 
 const today = day(2026, 11, 21);
-const profile = (stage: ParentProfile['stage'], eventDate: string): ParentProfile => ({
-  stage,
-  eventDate,
-  employment: ['uop'],
-  special: [],
-});
+const profile = (stage: ParentProfile['stage'], eventDate: string): ParentProfile =>
+  makeProfile({ stage, eventDate });
 
 describe('describeStage', () => {
   it('ciąża: tydzień i termin', () => {

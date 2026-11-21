@@ -12,7 +12,7 @@ type Props = {
   onSelect: (stage: ParentStage) => void;
 };
 
-/** Krok 1: etap rodzicielstwa. Wybór od razu przechodzi dalej. */
+/** Krok „Etap”: etap rodzicielstwa. Wybór od razu przechodzi dalej. */
 export function StageStep({ selected, onSelect }: Props) {
   return (
     <View>

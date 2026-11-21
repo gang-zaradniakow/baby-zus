@@ -2,45 +2,59 @@ import { useState } from 'react';
 
 import { toISODate } from '@/domain/dates/calendarDate';
 import type {
+  ChildrenCount,
   EmploymentId,
   ParentProfile,
+  ParentRole,
   ParentStage,
+  PartnerMode,
+  PayerSize,
   SpecialSituationId,
 } from '@/domain/profile/ParentProfile';
+import { hasExternalPayer } from '@/domain/profile/hasExternalPayer';
+import { validateChildBirthDate } from '@/domain/profile/validateChildBirthDate';
 import { toggleEmployment } from '@/domain/profile/toggleEmployment';
 import { validateEventDate } from '@/domain/profile/validateEventDate';
 import { useToday } from '@/hooks/useToday';
 import { toggleInList } from '@/utils/toggleInList';
 
-/** Kolejność kroków: 1 etap → 2 data → 3 zatrudnienie → 4 sytuacje szczególne. */
-export const ONBOARDING_STEPS = 4;
+import { EMPTY_DRAFT, type OnboardingDraft } from './onboardingDraft';
+import { getVisibleSteps, isAutoAdvanceStep, type OnboardingStepId } from './onboardingSteps';
 
-export type OnboardingStep = 1 | 2 | 3 | 4;
-
-type Draft = {
-  stage: ParentStage | null;
-  /** Tekst z pola daty — może być niepełny w trakcie wpisywania. */
-  eventDateText: string;
-  employment: EmploymentId[];
-  special: SpecialSituationId[];
-};
-
-const EMPTY_DRAFT: Draft = { stage: null, eventDateText: '', employment: [], special: [] };
-
-/** Stan kreatora onboardingu: bieżący krok, odpowiedzi i walidacja. Bez widoku. */
+/** Stan ankiety: bieżący krok, odpowiedzi i walidacja. Bez widoku. */
 export function useOnboardingForm(onComplete: (profile: ParentProfile) => void) {
   const today = useToday();
-  const [step, setStep] = useState<OnboardingStep>(1);
-  const [draft, setDraft] = useState<Draft>(EMPTY_DRAFT);
+  const [stepIndex, setStepIndex] = useState(0);
+  const [draft, setDraft] = useState<OnboardingDraft>(EMPTY_DRAFT);
+
+  const steps = getVisibleSteps(draft);
+  const lastIndex = steps.length - 1;
+  const index = Math.min(stepIndex, lastIndex);
+  const step = steps[index];
 
   const eventDate = validateEventDate(draft.stage, draft.eventDateText, today);
+  const childBirthDate = validateChildBirthDate(draft.childBirthDateText, eventDate.date, today);
+  const isAdoption = draft.stage === 'adopcja';
 
-  const selectStage = (stage: ParentStage) => {
-    setDraft((d) => ({ ...d, stage }));
-    setStep(2);
+  const goBack = () => setStepIndex(Math.max(index - 1, 0));
+  const goNext = () => setStepIndex(Math.min(index + 1, lastIndex));
+
+  /** Zapisuje odpowiedź z kroku jednokrotnego wyboru i od razu przechodzi dalej. */
+  const pickAndAdvance = (patch: Partial<OnboardingDraft>) => {
+    setDraft((d) => ({ ...d, ...patch }));
+    setStepIndex(index + 1);
   };
 
+  const selectRole = (role: ParentRole) => pickAndAdvance({ role });
+  const selectStage = (stage: ParentStage) => pickAndAdvance({ stage });
+  const selectChildrenCount = (childrenCount: ChildrenCount) => pickAndAdvance({ childrenCount });
+  const selectPayerSize = (payerSize: PayerSize) => pickAndAdvance({ payerSize });
+  const selectPartner = (partner: PartnerMode) => pickAndAdvance({ partner });
+
   const setEventDateText = (eventDateText: string) => setDraft((d) => ({ ...d, eventDateText }));
+  const setChildBirthDateText = (childBirthDateText: string) => setDraft((d) => ({ ...d, childBirthDateText }));
+  const setName = (name: string) => setDraft((d) => ({ ...d, name }));
+  const setChildName = (childName: string) => setDraft((d) => ({ ...d, childName }));
 
   const toggleEmploymentOption = (id: EmploymentId) =>
     setDraft((d) => ({ ...d, employment: toggleEmployment(d.employment, id) }));
@@ -48,33 +62,63 @@ export function useOnboardingForm(onComplete: (profile: ParentProfile) => void) 
   const toggleSpecialSituation = (id: SpecialSituationId) =>
     setDraft((d) => ({ ...d, special: toggleInList(d.special, id) }));
 
-  const goBack = () => setStep((s) => (s > 1 ? ((s - 1) as OnboardingStep) : s));
-  const goNext = () => setStep((s) => (s < ONBOARDING_STEPS ? ((s + 1) as OnboardingStep) : s));
-
-  const canContinueByStep: Record<OnboardingStep, boolean> = {
-    1: draft.stage !== null,
-    2: eventDate.date !== null,
-    3: draft.employment.length > 0,
-    4: true,
+  const canContinueByStep: Record<OnboardingStepId, boolean> = {
+    role: draft.role !== null,
+    stage: draft.stage !== null,
+    date: eventDate.date !== null,
+    childBirthDate: childBirthDate.date !== null,
+    count: draft.childrenCount !== null,
+    special: true,
+    employment: draft.employment.length > 0,
+    payer: draft.payerSize !== null,
+    partner: draft.partner !== null,
+    names: true,
   };
 
   const finish = () => {
-    if (!draft.stage || !eventDate.date) return;
+    if (!draft.role || !draft.stage || !eventDate.date || !draft.childrenCount || !draft.partner) return;
+    if (isAdoption && !childBirthDate.date) return;
+    // Odpowiedź o płatniku liczy się tylko, gdy krok był widoczny (np. po zmianie etatu na firmę — nie).
+    const payerSize = hasExternalPayer(draft.employment) ? (draft.payerSize ?? undefined) : undefined;
+    const name = draft.name.trim();
+    // W ciąży nie pytamy o imię dziecka — ignorujemy to, co zostało po zmianie etapu.
+    const childName = draft.stage === 'ciaza' ? '' : draft.childName.trim();
     onComplete({
+      role: draft.role,
       stage: draft.stage,
       eventDate: toISODate(eventDate.date),
+      ...(isAdoption && childBirthDate.date && { childBirthDate: toISODate(childBirthDate.date) }),
+      childrenCount: draft.childrenCount,
       employment: draft.employment,
+      ...(payerSize && { payerSize }),
+      partner: draft.partner,
       special: draft.special,
+      ...(name && { name }),
+      ...(childName && { childName }),
     });
   };
 
   return {
     step,
+    /** Numer kroku od 1 — do paska postępu. */
+    stepNumber: index + 1,
+    totalSteps: steps.length,
+    isFirstStep: index === 0,
+    isLastStep: index === lastIndex,
+    autoAdvances: isAutoAdvanceStep(step),
     draft,
     eventDateError: eventDate.error,
+    childBirthDateError: childBirthDate.error,
     canContinue: canContinueByStep[step],
+    selectRole,
     selectStage,
+    selectChildrenCount,
+    selectPayerSize,
+    selectPartner,
     setEventDateText,
+    setChildBirthDateText,
+    setName,
+    setChildName,
     toggleEmploymentOption,
     toggleSpecialSituation,
     goBack,

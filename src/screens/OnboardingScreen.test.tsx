@@ -21,44 +21,64 @@ async function renderOnboarding() {
   return probe;
 }
 
-describe('OnboardingScreen — przejście przez kreator', () => {
-  it('krok 1: pytanie o etap, bez przycisku „Wróć” i „Dalej”', async () => {
+describe('OnboardingScreen — przejście przez ankietę', () => {
+  it('pierwszy krok: pytanie o rolę, bez przycisku „Wróć” i „Dalej”', async () => {
     await renderOnboarding();
 
-    expect(screen.getByRole('progressbar', { name: 'Krok 1 z 4' })).toBeOnTheScreen();
-    expect(screen.getByRole('header', { name: 'Na jakim etapie teraz jesteś?' })).toBeOnTheScreen();
+    expect(screen.getByRole('progressbar', { name: 'Krok 1 z 8' })).toBeOnTheScreen();
+    expect(screen.getByRole('header', { name: 'Kim jesteś dla dziecka?' })).toBeOnTheScreen();
     expect(screen.queryByRole('button', { name: 'Wróć' })).not.toBeOnTheScreen();
     expect(screen.queryByRole('button', { name: 'Dalej' })).not.toBeOnTheScreen();
   });
 
-  it('cały kreator zapisuje profil rodzica w sesji', async () => {
+  it('cała ankieta zapisuje profil rodzica w sesji', async () => {
     const user = userEvent.setup();
     const { session } = await renderOnboarding();
 
-    // Krok 1 — wybór karty od razu przechodzi dalej.
+    // Rola i etap — wybór karty od razu przechodzi dalej.
+    await user.press(screen.getByRole('radio', { name: /Tatą/ }));
     await user.press(screen.getByRole('radio', { name: /Maluch jest na świecie/ }));
 
-    // Krok 2 — data urodzenia; „Dalej” odblokowuje się dopiero po poprawnej dacie.
-    expect(screen.getByRole('progressbar', { name: 'Krok 2 z 4' })).toBeOnTheScreen();
+    // Data urodzenia; „Dalej” odblokowuje się dopiero po poprawnej dacie.
+    expect(screen.getByRole('progressbar', { name: 'Krok 3 z 8' })).toBeOnTheScreen();
     expect(screen.getByRole('button', { name: 'Dalej' })).toBeDisabled();
     await user.type(screen.getByLabelText('Data urodzenia'), formatDate(birthDate).replace(/\./g, ''));
     await user.press(screen.getByRole('button', { name: 'Dalej' }));
 
-    // Krok 3 — zatrudnienie.
+    // Liczba dzieci.
+    await user.press(screen.getByRole('radio', { name: /Bliźnięta/ }));
+
+    // Sytuacje szczególne (opcjonalne).
+    expect(screen.getByRole('header', { name: 'Sytuacje szczególne' })).toBeOnTheScreen();
+    await user.press(screen.getByRole('checkbox', { name: 'Wcześniak / dziecko w szpitalu' }));
+    await user.press(screen.getByRole('button', { name: 'Dalej' }));
+
+    // Zatrudnienie — przy umowie o pracę dochodzi krok „Płatnik”.
     expect(screen.getByRole('header', { name: 'Forma zatrudnienia' })).toBeOnTheScreen();
     await user.press(screen.getByRole('checkbox', { name: 'Umowa o pracę' }));
     await user.press(screen.getByRole('button', { name: 'Dalej' }));
 
-    // Krok 4 — sytuacje szczególne (opcjonalne) i zakończenie.
-    expect(screen.getByRole('header', { name: 'Sytuacje szczególne' })).toBeOnTheScreen();
-    await user.press(screen.getByRole('checkbox', { name: 'Samodzielne wychowywanie' }));
+    // Płatnik.
+    await user.press(screen.getByRole('radio', { name: /21 osób lub więcej/ }));
+
+    // Drugi rodzic.
+    await user.press(screen.getByRole('radio', { name: /Wychowuję dziecko sama/ }));
+
+    // Imiona (opcjonalne) — ostatni krok.
+    expect(screen.getByRole('progressbar', { name: 'Krok 9 z 9' })).toBeOnTheScreen();
+    await user.type(screen.getByLabelText('Twoje imię'), 'Marek');
     await user.press(screen.getByRole('button', { name: 'Zakończ i uruchom asystenta' }));
 
     expect(session().profile).toEqual({
+      role: 'tata',
       stage: 'dziecko',
       eventDate: toISODate(birthDate),
+      childrenCount: 2,
       employment: ['uop'],
-      special: ['single'],
+      payerSize: 'duzy',
+      partner: 'single',
+      special: ['preterm'],
+      name: 'Marek',
     });
   });
 
@@ -66,6 +86,7 @@ describe('OnboardingScreen — przejście przez kreator', () => {
     const user = userEvent.setup();
     await renderOnboarding();
 
+    await user.press(screen.getByRole('radio', { name: /Mamą/ }));
     await user.press(screen.getByRole('radio', { name: /Jestem w ciąży/ }));
     await user.type(screen.getByLabelText('Przewidywany termin porodu'), formatDate(birthDate).replace(/\./g, ''));
 
@@ -77,10 +98,10 @@ describe('OnboardingScreen — przejście przez kreator', () => {
     const user = userEvent.setup();
     await renderOnboarding();
 
-    await user.press(screen.getByRole('radio', { name: /Przyjęliśmy dziecko/ }));
+    await user.press(screen.getByRole('radio', { name: /Opiekunem/ }));
     await user.press(screen.getByRole('button', { name: 'Wróć' }));
 
-    expect(screen.getByRole('progressbar', { name: 'Krok 1 z 4' })).toBeOnTheScreen();
-    expect(screen.getByRole('radio', { name: /Przyjęliśmy dziecko/ })).toBeChecked();
+    expect(screen.getByRole('progressbar', { name: 'Krok 1 z 8' })).toBeOnTheScreen();
+    expect(screen.getByRole('radio', { name: /Opiekunem/ })).toBeChecked();
   });
 });

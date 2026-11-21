@@ -12,7 +12,7 @@ type Props = {
   onToggle: (id: SpecialSituationId) => void;
 };
 
-/** Krok 3: sytuacje szczególne (opcjonalne — można niczego nie zaznaczać). */
+/** Krok „Sytuacje szczególne” (opcjonalne — można niczego nie zaznaczać). */
 export function SpecialSituationsStep({ selected, onToggle }: Props) {
   return (
     <View>

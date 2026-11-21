@@ -80,4 +80,31 @@ describe('SessionProvider + useSession', () => {
     expect(result.current.isSignedIn).toBe(false);
     expect(() => result.current.signIn()).not.toThrow();
   });
+  it('applyPersona: profil przykładowej osoby, logowanie i czysty postęp', async () => {
+    const { result } = await renderSession();
+    const profile = makeProfile({ name: 'Anna' });
+
+    await act(() => result.current.toggleTask('stare-zadanie'));
+    await act(() => result.current.applyPersona('anna', profile));
+
+    expect(result.current).toMatchObject({ isSignedIn: true, personaId: 'anna', profile });
+    expect(result.current.completedTaskIds.size).toBe(0);
+  });
+
+  it('pisma: przeczytane i przeniesione do archiwum; nowy profil czyści skrzynkę', async () => {
+    const { result } = await renderSession();
+
+    await act(() => result.current.markDocumentRead('pismo-1'));
+    await act(() => result.current.toggleDocumentArchived('pismo-1'));
+    expect(result.current.readDocumentIds.has('pismo-1')).toBe(true);
+    expect(result.current.movedDocumentIds.has('pismo-1')).toBe(true);
+
+    await act(() => result.current.toggleDocumentArchived('pismo-1'));
+    expect(result.current.movedDocumentIds.has('pismo-1')).toBe(false);
+
+    await act(() => result.current.markDocumentRead('pismo-2'));
+    await act(() => result.current.completeOnboarding(makeProfile()));
+    expect(result.current.readDocumentIds.size).toBe(0);
+    expect(result.current.personaId).toBeNull();
+  });
 });

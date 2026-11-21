@@ -6,4 +6,6 @@ export { typography, type TypographyVariant } from './typography';
 export { shadows } from './shadows';
 export { resolveTone, type Tone, type ToneColors } from './tone';
 export { ThemeProvider } from './ThemeProvider';
+export type { TextScale, ThemeMode } from './ThemeContext';
+export { scaleTextStyle } from './scaleTextStyle';
 export { useTheme } from './useTheme';

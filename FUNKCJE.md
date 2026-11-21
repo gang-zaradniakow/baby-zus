@@ -26,7 +26,7 @@ rework nie zostanie zrobiony.
 |---|---|---|---|
 | 0 | — | Porządki: usunięcie `feat/ekran-swiadczenia`, ten wpis w FUNKCJE.md | ✅ |
 | 1 | `feat/guest-mode` | Nowe taby, tryb gościa (profil bez logowania), RootNavigator bez wymuszonych strażników | ✅ |
-| 2 | `feat/guest-survey` | Ankieta gościa — 9 kroków (rola, etap, data, liczba dzieci, sytuacje specjalne, zatrudnienie, płatnik, partner, imiona) | ⏳ |
+| 2 | `feat/guest-survey` | Ankieta gościa — do 9 kroków (rola, etap, data, [data urodzenia przy adopcji], liczba dzieci, sytuacje specjalne, zatrudnienie, [płatnik], drugi rodzic, imiona) | ✅ |
 | 3 | `feat/knowledge-base` | Zakładka Wiedza — 7 rozdziałów, ~20 artykułów Poradnika ZUS, wyszukiwarka | ⏳ |
 | 4 | `feat/calculator` | Zintegrowany kalkulator zasiłku (zbieg tytułów, Z-3, adopcja, „za życiem”, wcześniak, praca na urlopie) | ⏳ |
 | 5 | `feat/more-hub` | Więcej jako hub: Moje dane z ZUS, Wiadomości, Dzieci, Kontakt, Ustawienia, O aplikacji, Wsparcie, Panel demo, Panel administracyjny (mock) | ⏳ |
@@ -70,53 +70,47 @@ rework nie zostanie zrobiony.
   - `src/domain/dates/` — `holidays.ts`, `workingDays.ts`, `calendarDate.ts`, `parsePolishDate.ts`, `formatDate.ts`, `age.ts`.
   - `src/domain/deadlines/` — `Deadline.ts` (typ), `deadlines.ts` (wyliczanie terminu wiążącego).
 
-## Profil rodzica **[Faza 2 rozszerzy]**
+## Profil rodzica
 
-- **Branch/commit:** `2fe1254 feat(profile): model profilu rodzica i reguły formularza` (main)
-- **Czym jest:** Model danych o sytuacji rodzica (etap, forma zatrudnienia, ubezpieczenie)
-  i reguły walidacji formularza onboardingu. Faza 2 rework doda: `role`, `payerSize`,
-  `childrenCount`, `name`/`childName`, `'preterm'` w sytuacjach specjalnych.
+- **Branch/commit:** `2fe1254 feat(profile): model profilu rodzica i reguły formularza` (main);
+  rozszerzony w Fazie 2 (branch `feat/guest-survey`): `7468fd8 feat(profile): model profilu
+  rozszerzony pod 9-krokową ankietę gościa`, `fd796b6` (płatnik), `8ce58f0` (adopcja).
+- **Czym jest:** Model danych o sytuacji rodzica i reguły walidacji ankiety. Od Fazy 2: `role`
+  (mama/tata/opiekun), `childrenCount` (1/2/3+), `partner` (track/notrack/single — zastępuje dawną
+  sytuację szczególną `single`), opcjonalnie `payerSize`, `childBirthDate` (adopcja), `name`,
+  `childName`. Sytuacje szczególne: `abroad`, `disability`, `preterm`, `zazyciem`.
 - **Pliki:**
   - `src/domain/profile/ParentProfile.ts` — typ profilu.
   - `src/domain/profile/insuranceFlags.ts` — czy dana forma zatrudnienia daje ubezpieczenie chorobowe.
+  - `src/domain/profile/hasExternalPayer.ts` — czy rodzic ma płatnika (umowa o pracę / zlecenie).
+  - `src/domain/profile/resolveBenefitPayer.ts` — kto wypłaca zasiłek: pracodawca (21+ osób, „nie wiem”)
+    albo ZUS (do 20 osób, sama firma). Używa go `TimelineContext`.
   - `src/domain/profile/describeStage.ts` — opis etapu („ciąża, 28. tydzień” itp.) po polsku.
-  - `src/domain/profile/toggleEmployment.ts`, `validateEventDate.ts` — logika formularza.
+  - `src/domain/profile/toggleEmployment.ts`, `validateEventDate.ts`, `validateChildBirthDate.ts` — logika ankiety.
 
-## Logowanie (mObywatel) i tryb gościa
+## Ankieta gościa (onboarding)
 
-- **Branch/commit:** `7f06e6a feat(session): symulowane logowanie przez mObywatel i chronione trasy`
-  (main); tryb gościa dodany w Fazie 1 (branch `feat/guest-mode`):
-  `1ca70cd feat(session): profil gościa niezależny od logowania`,
-  `7ada4eb feat(navigation): zakładki dostępne bez logowania`.
-- **Czym jest:** Zaślepka logowania przez mObywatel + stan sesji. Od Fazy 1: zakładki
-  (`(tabs)`) dostępne **zawsze**, bez logowania — `/login` chowa się tylko, gdy już
-  zalogowany; `/onboarding` chowa się, gdy profil już jest (gościa albo zalogowanego).
-  `profile` nie zależy od `isSignedIn` — gość ma profil z ankiety bez logowania; logowanie
-  jest osobnym przełącznikiem potrzebnym tylko do danych z eZUS, Wiadomości i person (Faza 5).
-  `signOut` czyści tylko `isSignedIn` (profil zostaje) — czyszczenie profilu to osobna akcja
-  `resetProfile` (patrz MoreScreen niżej).
+- **Branch/commit:** `48b5731 feat(onboarding): 4-etapowy kreator sytuacji rodzica` (main);
+  przebudowana w Fazie 2 (branch `feat/guest-survey`): `6930e23` (lista kroków, rola, liczba
+  dzieci), `fd796b6` (płatnik), `1ee4891` (drugi rodzic), `4593cb8` (imiona), `8ce58f0` (adopcja).
+- **Czym jest:** Ankieta wg prototypu (ONB w app.js), dostępna bez logowania („Sprawdź bez
+  logowania” na Starcie). Kroki: rola → etap → data → [data urodzenia dziecka, tylko adopcja] →
+  liczba dzieci → sytuacje szczególne → zatrudnienie → [płatnik, tylko umowa o pracę/zlecenie] →
+  drugi rodzic → imiona (opcjonalne). 7–9 kroków zależnie od odpowiedzi. Kroki z kartami wyboru
+  przechodzą dalej same; ostatni krok zawsze ma „Zakończ”.
 - **Pliki:**
-  - `src/features/login/useSimulatedLogin.ts` — hook symulujący logowanie.
-  - `src/screens/LoginScreen/` — ekran logowania.
-  - `src/session/SessionContext.ts`, `SessionProvider.tsx`, `useSession.ts` — kontekst sesji
-    (`isSignedIn`, `profile`, `signIn`, `completeOnboarding`, `signOut`, `resetProfile`).
-  - `src/navigation/RootNavigator.tsx` — jeden strażnik na `/login` (`!isSignedIn`), jeden na
-    `/onboarding` (`!hasProfile`), `(tabs)` bezwarunkowe.
-  - `src/screens/StartScreen.tsx` — gdy `profile === null`, pokazuje CTA „Sprawdź bez
-    logowania” (prowadzi do `/onboarding`) zamiast osi czasu.
-
-## Onboarding (kreator sytuacji rodzica) **[Faza 2 rozszerzy do ankiety gościa]**
-
-- **Branch/commit:** `48b5731 feat(onboarding): 4-etapowy kreator sytuacji rodzica` (main)
-- **Czym jest:** 4-etapowy kreator: etap (ciąża/dziecko/adopcja), forma zatrudnienia,
-  data zdarzenia, sytuacje specjalne. Faza 2 rozszerzy do 9 kroków z nowej koncepcji
-  (dodaje rolę, liczbę dzieci, wielkość płatnika, drugiego rodzica, imiona) i uczyni
-  dostępnym bez logowania („Sprawdź bez logowania”).
-- **Pliki:**
-  - `src/features/onboarding/useOnboardingForm.ts` — stan kreatora (krok, dane, walidacja kroku).
-  - `src/features/onboarding/components/StageStep.tsx`, `EmploymentStep.tsx`, `EventDateStep.tsx`, `SpecialSituationsStep.tsx` — cztery kroki (plus nowe w Fazie 2: `RoleStep`, `PayerStep`, `PartnerStep`, `NamesStep`).
-  - `src/features/onboarding/components/OnboardingTopBar.tsx`, `OnboardingFooter.tsx`, `OnboardingStepContent.tsx` — wspólna rama kreatora.
-  - `src/screens/OnboardingScreen.tsx` — składa kreator w ekran.
+  - `src/features/onboarding/onboardingSteps.ts` — kolejność kroków, warunki `showIf`, które kroki przechodzą same.
+  - `src/features/onboarding/onboardingDraft.ts` — typ szkicu odpowiedzi i pusty szkic.
+  - `src/features/onboarding/useOnboardingForm.ts` — stan ankiety (bieżący krok, odpowiedzi, walidacja, `finish`).
+  - `src/features/onboarding/components/` — kroki: `RoleStep`, `StageStep`, `EventDateStep`,
+    `ChildBirthDateStep`, `ChildrenCountStep`, `SpecialSituationsStep`, `EmploymentStep`, `PayerStep`,
+    `PartnerStep`, `NamesStep`; rama: `OnboardingTopBar`, `OnboardingFooter`, `OnboardingStepContent`.
+  - `src/data/onboarding/` — opcje kroków (`roleOptions`, `childrenCountOptions`, `payerSizeOptions`,
+    `partnerOptions`, `stageOptions`, `employmentOptions`, `specialSituationOptions`, `eventDateQuestions`).
+  - `src/components/molecules/TextField/` — pole tekstowe (nowe w Fazie 2, do imion).
+  - `src/screens/OnboardingScreen.tsx` — składa ankietę w ekran.
+- **Na później:** szczegóły wcześniaka (tydzień ciąży, masa, dni w szpitalu) z prototypu — dojdą
+  przy Kalkulatorze (Faza 4), bo tylko on ich używa.
 
 ## Oś czasu (ekran Start)
 

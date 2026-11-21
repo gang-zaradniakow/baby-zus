@@ -12,6 +12,7 @@ import type {
   SpecialSituationId,
 } from '@/domain/profile/ParentProfile';
 import { hasExternalPayer } from '@/domain/profile/hasExternalPayer';
+import { validateChildBirthDate } from '@/domain/profile/validateChildBirthDate';
 import { toggleEmployment } from '@/domain/profile/toggleEmployment';
 import { validateEventDate } from '@/domain/profile/validateEventDate';
 import { useToday } from '@/hooks/useToday';
@@ -32,6 +33,8 @@ export function useOnboardingForm(onComplete: (profile: ParentProfile) => void) 
   const step = steps[index];
 
   const eventDate = validateEventDate(draft.stage, draft.eventDateText, today);
+  const childBirthDate = validateChildBirthDate(draft.childBirthDateText, eventDate.date, today);
+  const isAdoption = draft.stage === 'adopcja';
 
   const goBack = () => setStepIndex(Math.max(index - 1, 0));
   const goNext = () => setStepIndex(Math.min(index + 1, lastIndex));
@@ -49,6 +52,7 @@ export function useOnboardingForm(onComplete: (profile: ParentProfile) => void) 
   const selectPartner = (partner: PartnerMode) => pickAndAdvance({ partner });
 
   const setEventDateText = (eventDateText: string) => setDraft((d) => ({ ...d, eventDateText }));
+  const setChildBirthDateText = (childBirthDateText: string) => setDraft((d) => ({ ...d, childBirthDateText }));
   const setName = (name: string) => setDraft((d) => ({ ...d, name }));
   const setChildName = (childName: string) => setDraft((d) => ({ ...d, childName }));
 
@@ -62,6 +66,7 @@ export function useOnboardingForm(onComplete: (profile: ParentProfile) => void) 
     role: draft.role !== null,
     stage: draft.stage !== null,
     date: eventDate.date !== null,
+    childBirthDate: childBirthDate.date !== null,
     count: draft.childrenCount !== null,
     special: true,
     employment: draft.employment.length > 0,
@@ -72,6 +77,7 @@ export function useOnboardingForm(onComplete: (profile: ParentProfile) => void) 
 
   const finish = () => {
     if (!draft.role || !draft.stage || !eventDate.date || !draft.childrenCount || !draft.partner) return;
+    if (isAdoption && !childBirthDate.date) return;
     // Odpowiedź o płatniku liczy się tylko, gdy krok był widoczny (np. po zmianie etatu na firmę — nie).
     const payerSize = hasExternalPayer(draft.employment) ? (draft.payerSize ?? undefined) : undefined;
     const name = draft.name.trim();
@@ -81,6 +87,7 @@ export function useOnboardingForm(onComplete: (profile: ParentProfile) => void) 
       role: draft.role,
       stage: draft.stage,
       eventDate: toISODate(eventDate.date),
+      ...(isAdoption && childBirthDate.date && { childBirthDate: toISODate(childBirthDate.date) }),
       childrenCount: draft.childrenCount,
       employment: draft.employment,
       ...(payerSize && { payerSize }),
@@ -101,6 +108,7 @@ export function useOnboardingForm(onComplete: (profile: ParentProfile) => void) 
     autoAdvances: isAutoAdvanceStep(step),
     draft,
     eventDateError: eventDate.error,
+    childBirthDateError: childBirthDate.error,
     canContinue: canContinueByStep[step],
     selectRole,
     selectStage,
@@ -108,6 +116,7 @@ export function useOnboardingForm(onComplete: (profile: ParentProfile) => void) 
     selectPayerSize,
     selectPartner,
     setEventDateText,
+    setChildBirthDateText,
     setName,
     setChildName,
     toggleEmploymentOption,

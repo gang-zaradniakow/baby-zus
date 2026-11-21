@@ -11,6 +11,12 @@ describe('getVisibleSteps', () => {
     expect(getVisibleSteps({ ...EMPTY_DRAFT, employment: ['zlec'] })).toContain('payer');
     expect(getVisibleSteps({ ...EMPTY_DRAFT, employment: ['jdg'] })).not.toContain('payer');
   });
+
+  it('o datę urodzenia dziecka pyta tylko przy adopcji, zaraz po dacie przyjęcia', () => {
+    const steps = getVisibleSteps({ ...EMPTY_DRAFT, stage: 'adopcja' });
+    expect(steps.indexOf('childBirthDate')).toBe(steps.indexOf('date') + 1);
+    expect(getVisibleSteps({ ...EMPTY_DRAFT, stage: 'dziecko' })).not.toContain('childBirthDate');
+  });
 });
 
 describe('isAutoAdvanceStep', () => {

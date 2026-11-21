@@ -2,7 +2,12 @@ import { hasExternalPayer } from '@/domain/profile/hasExternalPayer';
 
 import type { OnboardingDraft } from './onboardingDraft';
 
-export type OnboardingStepId = 'role' | 'stage' | 'date' | 'count' | 'special' | 'employment' | 'payer' | 'partner' | 'names';
+export type OnboardingStepId =
+  | 'role'
+  | 'stage'
+  | 'date'
+  | 'childBirthDate'
+  | 'count' | 'special' | 'employment' | 'payer' | 'partner' | 'names';
 
 type StepRule = {
   id: OnboardingStepId;
@@ -17,6 +22,7 @@ const STEP_RULES: readonly StepRule[] = [
   { id: 'role', autoAdvance: true },
   { id: 'stage', autoAdvance: true },
   { id: 'date' },
+  { id: 'childBirthDate', showIf: (draft) => draft.stage === 'adopcja' },
   { id: 'count', autoAdvance: true },
   { id: 'special' },
   { id: 'employment' },

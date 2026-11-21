@@ -14,6 +14,8 @@ export type OnboardingDraft = {
   stage: ParentStage | null;
   /** Tekst z pola daty — może być niepełny w trakcie wpisywania. */
   eventDateText: string;
+  /** Tylko przy adopcji: data urodzenia dziecka, tekst z pola. */
+  childBirthDateText: string;
   childrenCount: ChildrenCount | null;
   employment: EmploymentId[];
   payerSize: PayerSize | null;
@@ -28,6 +30,7 @@ export const EMPTY_DRAFT: OnboardingDraft = {
   role: null,
   stage: null,
   eventDateText: '',
+  childBirthDateText: '',
   childrenCount: null,
   employment: [],
   payerSize: null,

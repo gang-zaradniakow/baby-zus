@@ -211,6 +211,33 @@ describe('useOnboardingForm', () => {
     });
   });
 
+  it('adopcja: krok z datą urodzenia dziecka jest wymagany i trafia do profilu', async () => {
+    const { result, onComplete } = await renderForm();
+    const accepted = addDays(today(), -30);
+
+    await act(() => result.current.selectRole('opiekun'));
+    await act(() => result.current.selectStage('adopcja'));
+    await act(() => result.current.setEventDateText(formatDate(accepted)));
+    await act(() => result.current.goNext());
+
+    expect(result.current.step).toBe('childBirthDate');
+    expect(result.current.canContinue).toBe(false);
+    await act(() => result.current.setChildBirthDateText(formatDate(addDays(accepted, 1))));
+    expect(result.current.childBirthDateError).toMatch(/przed datą przyjęcia/);
+
+    await act(() => result.current.setChildBirthDateText('10.05.2022'));
+    expect(result.current.canContinue).toBe(true);
+    await act(() => result.current.goNext());
+    await act(() => result.current.selectChildrenCount(1));
+    await act(() => result.current.toggleEmploymentOption('jdg'));
+    await act(() => result.current.selectPartner('track'));
+    await act(() => result.current.finish());
+
+    expect(onComplete).toHaveBeenCalledWith(
+      expect.objectContaining({ stage: 'adopcja', eventDate: toISODate(accepted), childBirthDate: '2022-05-10' }),
+    );
+  });
+
   it('puste imiona nie trafiają do profilu, a w ciąży imię dziecka jest pomijane', async () => {
     const { result, onComplete } = await renderForm();
 

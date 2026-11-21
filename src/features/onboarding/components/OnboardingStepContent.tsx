@@ -1,5 +1,6 @@
 import type { OnboardingForm } from '../useOnboardingForm';
 
+import { ChildBirthDateStep } from './ChildBirthDateStep';
 import { ChildrenCountStep } from './ChildrenCountStep';
 import { EmploymentStep } from './EmploymentStep';
 import { EventDateStep } from './EventDateStep';
@@ -28,6 +29,14 @@ export function OnboardingStepContent({ form }: Props) {
           onChange={form.setEventDateText}
         />
       ) : null;
+    case 'childBirthDate':
+      return (
+        <ChildBirthDateStep
+          value={form.draft.childBirthDateText}
+          error={form.childBirthDateError}
+          onChange={form.setChildBirthDateText}
+        />
+      );
     case 'count':
       return <ChildrenCountStep selected={form.draft.childrenCount} onSelect={form.selectChildrenCount} />;
     case 'special':

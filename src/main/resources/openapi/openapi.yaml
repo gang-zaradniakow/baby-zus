@@ -22,6 +22,8 @@ tags:
     description: Legal parameters (rates, amounts, leave dimensions) used by all calculations.
   - name: Deadlines
     description: Statutory deadlines counted with the Polish calendar of public holidays.
+  - name: Calculations
+    description: Benefit calculations (insurance titles, benefit base, sickness and maternity benefits).
 
 paths:
   /api/v1/ping:
@@ -122,8 +124,68 @@ paths:
         default:
           $ref: '#/components/responses/Problem'
 
+  /api/v1/calculations/insurance:
+    post:
+      tags: [Calculations]
+      operationId: resolveInsurance
+      summary: Resolve concurrent insurance titles
+      description: |
+        Decides which insurance titles give a sickness/maternity benefit and with what base (Poradnik ZUS 2026,
+        s. 9–14): full-time employment at minimum wage excludes the firm and the mandate contract, a student on a
+        mandate contract is not insured, startup relief means no social insurance, contribution debt of the firm above
+        1% of the minimum wage blocks the benefit. Every decision is explained in `checks`.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InsuranceTitlesRequest'
+      responses:
+        '200':
+          description: Titles that give a benefit and the explanation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InsuranceResolution'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/calculations/benefit-base:
+    post:
+      tags: [Calculations]
+      operationId: calculateBenefitBase
+      summary: Benefit base from the payer's certificate (Z-3 / Z-3a)
+      description: |
+        Average gross pay of up to 12 months minus employee contributions. Months with less than half of the working
+        time are skipped. Full-time employment gets at least the minimum base; voluntary sickness insurance is capped.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BenefitBaseRequest'
+      responses:
+        '200':
+          description: Calculated benefit base.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BenefitBase'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        default:
+          $ref: '#/components/responses/Problem'
+
 components:
   responses:
+    ValidationProblem:
+      description: Invalid request (`code` = `validation-failed` or `bad-request`).
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
     Problem:
       description: Error described as an RFC 9457 problem.
       content:
@@ -194,6 +256,140 @@ components:
       type: string
       enum: [AMOUNT, RATE, WEEKS, DAYS, MONTHS, YEARS, WEEKS_BY_CHILDREN]
 
+    InsuranceTitle:
+      type: string
+      description: Insurance title with sickness insurance in ZUS.
+      enum: [EMPLOYMENT, MANDATE_CONTRACT, SELF_EMPLOYMENT]
+
+    InsuranceTitlesRequest:
+      type: object
+      description: Titles of one person; leave out a title the person does not have.
+      properties:
+        employment:
+          $ref: '#/components/schemas/EmploymentTitle'
+        mandateContract:
+          $ref: '#/components/schemas/MandateContractTitle'
+        selfEmployment:
+          $ref: '#/components/schemas/SelfEmploymentTitle'
+        agriculturalInsurance:
+          type: boolean
+          default: false
+          description: Insured as a farmer in KRUS.
+
+    EmploymentTitle:
+      type: object
+      required: [base]
+      properties:
+        base:
+          $ref: '#/components/schemas/Money'
+        atLeastMinimumWage:
+          type: boolean
+          default: true
+          description: Pay at least the minimum wage (excludes sickness insurance from other titles).
+
+    MandateContractTitle:
+      type: object
+      required: [base, voluntarySickness]
+      properties:
+        base:
+          $ref: '#/components/schemas/Money'
+        voluntarySickness:
+          type: boolean
+          description: Joined voluntary sickness insurance.
+        student:
+          type: boolean
+          default: false
+          description: Student or pupil under 26 (not insured on a mandate contract).
+
+    SelfEmploymentTitle:
+      type: object
+      required: [base, voluntarySickness]
+      properties:
+        base:
+          $ref: '#/components/schemas/Money'
+        voluntarySickness:
+          type: boolean
+        startupRelief:
+          type: boolean
+          default: false
+          description: First 6 months on startup relief (no social insurance).
+        debt:
+          $ref: '#/components/schemas/Money'
+
+    InsuranceResolution:
+      type: object
+      required: [base, parts, checks, agriculturalInsurance, blockingDebt]
+      properties:
+        mainTitle:
+          $ref: '#/components/schemas/InsuranceTitle'
+        base:
+          $ref: '#/components/schemas/Money'
+        parts:
+          type: array
+          description: Titles that give a benefit, each with its own base.
+          items:
+            $ref: '#/components/schemas/TitleBase'
+        checks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Check'
+        agriculturalInsurance:
+          type: boolean
+        blockingDebt:
+          $ref: '#/components/schemas/Money'
+
+    TitleBase:
+      type: object
+      required: [title, base]
+      properties:
+        title:
+          $ref: '#/components/schemas/InsuranceTitle'
+        base:
+          $ref: '#/components/schemas/Money'
+
+    BenefitBaseRequest:
+      type: object
+      required: [months, title]
+      properties:
+        months:
+          type: array
+          minItems: 1
+          maxItems: 12
+          description: Gross pay of the last (up to) 12 months from Z-3 / Z-3a.
+          items:
+            $ref: '#/components/schemas/MonthlyPay'
+        title:
+          $ref: '#/components/schemas/InsuranceTitle'
+        fullTime:
+          type: boolean
+          default: true
+
+    MonthlyPay:
+      type: object
+      required: [amount]
+      properties:
+        amount:
+          $ref: '#/components/schemas/Money'
+        skip:
+          type: boolean
+          default: false
+          description: Less than half of the working time in the month — left out of the average.
+
+    BenefitBase:
+      type: object
+      required: [base, average, monthsCounted, note]
+      properties:
+        base:
+          $ref: '#/components/schemas/Money'
+        average:
+          $ref: '#/components/schemas/Money'
+        monthsCounted:
+          type: integer
+          format: int32
+        note:
+          type: string
+          description: Polish explanation of how the base was calculated.
+
     ProblemDetail:
       type: object
       description: RFC 9457 problem with the application-specific `code` and `gentleMessage`.
@@ -246,7 +442,7 @@ components:
       properties:
         level:
           type: string
-          enum: [OK, INFO, NO]
+          enum: ['OK', 'INFO', 'NO']
         message:
           type: string
           description: Polish, user-facing.

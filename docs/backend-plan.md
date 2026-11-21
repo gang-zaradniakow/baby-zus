@@ -89,7 +89,8 @@ Moduł udostępnia innym tylko **publiczne API** (pakiet główny modułu: inter
 - Publikowane: `application.query.CalculateDeadlineQuery` (dokładnie jedno z `days`/`months`, `BEFORE` tylko w dniach), `application.dto.DeadlineDto`, `api.model.DeadlineType`.
 
 **`benefits` — kalkulacje (sama domena, bez zapisu)**
-- `insurance`: VO `InsuranceTitles` (etat, zlecenie, firma, KRUS z atrybutami). Polityka `InsuranceTitleResolver` (zbieg tytułów) → `ResolvedInsurance(mainTitle, base, parts, checks, krus, debt)`.
+- Parametry: `BenefitParameters` (własny model modułu), budowany z `LegalParametersDto` zapytaniem `GetCurrentLegalParametersQuery` przez `Pipeline`.
+- `insurance`: VO `InsuranceTitles` (etat, zlecenie, firma, KRUS z atrybutami). Polityka `InsuranceTitleResolver` (zbieg tytułów) → `ResolvedInsurance(mainTitle, base, parts, checks, agriculturalInsurance, blockingDebt)`. Komunikaty identyczne z makietą (`PolishFormat` odtwarza formatowanie kwot `pl-PL`).
 - `base`: `BenefitBaseCalculator.fromZ3(months, title, fullTime)`.
 - `sickness`: `PregnancySicknessCalculator`: wynagrodzenie chorobowe 33/14 dni, zasiłek 100%, okres 270 dni, świadczenie rehabilitacyjne, okres wyczekiwania 30/90 dni, wiele tytułów.
 - `leave`: `LeaveDimensions`, `AdoptionLeavePolicy` (7/10/14 lat, min. 9/38/62 tyg.), `SupplementaryLeavePolicy` (15/8 tyg.).
@@ -355,7 +356,7 @@ Lombok w warstwie `domain` jest dozwolony, bo działa tylko w czasie kompilacji 
 | Parametry | `GET /legal-parameters` | publiczny |
 | | `PUT /admin/legal-parameters`, `POST /admin/legal-parameters/reset`, `GET /admin/legal-parameters/history`, `POST /admin/auth` | ADMIN |
 | Terminy | `GET /deadlines?event=&type=AFTER\|BEFORE&days=` albo `&months=` | publiczny |
-| Kalkulacje | `POST /calculations/sickness-in-pregnancy`, `POST /calculations/maternity`, `POST /calculations/benefit-base` (Z-3) | publiczny |
+| Kalkulacje | `POST /calculations/insurance` (zbieg tytułów), `POST /calculations/benefit-base` (Z-3), `POST /calculations/sickness-in-pregnancy`, `POST /calculations/maternity` | publiczny |
 | Przewodnik | `POST /guide/preview` (ankieta gościa) | publiczny |
 | | `GET /me/guide?childId=`, `PUT /me/children/{id}/tasks/{key}`, `POST /me/survey`, `GET/POST /me/children`, `PUT /me/active-child`, `POST/DELETE /me/support-mode` | USER |
 | Treści | `GET /knowledge/chapters`, `/knowledge/articles/{id}`, `/knowledge/search?q=`, `/content/forms`, `/content/facts`, `/content/support`, `/content/week-cards` | publiczny |
@@ -431,7 +432,7 @@ Od PR 05 każdy PR z endpointem zaczyna się od wpisu w `openapi.yaml` (patrz 2.
 | 05 | Parametry prawne (odczyt) | Parametry w kodzie (`LegalState2026`), `ParameterSet`, `LegalParameters`, port i adapter z kodu, publikowane zapytania `GetCurrentLegalParametersQuery` i `GetLegalParametersEffectiveOnQuery`, `GET /legal-parameters` | Jednostkowe modelu, repozytorium i handlerów, IT | P0 |
 | 06 | Kalendarz i terminy | `PolishHolidays`, `WorkingDays`, `DeadlinePolicy`, zapytanie `CalculateDeadlineQuery`, `GET /deadlines` | Parametryzowane (Wigilia, sobota, Boże Ciało, `before` w niedzielę), IT | P0 |
 | 07 | Harness testów golden | `tools/golden/generate.mjs`, format fixture, bazowa klasa testu, fixture terminów | Golden: terminy | P0 |
-| 08 | Zbieg tytułów i podstawa z Z-3 | `InsuranceTitles`, `InsuranceTitleResolver`, `BenefitBaseCalculator`, `POST /calculations/benefit-base` | Jednostkowe + golden `resolvePerson`, `podstawaZ3` | P0 |
+| 08 | Zbieg tytułów i podstawa z Z-3 | `InsuranceTitles`, `InsuranceTitleResolver`, `BenefitBaseCalculator`, `BenefitParameters` (z zapytania `legalrules`), `POST /calculations/insurance`, `POST /calculations/benefit-base` | Jednostkowe + golden `resolvePerson`, `podstawaZ3` | P0 |
 | 09 | Wymiary urlopów | `LeaveDimensions`, `AdoptionLeavePolicy`, `SupplementaryLeavePolicy` | Jednostkowe + golden `adoptWeeks`, `uzupelniajacy` | P0 |
 | 10 | Zasiłek chorobowy w ciąży | `PregnancySicknessCalculator`, `POST /calculations/sickness-in-pregnancy` | Jednostkowe + golden `chorobowyCiaza`, `chorobowyMulti`, IT | P0 |
 | 11 | Symulator macierzyńskiego, cz. 1: segmenty | Podział urlopu, przejęcie, uzupełniający, ojcowski, segmenty, kontrole uprawnień | Jednostkowe + golden (`segs`, `checks`) | P0 |

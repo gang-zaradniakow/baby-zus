@@ -1,0 +1,18 @@
+### Concurrent titles: part-time employment + own firm
+POST {{baseUrl}}/api/v1/calculations/insurance
+Content-Type: application/json
+
+{
+  "employment": {"base": "2000.00", "atLeastMinimumWage": false},
+  "selfEmployment": {"base": "4877.11", "voluntarySickness": true, "debt": "0.00"}
+}
+
+### Benefit base from Z-3 (skipped month left out)
+POST {{baseUrl}}/api/v1/calculations/benefit-base
+Content-Type: application/json
+
+{
+  "title": "EMPLOYMENT",
+  "fullTime": true,
+  "months": [{"amount": "6000.00"}, {"amount": "6000.00"}, {"amount": "1500.00", "skip": true}]
+}

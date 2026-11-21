@@ -1,0 +1,795 @@
+{
+  "source": "js/calc.js: resolvePerson()",
+  "cases": [
+    {
+      "name": "employment only",
+      "input": {
+        "employment": {
+          "base": 5177.4,
+          "atLeastMinimumWage": true
+        },
+        "mandateContract": null,
+        "selfEmployment": null,
+        "agriculturalInsurance": false
+      },
+      "expected": {
+        "mainTitle": "EMPLOYMENT",
+        "base": 5177.4,
+        "parts": [
+          {
+            "title": "EMPLOYMENT",
+            "base": 5177.4
+          }
+        ],
+        "checks": [],
+        "agriculturalInsurance": false,
+        "blockingDebt": 0
+      }
+    },
+    {
+      "name": "employment below the minimum base is raised",
+      "input": {
+        "employment": {
+          "base": 3000,
+          "atLeastMinimumWage": true
+        },
+        "mandateContract": null,
+        "selfEmployment": null,
+        "agriculturalInsurance": false
+      },
+      "expected": {
+        "mainTitle": "EMPLOYMENT",
+        "base": 4147.1,
+        "parts": [
+          {
+            "title": "EMPLOYMENT",
+            "base": 4147.1
+          }
+        ],
+        "checks": [
+          {
+            "level": "INFO",
+            "message": "Etat: podstawa podniesiona do minimum 4147,10 zł (płaca minimalna − 13,71%)."
+          }
+        ],
+        "agriculturalInsurance": false,
+        "blockingDebt": 0
+      }
+    },
+    {
+      "name": "part-time employment keeps its own base",
+      "input": {
+        "employment": {
+          "base": 2000,
+          "atLeastMinimumWage": false
+        },
+        "mandateContract": null,
+        "selfEmployment": null,
+        "agriculturalInsurance": false
+      },
+      "expected": {
+        "mainTitle": "EMPLOYMENT",
+        "base": 2000,
+        "parts": [
+          {
+            "title": "EMPLOYMENT",
+            "base": 2000
+          }
+        ],
+        "checks": [],
+        "agriculturalInsurance": false,
+        "blockingDebt": 0
+      }
+    },
+    {
+      "name": "employment without a base",
+      "input": {
+        "employment": {
+          "base": 0,
+          "atLeastMinimumWage": true
+        },
+        "mandateContract": null,
+        "selfEmployment": null,
+        "agriculturalInsurance": false
+      },
+      "expected": {
+        "mainTitle": "EMPLOYMENT",
+        "base": 0,
+        "parts": [
+          {
+            "title": "EMPLOYMENT",
+            "base": 0
+          }
+        ],
+        "checks": [
+          {
+            "level": "NO",
+            "message": "Wpisz podstawę zasiłku — bez niej nie policzymy kwoty."
+          }
+        ],
+        "agriculturalInsurance": false,
+        "blockingDebt": 0
+      }
+    },
+    {
+      "name": "mandate contract with voluntary sickness insurance",
+      "input": {
+        "employment": null,
+        "mandateContract": {
+          "base": 3883.05,
+          "voluntarySickness": true,
+          "student": false
+        },
+        "selfEmployment": null,
+        "agriculturalInsurance": false
+      },
+      "expected": {
+        "mainTitle": "MANDATE_CONTRACT",
+        "base": 3883.05,
+        "parts": [
+          {
+            "title": "MANDATE_CONTRACT",
+            "base": 3883.05
+          }
+        ],
+        "checks": [],
+        "agriculturalInsurance": false,
+        "blockingDebt": 0
+      }
+    },
+    {
+      "name": "mandate contract without sickness insurance",
+      "input": {
+        "employment": null,
+        "mandateContract": {
+          "base": 3883.05,
+          "voluntarySickness": false,
+          "student": false
+        },
+        "selfEmployment": null,
+        "agriculturalInsurance": false
+      },
+      "expected": {
+        "mainTitle": "NONE",
+        "base": 0,
+        "parts": [],
+        "checks": [
+          {
+            "level": "INFO",
+            "message": "Zlecenie: bez dobrowolnego chorobowego — z tego tytułu zasiłek nie przysługuje."
+          },
+          {
+            "level": "NO",
+            "message": "Żaden z tytułów nie daje ubezpieczenia chorobowego — zasiłek z ZUS nie przysługuje."
+          }
+        ],
+        "agriculturalInsurance": false,
+        "blockingDebt": 0
+      }
+    },
+    {
+      "name": "student on a mandate contract",
+      "input": {
+        "employment": null,
+        "mandateContract": {
+          "base": 3883.05,
+          "voluntarySickness": true,
+          "student": true
+        },
+        "selfEmployment": null,
+        "agriculturalInsurance": false
+      },
+      "expected": {
+        "mainTitle": "NONE",
+        "base": 0,
+        "parts": [],
+        "checks": [
+          {
+            "level": "INFO",
+            "message": "Student lub uczeń do 26 lat na zleceniu nie podlega ubezpieczeniom — z tego tytułu zasiłku nie ma."
+          },
+          {
+            "level": "NO",
+            "message": "Żaden z tytułów nie daje ubezpieczenia chorobowego — zasiłek z ZUS nie przysługuje."
+          }
+        ],
+        "agriculturalInsurance": false,
+        "blockingDebt": 0
+      }
+    },
+    {
+      "name": "own firm with voluntary sickness insurance",
+      "input": {
+        "employment": null,
+        "mandateContract": null,
+        "selfEmployment": {
+          "base": 4877.11,
+          "voluntarySickness": true,
+          "startupRelief": false,
+          "debt": 0
+        },
+        "agriculturalInsurance": false
+      },
+      "expected": {
+        "mainTitle": "SELF_EMPLOYMENT",
+        "base": 4877.11,
+        "parts": [
+          {
+            "title": "SELF_EMPLOYMENT",
+            "base": 4877.11
+          }
+        ],
+        "checks": [],
+        "agriculturalInsurance": false,
+        "blockingDebt": 0
+      }
+    },
+    {
+      "name": "own firm without sickness insurance",
+      "input": {
+        "employment": null,
+        "mandateContract": null,
+        "selfEmployment": {
+          "base": 4877.11,
+          "voluntarySickness": false,
+          "startupRelief": false,
+          "debt": 0
+        },
+        "agriculturalInsurance": false
+      },
+      "expected": {
+        "mainTitle": "NONE",
+        "base": 0,
+        "parts": [],
+        "checks": [
+          {
+            "level": "INFO",
+            "message": "Firma: bez dobrowolnego chorobowego — z tego tytułu zasiłek nie przysługuje."
+          },
+          {
+            "level": "NO",
+            "message": "Żaden z tytułów nie daje ubezpieczenia chorobowego — zasiłek z ZUS nie przysługuje."
+          }
+        ],
+        "agriculturalInsurance": false,
+        "blockingDebt": 0
+      }
+    },
+    {
+      "name": "own firm on startup relief",
+      "input": {
+        "employment": null,
+        "mandateContract": null,
+        "selfEmployment": {
+          "base": 0,
+          "voluntarySickness": false,
+          "startupRelief": true,
+          "debt": 0
+        },
+        "agriculturalInsurance": false
+      },
+      "expected": {
+        "mainTitle": "NONE",
+        "base": 0,
+        "parts": [],
+        "checks": [
+          {
+            "level": "INFO",
+            "message": "Ulga na start: przez 6 miesięcy firma nie podlega ubezpieczeniom społecznym — z tego tytułu zasiłku nie ma."
+          },
+          {
+            "level": "NO",
+            "message": "Żaden z tytułów nie daje ubezpieczenia chorobowego — zasiłek z ZUS nie przysługuje."
+          }
+        ],
+        "agriculturalInsurance": false,
+        "blockingDebt": 0
+      }
+    },
+    {
+      "name": "own firm with blocking debt",
+      "input": {
+        "employment": null,
+        "mandateContract": null,
+        "selfEmployment": {
+          "base": 4877.11,
+          "voluntarySickness": true,
+          "startupRelief": false,
+          "debt": 62.4
+        },
+        "agriculturalInsurance": false
+      },
+      "expected": {
+        "mainTitle": "SELF_EMPLOYMENT",
+        "base": 0,
+        "parts": [],
+        "checks": [],
+        "agriculturalInsurance": false,
+        "blockingDebt": 62.4
+      }
+    },
+    {
+      "name": "own firm with debt below the threshold",
+      "input": {
+        "employment": null,
+        "mandateContract": null,
+        "selfEmployment": {
+          "base": 4877.11,
+          "voluntarySickness": true,
+          "startupRelief": false,
+          "debt": 40
+        },
+        "agriculturalInsurance": false
+      },
+      "expected": {
+        "mainTitle": "SELF_EMPLOYMENT",
+        "base": 4877.11,
+        "parts": [
+          {
+            "title": "SELF_EMPLOYMENT",
+            "base": 4877.11
+          }
+        ],
+        "checks": [],
+        "agriculturalInsurance": false,
+        "blockingDebt": 0
+      }
+    },
+    {
+      "name": "own firm above the voluntary base limit",
+      "input": {
+        "employment": null,
+        "mandateContract": null,
+        "selfEmployment": {
+          "base": 25000,
+          "voluntarySickness": true,
+          "startupRelief": false,
+          "debt": 0
+        },
+        "agriculturalInsurance": false
+      },
+      "expected": {
+        "mainTitle": "SELF_EMPLOYMENT",
+        "base": 20321.3,
+        "parts": [
+          {
+            "title": "SELF_EMPLOYMENT",
+            "base": 20321.3
+          }
+        ],
+        "checks": [
+          {
+            "level": "INFO",
+            "message": "firma: zastosowano limit podstawy dobrowolnego chorobowego 20 321,30 zł."
+          }
+        ],
+        "agriculturalInsurance": false,
+        "blockingDebt": 0
+      }
+    },
+    {
+      "name": "full-time employment and own firm",
+      "input": {
+        "employment": {
+          "base": 5177.4,
+          "atLeastMinimumWage": true
+        },
+        "mandateContract": null,
+        "selfEmployment": {
+          "base": 4877.11,
+          "voluntarySickness": true,
+          "startupRelief": false,
+          "debt": 0
+        },
+        "agriculturalInsurance": false
+      },
+      "expected": {
+        "mainTitle": "EMPLOYMENT",
+        "base": 5177.4,
+        "parts": [
+          {
+            "title": "EMPLOYMENT",
+            "base": 5177.4
+          }
+        ],
+        "checks": [
+          {
+            "level": "INFO",
+            "message": "Etat z co najmniej płacą minimalną + firma: z tytułu „firma” nie ma ubezpieczenia chorobowego — zasiłek tylko z etatu."
+          }
+        ],
+        "agriculturalInsurance": false,
+        "blockingDebt": 0
+      }
+    },
+    {
+      "name": "full-time employment and mandate contract",
+      "input": {
+        "employment": {
+          "base": 5177.4,
+          "atLeastMinimumWage": true
+        },
+        "mandateContract": {
+          "base": 3883.05,
+          "voluntarySickness": true,
+          "student": false
+        },
+        "selfEmployment": null,
+        "agriculturalInsurance": false
+      },
+      "expected": {
+        "mainTitle": "EMPLOYMENT",
+        "base": 5177.4,
+        "parts": [
+          {
+            "title": "EMPLOYMENT",
+            "base": 5177.4
+          }
+        ],
+        "checks": [
+          {
+            "level": "INFO",
+            "message": "Etat z co najmniej płacą minimalną + zlecenie: z tytułu „zlecenie” nie ma ubezpieczenia chorobowego — zasiłek tylko z etatu."
+          }
+        ],
+        "agriculturalInsurance": false,
+        "blockingDebt": 0
+      }
+    },
+    {
+      "name": "part-time employment and own firm",
+      "input": {
+        "employment": {
+          "base": 2000,
+          "atLeastMinimumWage": false
+        },
+        "mandateContract": null,
+        "selfEmployment": {
+          "base": 4877.11,
+          "voluntarySickness": true,
+          "startupRelief": false,
+          "debt": 0
+        },
+        "agriculturalInsurance": false
+      },
+      "expected": {
+        "mainTitle": "EMPLOYMENT",
+        "base": 6877.11,
+        "parts": [
+          {
+            "title": "EMPLOYMENT",
+            "base": 2000
+          },
+          {
+            "title": "SELF_EMPLOYMENT",
+            "base": 4877.11
+          }
+        ],
+        "checks": [
+          {
+            "level": "OK",
+            "message": "Zasiłek z 2 tytułów — każdy liczony osobno: etat 2000,00 zł + firma 4877,11 zł."
+          }
+        ],
+        "agriculturalInsurance": false,
+        "blockingDebt": 0
+      }
+    },
+    {
+      "name": "part-time employment and mandate contract",
+      "input": {
+        "employment": {
+          "base": 2000,
+          "atLeastMinimumWage": false
+        },
+        "mandateContract": {
+          "base": 3883.05,
+          "voluntarySickness": true,
+          "student": false
+        },
+        "selfEmployment": null,
+        "agriculturalInsurance": false
+      },
+      "expected": {
+        "mainTitle": "EMPLOYMENT",
+        "base": 5883.05,
+        "parts": [
+          {
+            "title": "EMPLOYMENT",
+            "base": 2000
+          },
+          {
+            "title": "MANDATE_CONTRACT",
+            "base": 3883.05
+          }
+        ],
+        "checks": [
+          {
+            "level": "OK",
+            "message": "Zasiłek z 2 tytułów — każdy liczony osobno: etat 2000,00 zł + zlecenie 3883,05 zł."
+          }
+        ],
+        "agriculturalInsurance": false,
+        "blockingDebt": 0
+      }
+    },
+    {
+      "name": "part-time employment and own firm with debt",
+      "input": {
+        "employment": {
+          "base": 2000,
+          "atLeastMinimumWage": false
+        },
+        "mandateContract": null,
+        "selfEmployment": {
+          "base": 4877.11,
+          "voluntarySickness": true,
+          "startupRelief": false,
+          "debt": 62.4
+        },
+        "agriculturalInsurance": false
+      },
+      "expected": {
+        "mainTitle": "EMPLOYMENT",
+        "base": 2000,
+        "parts": [
+          {
+            "title": "EMPLOYMENT",
+            "base": 2000
+          }
+        ],
+        "checks": [
+          {
+            "level": "NO",
+            "message": "Firma: zaległość 62,40 zł > 48,06 zł — zasiłek z firmy wstrzymany do spłaty; brak spłaty w 6 mies. = utrata prawa."
+          }
+        ],
+        "agriculturalInsurance": false,
+        "blockingDebt": 0
+      }
+    },
+    {
+      "name": "mandate contract at minimum wage and own firm",
+      "input": {
+        "employment": null,
+        "mandateContract": {
+          "base": 4200,
+          "voluntarySickness": true,
+          "student": false
+        },
+        "selfEmployment": {
+          "base": 4877.11,
+          "voluntarySickness": true,
+          "startupRelief": false,
+          "debt": 0
+        },
+        "agriculturalInsurance": false
+      },
+      "expected": {
+        "mainTitle": "MANDATE_CONTRACT",
+        "base": 4200,
+        "parts": [
+          {
+            "title": "MANDATE_CONTRACT",
+            "base": 4200
+          }
+        ],
+        "checks": [
+          {
+            "level": "INFO",
+            "message": "Zlecenie + firma: obowiązkowo ubezpieczasz się z tytułu „zlecenie” (zlecenie co najmniej z płacą minimalną), więc dobrowolne chorobowe — tylko z niego. Z tytułu „firma” zasiłku nie ma."
+          }
+        ],
+        "agriculturalInsurance": false,
+        "blockingDebt": 0
+      }
+    },
+    {
+      "name": "small mandate contract and own firm",
+      "input": {
+        "employment": null,
+        "mandateContract": {
+          "base": 2000,
+          "voluntarySickness": true,
+          "student": false
+        },
+        "selfEmployment": {
+          "base": 4877.11,
+          "voluntarySickness": true,
+          "startupRelief": false,
+          "debt": 0
+        },
+        "agriculturalInsurance": false
+      },
+      "expected": {
+        "mainTitle": "SELF_EMPLOYMENT",
+        "base": 4877.11,
+        "parts": [
+          {
+            "title": "SELF_EMPLOYMENT",
+            "base": 4877.11
+          }
+        ],
+        "checks": [
+          {
+            "level": "INFO",
+            "message": "Zlecenie + firma: obowiązkowo ubezpieczasz się z tytułu „firma”, więc dobrowolne chorobowe — tylko z niego. Z tytułu „zlecenie” zasiłku nie ma."
+          }
+        ],
+        "agriculturalInsurance": false,
+        "blockingDebt": 0
+      }
+    },
+    {
+      "name": "small mandate contract and own firm with debt",
+      "input": {
+        "employment": null,
+        "mandateContract": {
+          "base": 2000,
+          "voluntarySickness": true,
+          "student": false
+        },
+        "selfEmployment": {
+          "base": 4877.11,
+          "voluntarySickness": true,
+          "startupRelief": false,
+          "debt": 62.4
+        },
+        "agriculturalInsurance": false
+      },
+      "expected": {
+        "mainTitle": "SELF_EMPLOYMENT",
+        "base": 0,
+        "parts": [],
+        "checks": [
+          {
+            "level": "INFO",
+            "message": "Zlecenie + firma: obowiązkowo ubezpieczasz się z tytułu „firma”, więc dobrowolne chorobowe — tylko z niego. Z tytułu „zlecenie” zasiłku nie ma."
+          }
+        ],
+        "agriculturalInsurance": false,
+        "blockingDebt": 62.4
+      }
+    },
+    {
+      "name": "small mandate contract and own firm on startup relief",
+      "input": {
+        "employment": null,
+        "mandateContract": {
+          "base": 2000,
+          "voluntarySickness": true,
+          "student": false
+        },
+        "selfEmployment": {
+          "base": 0,
+          "voluntarySickness": false,
+          "startupRelief": true,
+          "debt": 0
+        },
+        "agriculturalInsurance": false
+      },
+      "expected": {
+        "mainTitle": "NONE",
+        "base": 0,
+        "parts": [],
+        "checks": [
+          {
+            "level": "INFO",
+            "message": "Ulga na start: przez 6 miesięcy firma nie podlega ubezpieczeniom społecznym — z tego tytułu zasiłku nie ma."
+          },
+          {
+            "level": "INFO",
+            "message": "Zlecenie + firma: obowiązkowo ubezpieczasz się z tytułu „firma”, więc dobrowolne chorobowe — tylko z niego. Z tytułu „zlecenie” zasiłku nie ma."
+          },
+          {
+            "level": "NO",
+            "message": "Żaden z tytułów nie daje ubezpieczenia chorobowego — zasiłek z ZUS nie przysługuje."
+          }
+        ],
+        "agriculturalInsurance": false,
+        "blockingDebt": 0
+      }
+    },
+    {
+      "name": "farmer in KRUS only",
+      "input": {
+        "employment": null,
+        "mandateContract": null,
+        "selfEmployment": null,
+        "agriculturalInsurance": true
+      },
+      "expected": {
+        "mainTitle": "NONE",
+        "base": 0,
+        "parts": [],
+        "checks": [
+          {
+            "level": "NO",
+            "message": "Rolnik w KRUS: zasiłki wypłaca KRUS, nie ZUS — kwota poniżej jest orientacyjna."
+          }
+        ],
+        "agriculturalInsurance": true,
+        "blockingDebt": 0
+      }
+    },
+    {
+      "name": "KRUS and employment",
+      "input": {
+        "employment": {
+          "base": 5177.4,
+          "atLeastMinimumWage": true
+        },
+        "mandateContract": null,
+        "selfEmployment": null,
+        "agriculturalInsurance": true
+      },
+      "expected": {
+        "mainTitle": "EMPLOYMENT",
+        "base": 5177.4,
+        "parts": [
+          {
+            "title": "EMPLOYMENT",
+            "base": 5177.4
+          }
+        ],
+        "checks": [
+          {
+            "level": "INFO",
+            "message": "Etat + gospodarstwo: z etatu podlegasz ZUS — zasiłek z ZUS liczymy z etatu."
+          }
+        ],
+        "agriculturalInsurance": true,
+        "blockingDebt": 0
+      }
+    },
+    {
+      "name": "KRUS and own firm",
+      "input": {
+        "employment": null,
+        "mandateContract": null,
+        "selfEmployment": {
+          "base": 4877.11,
+          "voluntarySickness": true,
+          "startupRelief": false,
+          "debt": 0
+        },
+        "agriculturalInsurance": true
+      },
+      "expected": {
+        "mainTitle": "SELF_EMPLOYMENT",
+        "base": 4877.11,
+        "parts": [
+          {
+            "title": "SELF_EMPLOYMENT",
+            "base": 4877.11
+          }
+        ],
+        "checks": [
+          {
+            "level": "INFO",
+            "message": "KRUS + firma: jeśli zostajesz w KRUS (warunki ustawy o ubezpieczeniu rolników), zasiłek wypłaca KRUS. Kalkulator liczy wariant z ubezpieczeniem w ZUS."
+          }
+        ],
+        "agriculturalInsurance": true,
+        "blockingDebt": 0
+      }
+    },
+    {
+      "name": "no insurance title",
+      "input": {
+        "employment": null,
+        "mandateContract": null,
+        "selfEmployment": null,
+        "agriculturalInsurance": false
+      },
+      "expected": {
+        "mainTitle": "NONE",
+        "base": 0,
+        "parts": [],
+        "checks": [],
+        "agriculturalInsurance": false,
+        "blockingDebt": 0
+      }
+    }
+  ]
+}

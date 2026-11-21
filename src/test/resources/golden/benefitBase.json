@@ -1,0 +1,599 @@
+{
+  "source": "js/calc.js: podstawaZ3()",
+  "cases": [
+    {
+      "name": "12 months of 6000 PLN, full-time employment",
+      "input": {
+        "months": [
+          {
+            "amount": 6000,
+            "skip": false
+          },
+          {
+            "amount": 6000,
+            "skip": false
+          },
+          {
+            "amount": 6000,
+            "skip": false
+          },
+          {
+            "amount": 6000,
+            "skip": false
+          },
+          {
+            "amount": 6000,
+            "skip": false
+          },
+          {
+            "amount": 6000,
+            "skip": false
+          },
+          {
+            "amount": 6000,
+            "skip": false
+          },
+          {
+            "amount": 6000,
+            "skip": false
+          },
+          {
+            "amount": 6000,
+            "skip": false
+          },
+          {
+            "amount": 6000,
+            "skip": false
+          },
+          {
+            "amount": 6000,
+            "skip": false
+          },
+          {
+            "amount": 6000,
+            "skip": false
+          }
+        ],
+        "title": "EMPLOYMENT",
+        "fullTime": true
+      },
+      "expected": {
+        "base": 5177.4,
+        "average": 6000,
+        "monthsCounted": 12,
+        "note": "Średnia z 12 mies. (6000,00 zł) minus 13,71% składek."
+      }
+    },
+    {
+      "name": "12 months of 3000 PLN, full-time employment (minimum base)",
+      "input": {
+        "months": [
+          {
+            "amount": 3000,
+            "skip": false
+          },
+          {
+            "amount": 3000,
+            "skip": false
+          },
+          {
+            "amount": 3000,
+            "skip": false
+          },
+          {
+            "amount": 3000,
+            "skip": false
+          },
+          {
+            "amount": 3000,
+            "skip": false
+          },
+          {
+            "amount": 3000,
+            "skip": false
+          },
+          {
+            "amount": 3000,
+            "skip": false
+          },
+          {
+            "amount": 3000,
+            "skip": false
+          },
+          {
+            "amount": 3000,
+            "skip": false
+          },
+          {
+            "amount": 3000,
+            "skip": false
+          },
+          {
+            "amount": 3000,
+            "skip": false
+          },
+          {
+            "amount": 3000,
+            "skip": false
+          }
+        ],
+        "title": "EMPLOYMENT",
+        "fullTime": true
+      },
+      "expected": {
+        "base": 4147.1,
+        "average": 3000,
+        "monthsCounted": 12,
+        "note": "Średnia z 12 mies. (3000,00 zł) minus 13,71% składek. Zastosowano minimalną podstawę dla pełnego etatu."
+      }
+    },
+    {
+      "name": "12 months of 3000 PLN, part-time employment",
+      "input": {
+        "months": [
+          {
+            "amount": 3000,
+            "skip": false
+          },
+          {
+            "amount": 3000,
+            "skip": false
+          },
+          {
+            "amount": 3000,
+            "skip": false
+          },
+          {
+            "amount": 3000,
+            "skip": false
+          },
+          {
+            "amount": 3000,
+            "skip": false
+          },
+          {
+            "amount": 3000,
+            "skip": false
+          },
+          {
+            "amount": 3000,
+            "skip": false
+          },
+          {
+            "amount": 3000,
+            "skip": false
+          },
+          {
+            "amount": 3000,
+            "skip": false
+          },
+          {
+            "amount": 3000,
+            "skip": false
+          },
+          {
+            "amount": 3000,
+            "skip": false
+          },
+          {
+            "amount": 3000,
+            "skip": false
+          }
+        ],
+        "title": "EMPLOYMENT",
+        "fullTime": false
+      },
+      "expected": {
+        "base": 2588.7,
+        "average": 3000,
+        "monthsCounted": 12,
+        "note": "Średnia z 12 mies. (3000,00 zł) minus 13,71% składek."
+      }
+    },
+    {
+      "name": "skipped months are left out of the average",
+      "input": {
+        "months": [
+          {
+            "amount": 6200,
+            "skip": false
+          },
+          {
+            "amount": 6200,
+            "skip": false
+          },
+          {
+            "amount": 1500,
+            "skip": true
+          },
+          {
+            "amount": 6200,
+            "skip": false
+          },
+          {
+            "amount": 7000,
+            "skip": false
+          },
+          {
+            "amount": 7000,
+            "skip": false
+          },
+          {
+            "amount": 800,
+            "skip": true
+          },
+          {
+            "amount": 7000,
+            "skip": false
+          },
+          {
+            "amount": 6500,
+            "skip": false
+          },
+          {
+            "amount": 6500,
+            "skip": false
+          },
+          {
+            "amount": 6500,
+            "skip": false
+          },
+          {
+            "amount": 6500,
+            "skip": false
+          }
+        ],
+        "title": "EMPLOYMENT",
+        "fullTime": true
+      },
+      "expected": {
+        "base": 5660.624,
+        "average": 6560,
+        "monthsCounted": 10,
+        "note": "Średnia z 10 mies. (6560,00 zł) minus 13,71% składek."
+      }
+    },
+    {
+      "name": "months without pay are left out",
+      "input": {
+        "months": [
+          {
+            "amount": 5000,
+            "skip": false
+          },
+          {
+            "amount": 0,
+            "skip": false
+          },
+          {
+            "amount": 0,
+            "skip": false
+          },
+          {
+            "amount": 5200,
+            "skip": false
+          },
+          {
+            "amount": 5400,
+            "skip": false
+          },
+          {
+            "amount": 0,
+            "skip": false
+          },
+          {
+            "amount": 0,
+            "skip": false
+          },
+          {
+            "amount": 0,
+            "skip": false
+          },
+          {
+            "amount": 0,
+            "skip": false
+          },
+          {
+            "amount": 0,
+            "skip": false
+          },
+          {
+            "amount": 0,
+            "skip": false
+          },
+          {
+            "amount": 0,
+            "skip": false
+          }
+        ],
+        "title": "EMPLOYMENT",
+        "fullTime": true
+      },
+      "expected": {
+        "base": 4487.08,
+        "average": 5200,
+        "monthsCounted": 3,
+        "note": "Średnia z 3 mies. (5200,00 zł) minus 13,71% składek."
+      }
+    },
+    {
+      "name": "no months entered",
+      "input": {
+        "months": [
+          {
+            "amount": 0,
+            "skip": false
+          },
+          {
+            "amount": 0,
+            "skip": false
+          },
+          {
+            "amount": 0,
+            "skip": false
+          }
+        ],
+        "title": "EMPLOYMENT",
+        "fullTime": true
+      },
+      "expected": {
+        "base": 0,
+        "average": 0,
+        "monthsCounted": 0,
+        "note": "Wpisz co najmniej jeden miesiąc."
+      }
+    },
+    {
+      "name": "high pay on employment has no upper limit",
+      "input": {
+        "months": [
+          {
+            "amount": 25000,
+            "skip": false
+          },
+          {
+            "amount": 25000,
+            "skip": false
+          },
+          {
+            "amount": 25000,
+            "skip": false
+          },
+          {
+            "amount": 25000,
+            "skip": false
+          },
+          {
+            "amount": 25000,
+            "skip": false
+          },
+          {
+            "amount": 25000,
+            "skip": false
+          },
+          {
+            "amount": 25000,
+            "skip": false
+          },
+          {
+            "amount": 25000,
+            "skip": false
+          },
+          {
+            "amount": 25000,
+            "skip": false
+          },
+          {
+            "amount": 25000,
+            "skip": false
+          },
+          {
+            "amount": 25000,
+            "skip": false
+          },
+          {
+            "amount": 25000,
+            "skip": false
+          }
+        ],
+        "title": "EMPLOYMENT",
+        "fullTime": true
+      },
+      "expected": {
+        "base": 21572.5,
+        "average": 25000,
+        "monthsCounted": 12,
+        "note": "Średnia z 12 mies. (25 000,00 zł) minus 13,71% składek."
+      }
+    },
+    {
+      "name": "mandate contract above the voluntary base limit",
+      "input": {
+        "months": [
+          {
+            "amount": 30000,
+            "skip": false
+          },
+          {
+            "amount": 30000,
+            "skip": false
+          },
+          {
+            "amount": 30000,
+            "skip": false
+          },
+          {
+            "amount": 30000,
+            "skip": false
+          },
+          {
+            "amount": 30000,
+            "skip": false
+          },
+          {
+            "amount": 30000,
+            "skip": false
+          },
+          {
+            "amount": 30000,
+            "skip": false
+          },
+          {
+            "amount": 30000,
+            "skip": false
+          },
+          {
+            "amount": 30000,
+            "skip": false
+          },
+          {
+            "amount": 30000,
+            "skip": false
+          },
+          {
+            "amount": 30000,
+            "skip": false
+          },
+          {
+            "amount": 30000,
+            "skip": false
+          }
+        ],
+        "title": "MANDATE_CONTRACT",
+        "fullTime": true
+      },
+      "expected": {
+        "base": 20321.3,
+        "average": 30000,
+        "monthsCounted": 12,
+        "note": "Średnia z 12 mies. (30 000,00 zł) minus 13,71% składek. Zastosowano limit podstawy dobrowolnego chorobowego."
+      }
+    },
+    {
+      "name": "own firm with the standard base",
+      "input": {
+        "months": [
+          {
+            "amount": 5652,
+            "skip": false
+          },
+          {
+            "amount": 5652,
+            "skip": false
+          },
+          {
+            "amount": 5652,
+            "skip": false
+          },
+          {
+            "amount": 5652,
+            "skip": false
+          },
+          {
+            "amount": 5652,
+            "skip": false
+          },
+          {
+            "amount": 5652,
+            "skip": false
+          },
+          {
+            "amount": 5652,
+            "skip": false
+          },
+          {
+            "amount": 5652,
+            "skip": false
+          },
+          {
+            "amount": 5652,
+            "skip": false
+          },
+          {
+            "amount": 5652,
+            "skip": false
+          },
+          {
+            "amount": 5652,
+            "skip": false
+          },
+          {
+            "amount": 5652,
+            "skip": false
+          }
+        ],
+        "title": "SELF_EMPLOYMENT",
+        "fullTime": true
+      },
+      "expected": {
+        "base": 4877.1108,
+        "average": 5652,
+        "monthsCounted": 12,
+        "note": "Średnia z 12 mies. (5652,00 zł) minus 13,71% składek."
+      }
+    },
+    {
+      "name": "mandate contract below the minimum is not raised",
+      "input": {
+        "months": [
+          {
+            "amount": 2000,
+            "skip": false
+          },
+          {
+            "amount": 2000,
+            "skip": false
+          },
+          {
+            "amount": 2000,
+            "skip": false
+          },
+          {
+            "amount": 2000,
+            "skip": false
+          },
+          {
+            "amount": 2000,
+            "skip": false
+          },
+          {
+            "amount": 2000,
+            "skip": false
+          },
+          {
+            "amount": 2000,
+            "skip": false
+          },
+          {
+            "amount": 2000,
+            "skip": false
+          },
+          {
+            "amount": 2000,
+            "skip": false
+          },
+          {
+            "amount": 2000,
+            "skip": false
+          },
+          {
+            "amount": 2000,
+            "skip": false
+          },
+          {
+            "amount": 2000,
+            "skip": false
+          }
+        ],
+        "title": "MANDATE_CONTRACT",
+        "fullTime": true
+      },
+      "expected": {
+        "base": 1725.8,
+        "average": 2000,
+        "monthsCounted": 12,
+        "note": "Średnia z 12 mies. (2000,00 zł) minus 13,71% składek."
+      }
+    }
+  ]
+}

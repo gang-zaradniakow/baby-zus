@@ -6,20 +6,37 @@ import { createSessionProbe } from '@/testing/sessionProbe';
 
 import { MoreScreen } from './MoreScreen';
 
+async function renderMore() {
+  const { Probe, session } = createSessionProbe();
+  await renderWithProviders(
+    <>
+      <MoreScreen />
+      <Probe />
+    </>,
+  );
+  return session;
+}
+
 describe('MoreScreen', () => {
-  it('„Wyloguj i zacznij od nowa” czyści sesję', async () => {
-    const { Probe, session } = createSessionProbe();
+  it('zalogowany: „Wyloguj” wylogowuje, ale zostawia profil', async () => {
     const user = userEvent.setup();
-    await renderWithProviders(
-      <>
-        <MoreScreen />
-        <Probe />
-      </>,
-    );
+    const session = await renderMore();
+    const profile = makeProfile();
     await act(() => session().signIn());
+    await act(() => session().completeOnboarding(profile));
+
+    await user.press(screen.getByRole('button', { name: 'Wyloguj' }));
+
+    expect(session().isSignedIn).toBe(false);
+    expect(session().profile).toEqual(profile);
+  });
+
+  it('gość: „Usuń moje odpowiedzi i zacznij od nowa” czyści profil', async () => {
+    const user = userEvent.setup();
+    const session = await renderMore();
     await act(() => session().completeOnboarding(makeProfile()));
 
-    await user.press(screen.getByRole('button', { name: 'Wyloguj i zacznij od nowa' }));
+    await user.press(screen.getByRole('button', { name: 'Usuń moje odpowiedzi i zacznij od nowa' }));
 
     expect(session().isSignedIn).toBe(false);
     expect(session().profile).toBeNull();

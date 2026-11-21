@@ -29,10 +29,10 @@ export function SessionProvider({ children }: Props) {
         setCompletedTaskIds(NO_TASKS);
       },
       toggleTask: (taskId) => setCompletedTaskIds((ids) => toggleInSet(ids, taskId)),
-      signOut: () => {
+      signOut: () => setSignedIn(false),
+      resetProfile: () => {
         setProfile(null);
         setCompletedTaskIds(NO_TASKS);
-        setSignedIn(false);
       },
     }),
     [isSignedIn, profile, completedTaskIds],

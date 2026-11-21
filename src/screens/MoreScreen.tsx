@@ -5,11 +5,20 @@ import { ScreenLayout } from '@/components/templates/ScreenLayout';
 import { useSession } from '@/session';
 
 export function MoreScreen() {
-  const { signOut } = useSession();
+  const { isSignedIn, signOut, resetProfile } = useSession();
 
   return (
     <ScreenLayout title="Więcej" subtitle="Profil, ustawienia i kontakt z ZUS.">
-      <Button title="Wyloguj i zacznij od nowa" variant="secondary" icon={LogOut} onPress={signOut} />
+      {isSignedIn ? (
+        <Button title="Wyloguj" variant="secondary" icon={LogOut} onPress={signOut} />
+      ) : (
+        <Button
+          title="Usuń moje odpowiedzi i zacznij od nowa"
+          variant="secondary"
+          icon={LogOut}
+          onPress={resetProfile}
+        />
+      )}
     </ScreenLayout>
   );
 }

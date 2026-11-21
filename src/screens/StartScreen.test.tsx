@@ -22,11 +22,12 @@ async function renderStart({ withProfile }: { withProfile: boolean }) {
 }
 
 describe('StartScreen', () => {
-  it('bez profilu: nagłówek i komunikat o braku zadań', async () => {
+  it('bez profilu: CTA ankiety gościa, bez osi czasu', async () => {
     await renderStart({ withProfile: false });
 
-    expect(screen.getByRole('header', { name: 'Oś czasu' })).toBeOnTheScreen();
-    expect(screen.getByText('Brak zadań do pokazania.')).toBeOnTheScreen();
+    expect(screen.getByRole('header', { name: 'Start' })).toBeOnTheScreen();
+    expect(screen.getByRole('button', { name: 'Sprawdź bez logowania' })).toBeOnTheScreen();
+    expect(screen.queryByRole('checkbox')).not.toBeOnTheScreen();
   });
 
   it('z profilem: opis sytuacji i zadania na osi czasu', async () => {

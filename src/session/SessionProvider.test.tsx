@@ -47,15 +47,29 @@ describe('SessionProvider + useSession', () => {
     expect(result.current.completedTaskIds.size).toBe(0);
   });
 
-  it('signOut czyści profil, postęp i wylogowuje', async () => {
+  it('signOut tylko wylogowuje — profil gościa zostaje, bo nie zależy od logowania', async () => {
+    const { result } = await renderSession();
+    const profile = makeProfile();
+
+    await act(() => result.current.signIn());
+    await act(() => result.current.completeOnboarding(profile));
+    await act(() => result.current.toggleTask('usc-zgloszenie'));
+    await act(() => result.current.signOut());
+
+    expect(result.current.isSignedIn).toBe(false);
+    expect(result.current.profile).toEqual(profile);
+    expect(result.current.completedTaskIds.has('usc-zgloszenie')).toBe(true);
+  });
+
+  it('resetProfile czyści profil i postęp, ale nie wylogowuje', async () => {
     const { result } = await renderSession();
 
     await act(() => result.current.signIn());
     await act(() => result.current.completeOnboarding(makeProfile()));
     await act(() => result.current.toggleTask('usc-zgloszenie'));
-    await act(() => result.current.signOut());
+    await act(() => result.current.resetProfile());
 
-    expect(result.current.isSignedIn).toBe(false);
+    expect(result.current.isSignedIn).toBe(true);
     expect(result.current.profile).toBeNull();
     expect(result.current.completedTaskIds.size).toBe(0);
   });

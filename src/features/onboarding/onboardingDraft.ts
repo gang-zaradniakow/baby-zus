@@ -19,6 +19,9 @@ export type OnboardingDraft = {
   payerSize: PayerSize | null;
   partner: PartnerMode | null;
   special: SpecialSituationId[];
+  /** Opcjonalne — pusty tekst = nie podano. */
+  name: string;
+  childName: string;
 };
 
 export const EMPTY_DRAFT: OnboardingDraft = {
@@ -30,4 +33,6 @@ export const EMPTY_DRAFT: OnboardingDraft = {
   payerSize: null,
   partner: null,
   special: [],
+  name: '',
+  childName: '',
 };

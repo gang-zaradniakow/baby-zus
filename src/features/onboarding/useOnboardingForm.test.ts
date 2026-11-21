@@ -30,7 +30,7 @@ describe('useOnboardingForm', () => {
 
     expect(result.current.step).toBe('role');
     expect(result.current.stepNumber).toBe(1);
-    expect(result.current.totalSteps).toBe(7);
+    expect(result.current.totalSteps).toBe(8);
     expect(result.current.isFirstStep).toBe(true);
     expect(result.current.autoAdvances).toBe(true);
     expect(result.current.draft).toEqual(EMPTY_DRAFT);
@@ -179,8 +179,9 @@ describe('useOnboardingForm', () => {
     for (let i = 0; i < 10; i += 1) {
       await act(() => result.current.goNext());
     }
-    expect(result.current.step).toBe('partner');
+    expect(result.current.step).toBe('names');
     expect(result.current.isLastStep).toBe(true);
+    expect(result.current.canContinue).toBe(true); // imiona są opcjonalne
   });
 
   it('finish przekazuje gotowy profil z datą w formacie ISO', async () => {
@@ -193,6 +194,8 @@ describe('useOnboardingForm', () => {
     await act(() => result.current.toggleSpecialSituation('abroad'));
     await act(() => result.current.toggleEmploymentOption('jdg'));
     await act(() => result.current.selectPartner('single'));
+    await act(() => result.current.setName('  Ola '));
+    await act(() => result.current.setChildName('Staś'));
     await act(() => result.current.finish());
 
     expect(onComplete).toHaveBeenCalledWith({
@@ -203,7 +206,29 @@ describe('useOnboardingForm', () => {
       employment: ['jdg'],
       partner: 'single',
       special: ['abroad'],
+      name: 'Ola',
+      childName: 'Staś',
     });
+  });
+
+  it('puste imiona nie trafiają do profilu, a w ciąży imię dziecka jest pomijane', async () => {
+    const { result, onComplete } = await renderForm();
+
+    await act(() => result.current.selectRole('mama'));
+    await act(() => result.current.selectStage('dziecko'));
+    await act(() => result.current.setChildName('Staś')); // wpisane, a potem zmiana etapu na ciążę
+    await act(() => result.current.goBack());
+    await act(() => result.current.selectStage('ciaza'));
+    await act(() => result.current.setEventDateText(formatDate(dueDate)));
+    await act(() => result.current.selectChildrenCount(1));
+    await act(() => result.current.toggleEmploymentOption('jdg'));
+    await act(() => result.current.selectPartner('track'));
+    await act(() => result.current.setName('   '));
+    await act(() => result.current.finish());
+
+    const profile = onComplete.mock.calls[0][0];
+    expect(profile).not.toHaveProperty('name');
+    expect(profile).not.toHaveProperty('childName');
   });
 
   it('finish bez kompletu odpowiedzi nic nie robi', async () => {

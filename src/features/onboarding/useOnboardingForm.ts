@@ -49,6 +49,8 @@ export function useOnboardingForm(onComplete: (profile: ParentProfile) => void) 
   const selectPartner = (partner: PartnerMode) => pickAndAdvance({ partner });
 
   const setEventDateText = (eventDateText: string) => setDraft((d) => ({ ...d, eventDateText }));
+  const setName = (name: string) => setDraft((d) => ({ ...d, name }));
+  const setChildName = (childName: string) => setDraft((d) => ({ ...d, childName }));
 
   const toggleEmploymentOption = (id: EmploymentId) =>
     setDraft((d) => ({ ...d, employment: toggleEmployment(d.employment, id) }));
@@ -65,12 +67,16 @@ export function useOnboardingForm(onComplete: (profile: ParentProfile) => void) 
     employment: draft.employment.length > 0,
     payer: draft.payerSize !== null,
     partner: draft.partner !== null,
+    names: true,
   };
 
   const finish = () => {
     if (!draft.role || !draft.stage || !eventDate.date || !draft.childrenCount || !draft.partner) return;
     // Odpowiedź o płatniku liczy się tylko, gdy krok był widoczny (np. po zmianie etatu na firmę — nie).
     const payerSize = hasExternalPayer(draft.employment) ? (draft.payerSize ?? undefined) : undefined;
+    const name = draft.name.trim();
+    // W ciąży nie pytamy o imię dziecka — ignorujemy to, co zostało po zmianie etapu.
+    const childName = draft.stage === 'ciaza' ? '' : draft.childName.trim();
     onComplete({
       role: draft.role,
       stage: draft.stage,
@@ -80,6 +86,8 @@ export function useOnboardingForm(onComplete: (profile: ParentProfile) => void) 
       ...(payerSize && { payerSize }),
       partner: draft.partner,
       special: draft.special,
+      ...(name && { name }),
+      ...(childName && { childName }),
     });
   };
 
@@ -100,6 +108,8 @@ export function useOnboardingForm(onComplete: (profile: ParentProfile) => void) 
     selectPayerSize,
     selectPartner,
     setEventDateText,
+    setName,
+    setChildName,
     toggleEmploymentOption,
     toggleSpecialSituation,
     goBack,

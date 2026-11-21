@@ -3,6 +3,7 @@ import type { OnboardingForm } from '../useOnboardingForm';
 import { ChildrenCountStep } from './ChildrenCountStep';
 import { EmploymentStep } from './EmploymentStep';
 import { EventDateStep } from './EventDateStep';
+import { NamesStep } from './NamesStep';
 import { PartnerStep } from './PartnerStep';
 import { PayerStep } from './PayerStep';
 import { RoleStep } from './RoleStep';
@@ -37,5 +38,15 @@ export function OnboardingStepContent({ form }: Props) {
       return <PayerStep selected={form.draft.payerSize} onSelect={form.selectPayerSize} />;
     case 'partner':
       return <PartnerStep selected={form.draft.partner} onSelect={form.selectPartner} />;
+    case 'names':
+      return (
+        <NamesStep
+          name={form.draft.name}
+          childName={form.draft.childName}
+          asksChildName={form.draft.stage !== 'ciaza'}
+          onChangeName={form.setName}
+          onChangeChildName={form.setChildName}
+        />
+      );
   }
 }

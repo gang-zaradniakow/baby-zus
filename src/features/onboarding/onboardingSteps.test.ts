@@ -3,7 +3,7 @@ import { getVisibleSteps, isAutoAdvanceStep } from './onboardingSteps';
 
 describe('getVisibleSteps', () => {
   it('kroki idą w kolejności z prototypu', () => {
-    expect(getVisibleSteps(EMPTY_DRAFT)).toEqual(['role', 'stage', 'date', 'count', 'special', 'employment', 'partner']);
+    expect(getVisibleSteps(EMPTY_DRAFT)).toEqual(['role', 'stage', 'date', 'count', 'special', 'employment', 'partner', 'names']);
   });
 
   it('o płatnika pyta tylko przy umowie o pracę lub zleceniu', () => {
@@ -23,5 +23,6 @@ describe('isAutoAdvanceStep', () => {
     expect(isAutoAdvanceStep('date')).toBe(false);
     expect(isAutoAdvanceStep('special')).toBe(false);
     expect(isAutoAdvanceStep('employment')).toBe(false);
+    expect(isAutoAdvanceStep('names')).toBe(false);
   });
 });

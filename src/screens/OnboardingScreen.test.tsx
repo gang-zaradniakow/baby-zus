@@ -25,7 +25,7 @@ describe('OnboardingScreen — przejście przez ankietę', () => {
   it('pierwszy krok: pytanie o rolę, bez przycisku „Wróć” i „Dalej”', async () => {
     await renderOnboarding();
 
-    expect(screen.getByRole('progressbar', { name: 'Krok 1 z 7' })).toBeOnTheScreen();
+    expect(screen.getByRole('progressbar', { name: 'Krok 1 z 8' })).toBeOnTheScreen();
     expect(screen.getByRole('header', { name: 'Kim jesteś dla dziecka?' })).toBeOnTheScreen();
     expect(screen.queryByRole('button', { name: 'Wróć' })).not.toBeOnTheScreen();
     expect(screen.queryByRole('button', { name: 'Dalej' })).not.toBeOnTheScreen();
@@ -40,7 +40,7 @@ describe('OnboardingScreen — przejście przez ankietę', () => {
     await user.press(screen.getByRole('radio', { name: /Maluch jest na świecie/ }));
 
     // Data urodzenia; „Dalej” odblokowuje się dopiero po poprawnej dacie.
-    expect(screen.getByRole('progressbar', { name: 'Krok 3 z 7' })).toBeOnTheScreen();
+    expect(screen.getByRole('progressbar', { name: 'Krok 3 z 8' })).toBeOnTheScreen();
     expect(screen.getByRole('button', { name: 'Dalej' })).toBeDisabled();
     await user.type(screen.getByLabelText('Data urodzenia'), formatDate(birthDate).replace(/\./g, ''));
     await user.press(screen.getByRole('button', { name: 'Dalej' }));
@@ -61,9 +61,12 @@ describe('OnboardingScreen — przejście przez ankietę', () => {
     // Płatnik.
     await user.press(screen.getByRole('radio', { name: /21 osób lub więcej/ }));
 
-    // Drugi rodzic — ostatni krok.
-    expect(screen.getByRole('progressbar', { name: 'Krok 8 z 8' })).toBeOnTheScreen();
+    // Drugi rodzic.
     await user.press(screen.getByRole('radio', { name: /Wychowuję dziecko sama/ }));
+
+    // Imiona (opcjonalne) — ostatni krok.
+    expect(screen.getByRole('progressbar', { name: 'Krok 9 z 9' })).toBeOnTheScreen();
+    await user.type(screen.getByLabelText('Twoje imię'), 'Marek');
     await user.press(screen.getByRole('button', { name: 'Zakończ i uruchom asystenta' }));
 
     expect(session().profile).toEqual({
@@ -75,6 +78,7 @@ describe('OnboardingScreen — przejście przez ankietę', () => {
       payerSize: 'duzy',
       partner: 'single',
       special: ['preterm'],
+      name: 'Marek',
     });
   });
 
@@ -97,7 +101,7 @@ describe('OnboardingScreen — przejście przez ankietę', () => {
     await user.press(screen.getByRole('radio', { name: /Opiekunem/ }));
     await user.press(screen.getByRole('button', { name: 'Wróć' }));
 
-    expect(screen.getByRole('progressbar', { name: 'Krok 1 z 7' })).toBeOnTheScreen();
+    expect(screen.getByRole('progressbar', { name: 'Krok 1 z 8' })).toBeOnTheScreen();
     expect(screen.getByRole('radio', { name: /Opiekunem/ })).toBeChecked();
   });
 });

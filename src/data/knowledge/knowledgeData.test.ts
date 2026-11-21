@@ -1,24 +1,8 @@
-import type { ArticleBlock } from '@/domain/knowledge/Article';
+import { articleTexts } from '@/domain/knowledge/articleTexts';
 
 import { ARTICLES } from './articles';
 import { CHAPTERS } from './chapters';
 import { ZUS_LINKS } from './zusLinks';
-
-/** Wszystkie teksty z bloku — do sprawdzenia, że po konwersji z HTML nie zostały tagi. */
-function blockTexts(block: ArticleBlock): string[] {
-  switch (block.type) {
-    case 'paragraph':
-    case 'important':
-    case 'example':
-      return [block.text];
-    case 'list':
-      return block.items;
-    case 'glossary':
-      return block.entries.flatMap((e) => [e.term, e.definition]);
-    case 'table':
-      return [...block.header, ...block.rows.flat()];
-  }
-}
 
 describe('dane zakładki Wiedza', () => {
   it('7 rozdziałów i 30 artykułów z Poradnika', () => {
@@ -46,7 +30,7 @@ describe('dane zakładki Wiedza', () => {
   it('treść nie zawiera resztek HTML i każdy artykuł ma treść', () => {
     for (const article of ARTICLES) {
       expect(article.body.length).toBeGreaterThan(0);
-      for (const text of article.body.flatMap(blockTexts)) expect(text).not.toMatch(/[<>]/);
+      for (const text of articleTexts(article)) expect(text).not.toMatch(/[<>]/);
     }
   });
 

@@ -2,6 +2,9 @@ import { createContext } from 'react';
 
 import type { ParentProfile } from '@/domain/profile/ParentProfile';
 
+/** Tryb wsparcia po stracie: Start bez odliczania i gratulacji, tylko to, co pomaga. */
+export type SupportMode = 'none' | 'pregnancyLoss' | 'childDeath';
+
 /** Dane zalogowanego rodzica: czy jest zalogowany, jego profil i postęp na osi czasu. */
 export type SessionValue = {
   isSignedIn: boolean;
@@ -26,6 +29,9 @@ export type SessionValue = {
   /** Pisma, którym użytkownik zmienił stan archiwum (przeniósł do archiwum albo z niego przywrócił). */
   movedDocumentIds: ReadonlySet<string>;
   toggleDocumentArchived: (documentId: string) => void;
+  supportMode: SupportMode;
+  /** Włącza / wyłącza tryb wsparcia — zawsze po potwierdzeniu przez użytkownika. */
+  setSupportMode: (mode: SupportMode) => void;
 };
 
 export const SessionContext = createContext<SessionValue>({
@@ -43,4 +49,6 @@ export const SessionContext = createContext<SessionValue>({
   markDocumentRead: () => {},
   movedDocumentIds: new Set(),
   toggleDocumentArchived: () => {},
+  supportMode: 'none',
+  setSupportMode: () => {},
 });

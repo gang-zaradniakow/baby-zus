@@ -10,4 +10,7 @@ export const moreRoutes = {
   document: (documentId: string) => `/wiecej/pismo/${documentId}`,
   demo: '/wiecej/demo',
   admin: '/wiecej/admin',
+  situation: '/wiecej/sytuacja',
+  loss: '/wiecej/strata',
+  children: '/wiecej/dzieci',
 } as const;

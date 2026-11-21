@@ -3,7 +3,7 @@ import { useMemo, useState, type ReactNode } from 'react';
 import type { ParentProfile } from '@/domain/profile/ParentProfile';
 import { toggleInSet } from '@/utils/toggleInSet';
 
-import { SessionContext, type SessionValue } from './SessionContext';
+import { SessionContext, type SessionValue, type SupportMode } from './SessionContext';
 
 type Props = { children: ReactNode };
 
@@ -20,6 +20,7 @@ export function SessionProvider({ children }: Props) {
   const [personaId, setPersonaId] = useState<string | null>(null);
   const [readDocumentIds, setReadDocumentIds] = useState<ReadonlySet<string>>(NO_IDS);
   const [movedDocumentIds, setMovedDocumentIds] = useState<ReadonlySet<string>>(NO_IDS);
+  const [supportMode, setSupportMode] = useState<SupportMode>('none');
 
   /** Nowy profil = nowe terminy i pisma — czyścimy postęp i stan skrzynki. */
   const startFresh = (newProfile: ParentProfile | null, newPersonaId: string | null) => {
@@ -28,6 +29,7 @@ export function SessionProvider({ children }: Props) {
     setCompletedTaskIds(NO_IDS);
     setReadDocumentIds(NO_IDS);
     setMovedDocumentIds(NO_IDS);
+    setSupportMode('none');
   };
 
   const value = useMemo<SessionValue>(
@@ -49,8 +51,10 @@ export function SessionProvider({ children }: Props) {
       markDocumentRead: (id) => setReadDocumentIds((ids) => (ids.has(id) ? ids : new Set([...ids, id]))),
       movedDocumentIds,
       toggleDocumentArchived: (id) => setMovedDocumentIds((ids) => toggleInSet(ids, id)),
+      supportMode,
+      setSupportMode,
     }),
-    [isSignedIn, profile, completedTaskIds, personaId, readDocumentIds, movedDocumentIds],
+    [isSignedIn, profile, completedTaskIds, personaId, readDocumentIds, movedDocumentIds, supportMode],
   );
 
   return <SessionContext value={value}>{children}</SessionContext>;

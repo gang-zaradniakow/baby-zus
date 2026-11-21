@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { HeartHandshake, Info, LogIn, LogOut, Mail, PenLine, Settings, ShieldCheck, SlidersHorizontal, Sparkles, Video } from 'lucide-react-native';
+import { Baby, HeartHandshake, HeartPulse, Info, LogIn, LogOut, Mail, PenLine, Settings, ShieldCheck, SlidersHorizontal, Sparkles, Video } from 'lucide-react-native';
 import { View } from 'react-native';
 
 import { Button } from '@/components/atoms/Button';
@@ -67,6 +67,24 @@ export function MoreScreen() {
             </MoreSection>
           </>
         )}
+
+        <MoreSection title="Moja rodzina">
+          {profile ? (
+            <LinkRow
+              icon={Baby}
+              title="Profil dziecka"
+              subtitle={profile.childName ?? 'Terminy i świadczenia z ankiety'}
+              onPress={() => router.push(moreRoutes.children)}
+            />
+          ) : null}
+          <LinkRow
+            icon={HeartPulse}
+            tone="accent"
+            title="Moja sytuacja się zmieniła"
+            subtitle="Strata, nowe dziecko — delikatne ścieżki"
+            onPress={() => router.push(moreRoutes.situation)}
+          />
+        </MoreSection>
 
         <MoreSection title="Pomoc">
           <LinkRow

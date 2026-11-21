@@ -27,7 +27,7 @@ rework nie zostanie zrobiony.
 | 0 | — | Porządki: usunięcie `feat/ekran-swiadczenia`, ten wpis w FUNKCJE.md | ✅ |
 | 1 | `feat/guest-mode` | Nowe taby, tryb gościa (profil bez logowania), RootNavigator bez wymuszonych strażników | ✅ |
 | 2 | `feat/guest-survey` | Ankieta gościa — do 9 kroków (rola, etap, data, [data urodzenia przy adopcji], liczba dzieci, sytuacje specjalne, zatrudnienie, [płatnik], drugi rodzic, imiona) | ✅ |
-| 3 | `feat/knowledge-base` | Zakładka Wiedza — 7 rozdziałów, ~20 artykułów Poradnika ZUS, wyszukiwarka | ⏳ |
+| 3 | `feat/knowledge-base` | Zakładka Wiedza — 7 rozdziałów, 30 artykułów Poradnika ZUS, wyszukiwarka | ✅ |
 | 4 | `feat/calculator` | Zintegrowany kalkulator zasiłku (zbieg tytułów, Z-3, adopcja, „za życiem”, wcześniak, praca na urlopie) | ⏳ |
 | 5 | `feat/more-hub` | Więcej jako hub: Moje dane z ZUS, Wiadomości, Dzieci, Kontakt, Ustawienia, O aplikacji, Wsparcie, Panel demo, Panel administracyjny (mock) | ⏳ |
 | 6 | `feat/assistant` | Asystent — wyszukiwanie w bazie wiedzy (bez AI) | ⏳ |
@@ -112,6 +112,33 @@ rework nie zostanie zrobiony.
 - **Na później:** szczegóły wcześniaka (tydzień ciąży, masa, dni w szpitalu) z prototypu — dojdą
   przy Kalkulatorze (Faza 4), bo tylko on ich używa.
 
+## Wiedza (Poradnik ZUS)
+
+- **Branch/commit:** Faza 3, branch `feat/knowledge-base`: `2f7fb25` (model i treść), `27aab97`
+  (wyszukiwarka), `707864d` (bloki treści, RichText), `d1b785e` (BackButton, LinkRow, SearchField),
+  `b6be6ec` (ekrany i trasy).
+- **Czym jest:** Zakładka z treścią „Poradnika dla rodziców i opiekunów dzieci” (ZUS, stan prawny
+  1.04.2026): 7 rozdziałów, 30 artykułów. Wyszukiwarka (od 2 znaków) bez ogonków i z prostą obsługą
+  odmiany („zasiłek” znajdzie „zasiłku”, „Z-3” to jedno słowo). Artykuł: treść w blokach, przycisk
+  „Policz w kalkulatorze”, linki do zus.pl, źródło (strona Poradnika), „Dalej” w rozdziale.
+- **Pliki:**
+  - `src/domain/knowledge/Article.ts`, `Chapter.ts` — typy; artykuł = lista bloków (akapit, lista,
+    słowniczek, ramka WAŻNE, ramka Przykład, tabela), pogrubienia jako `**tak**`.
+  - `src/domain/knowledge/searchArticles.ts`, `articleTexts.ts`, `chapterArticles.ts`, `nextArticleInChapter.ts`.
+  - `src/utils/normalizeSearchText.ts`, `stemSearchWord.ts`, `splitBoldSegments.ts`, `pluralizePl.ts`.
+  - `src/data/knowledge/articles/` — treść, plik na rozdział (wygenerowana automatycznie z HTML
+    prototypu `js/wiedza.js`); `chapters.ts` (ikona, ton), `zusLinks.ts`.
+  - `src/features/knowledge/components/` — bloki (`ArticleBlockView` + `ParagraphBlock`, `ListBlock`,
+    `GlossaryBlock`, `CalloutBlock`, `TableBlock`), listy `ArticleList`, `ChapterList`;
+    `knowledgeRoutes.ts` — adresy ekranów.
+  - `src/components/atoms/RichText`, `molecules/BackButton`, `LinkRow`, `SearchField`; `ScreenLayout`
+    dostał opcjonalne `onBack`.
+  - `src/screens/KnowledgeScreen/`, `ChapterScreen/`, `ArticleScreen/`; trasy
+    `src/app/(tabs)/wiedza/_layout.tsx` (Stack), `index.tsx`, `[chapterId].tsx`, `artykul/[articleId].tsx`.
+- **Na później:** infografiki z prototypu (`FIG`, liczone z parametrów prawnych — Faza 4), przyciski
+  „Wniosek” (Faza 7), „Kontakt z ZUS”/„Wsparcie” (Faza 5), „Zapytaj asystenta” przy braku wyników
+  (Faza 6), karty „na ten tydzień/miesiąc” na Starcie (`CARDS_POR`).
+
 ## Oś czasu (ekran Start)
 
 - **Branch/commit:** `afde31e feat(timeline): oś czasu urzędowych kroków na ekranie Start` (main)
@@ -164,11 +191,10 @@ usunięty lokalnie i na `origin`, nie scalony do `main`. Wzorce z niego (np. jed
 Na dziś bez logiki — sam nagłówek i opis (`ScreenLayout` bez treści):
 
 - **Asystent** (`src/screens/AssistantScreen.tsx`) — Faza 6 rework: wyszukiwanie w bazie wiedzy.
-- **Wiedza** (`src/screens/KnowledgeScreen.tsx`, nowy w Fazie 1) — Faza 3 rework: rozdziały i artykuły.
 - **Kalkulator** (`src/screens/CalculatorScreen.tsx`, nowy w Fazie 1) — Faza 4 rework: silnik kalkulatora.
 - **Wiadomości** (`src/screens/MessagesScreen.tsx`) — usunięty z navbaru w Fazie 1 (`BenefitsScreen`
   usunięty całkowicie), Faza 5 wraca jako podekran Więcej.
-- Test wszystkich czterech: `src/screens/placeholderScreens.test.tsx` (sprawdza tylko nagłówek).
+- Test zaślepek: `src/screens/placeholderScreens.test.tsx` (sprawdza tylko nagłówek).
 
 ## Więcej (profil, wylogowanie) **[Faza 5 rozbuduje w hub]**
 

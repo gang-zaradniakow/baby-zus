@@ -30,7 +30,7 @@ rework nie zostanie zrobiony.
 | 3 | `feat/knowledge-base` | Zakładka Wiedza — 7 rozdziałów, 30 artykułów Poradnika ZUS, wyszukiwarka | ✅ |
 | 4 | `feat/calculator` | Zintegrowany kalkulator zasiłku (zbieg tytułów, Z-3, adopcja, „za życiem”, wcześniak, praca na urlopie) | ✅ |
 | 5 | `feat/more-hub` | Więcej jako hub: Moje dane z ZUS, Wiadomości, Dzieci, Kontakt, Ustawienia, O aplikacji, Wsparcie, Panel demo, Panel administracyjny (mock), tryb wsparcia | ✅ |
-| 6 | `feat/assistant` | Asystent — wyszukiwanie w bazie wiedzy (bez AI) | ⏳ |
+| 6 | `feat/assistant` | Asystent — wyszukiwanie w bazie wiedzy (bez AI) | ✅ |
 | 7 | `feat/wizards` | Kreatory wniosków/urlopów + „Sprawdź sprawę” (mock, bez PDF) | ⏳ |
 
 ---
@@ -219,12 +219,26 @@ usunięty lokalnie i na `origin`, nie scalony do `main`. Wzorce z niego (np. jed
 
 ---
 
-## Ekrany wciąż zaślepkowe
+## Asystent (baza wiedzy, bez AI)
 
-Na dziś bez logiki — sam nagłówek i opis (`ScreenLayout` bez treści):
-
-- **Asystent** (`src/screens/AssistantScreen.tsx`) — Faza 6 rework: wyszukiwanie w bazie wiedzy.
-- Test zaślepek: `src/screens/placeholderScreens.test.tsx` (sprawdza tylko nagłówek).
+- **Branch/commit:** Faza 6, branch `feat/assistant`: `140caa0` (baza wiedzy i silnik), `72b8534` (ekran).
+- **Czym jest:** Rozmowa z lokalną bazą wiedzy (51 pytań i odpowiedzi z prototypu, `js/kb.js`) —
+  działa offline, każda odpowiedź ma źródło. Silnik to port punktacji `search`/`answerLocal` z
+  `js/chat.js`; **zgodność potwierdzona testem** na wynikach oryginału dla 63 pytań. Słabe
+  dopasowanie → uczciwe „nie mam pewnej odpowiedzi” + kontakt z ZUS. „Dla Ciebie:” — dopowiedzenia
+  z profilu (kto wypłaca zasiłek, wniosek ZAM przy firmie, zaległość z eZUS, terminy). Podpowiedzi
+  pytań wg etapu z ankiety albo trybu wsparcia, podobne pytania, ocena odpowiedzi. Tryb AI z
+  prototypu (serwer → Claude) świadomie pominięty — w aplikacji nie ma AI.
+- **Pliki:**
+  - `src/data/assistant/knowledgeBase.ts` (wygenerowane z HTML prototypu; linki do kreatorów wniosków
+    pominięte — Faza 7), `suggestions.ts`.
+  - `src/domain/assistant/` — `KnowledgeEntry`, `questionTokens`, `searchKnowledgeBase`, `answerQuestion`
+    (+ `__fixtures__/prototypeAnswers.json`), `personalizeAnswer`.
+  - `src/features/assistant/` — `useAssistantChat`, `assistantHref`, `components/AssistantReply`,
+    `ChatComposer`.
+  - `src/screens/AssistantScreen/`; `StepLayout` dostał `autoScrollToEnd`.
+- **Wejścia:** `/asystent?pytanie=…` — „Zapytaj asystenta” w Wiedzy (brak wyników), w piśmie z ZUS
+  i w trybie wsparcia.
 
 ## Więcej (hub) i ekrany po zalogowaniu
 

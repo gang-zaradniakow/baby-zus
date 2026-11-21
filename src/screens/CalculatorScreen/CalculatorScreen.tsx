@@ -1,9 +1,11 @@
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
+import { FileSearch } from 'lucide-react-native';
 import { useState } from 'react';
 import { View } from 'react-native';
 
 import { TextButton } from '@/components/atoms/TextButton';
 import { Accordion } from '@/components/molecules/Accordion';
+import { LinkRow } from '@/components/molecules/LinkRow';
 import { ScreenLayout } from '@/components/templates/ScreenLayout';
 import { BenefitResult } from '@/features/calculator/components/BenefitResult';
 import { ChildFields } from '@/features/calculator/components/ChildFields';
@@ -102,6 +104,13 @@ export function CalculatorScreen() {
         )}
 
         {profile ? <TextButton title="Przywróć dane z ankiety" onPress={calc.reset} /> : null}
+
+        <LinkRow
+          icon={FileSearch}
+          title="Sprawdź sprawę"
+          subtitle="Masz dokumenty z ZUS lub od pracodawcy? Sprawdzimy, czy świadczenie przysługuje"
+          onPress={() => router.push('/kalkulator/sprawa')}
+        />
       </View>
     </ScreenLayout>
   );

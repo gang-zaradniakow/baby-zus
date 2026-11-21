@@ -11,7 +11,7 @@ import type { PregnancyCalculation } from '../computeCalculation';
 
 import { AllowanceCard } from './AllowanceCard';
 import { styles } from './calculator.styles';
-import { CheckList } from './CheckList';
+import { CheckList } from '@/components/molecules/CheckList';
 import { ResultHero } from './ResultHero';
 import { styles as rowStyles } from './SegmentList.styles';
 

@@ -8,7 +8,7 @@ dostają własną sekcję, zanim commit zostanie opisany użytkownikowi jako got
 
 ---
 
-## ⚠️ Rework w toku (od 2026-11-21)
+## Rework (od 2026-11-21) — wszystkie fazy zrobione
 
 Aplikacja jest przebudowywana pod nową koncepcję (`Downloads/mZUS-dla-Rodzica (1) (1)`,
 HackNation 2026) — inny zakres (tylko świadczenia z ubezpieczenia chorobowego, bez
@@ -31,7 +31,7 @@ rework nie zostanie zrobiony.
 | 4 | `feat/calculator` | Zintegrowany kalkulator zasiłku (zbieg tytułów, Z-3, adopcja, „za życiem”, wcześniak, praca na urlopie) | ✅ |
 | 5 | `feat/more-hub` | Więcej jako hub: Moje dane z ZUS, Wiadomości, Dzieci, Kontakt, Ustawienia, O aplikacji, Wsparcie, Panel demo, Panel administracyjny (mock), tryb wsparcia | ✅ |
 | 6 | `feat/assistant` | Asystent — wyszukiwanie w bazie wiedzy (bez AI) | ✅ |
-| 7 | `feat/wizards` | Kreatory wniosków/urlopów + „Sprawdź sprawę” (mock, bez PDF) | ⏳ |
+| 7 | `feat/wizards` | Kreatory wniosków/urlopów + „Sprawdź sprawę” (mock, bez PDF) | ✅ |
 
 ---
 
@@ -218,6 +218,35 @@ usunięty lokalnie i na `origin`, nie scalony do `main`. Wzorce z niego (np. jed
 = jeden plik + test dla reguł domenowych) zostają inspiracją dla Fazy 4 (Kalkulator).
 
 ---
+
+## Wnioski i pisma, „Sprawdź sprawę”
+
+- **Branch/commit:** Faza 7, branch `feat/wizards`: `c327252` (silnik i 9 kreatorów), `1406a15` (ekrany,
+  wynik, Moje dokumenty), `4530299` („Sprawdź sprawę”).
+- **Czym jest:** Kreatory „jednego oddechu” z prototypu (`js/wizards.js`): jedno pytanie na ekran,
+  łagodne komunikaty, terminy prawne sprawdzane na bieżąco (błąd blokuje, ostrzeżenie pozwala iść dalej),
+  „Sprawdź i zatwierdź”, a na końcu **pismo do pracodawcy** (podgląd + „Udostępnij / wyślij do kadr”)
+  albo **wniosek do ZUS / gov.pl** (symulacja z numerem UPO, wymaga logowania). Kreatory: 81,5% (21 dni
+  od porodu), urlop rodzicielski (21 dni przed, maks. 5 części), ojcowski (7 dni przed, do 1. urodzin),
+  uzupełniający (wcześniak), opiekuńczy Z-15A, adopcja (7/21 dni), przejęcie macierzyńskiego przez tatę,
+  odpis aktu urodzenia, pogrzebowy Z-12. Wyniki trafiają do Wiadomości → „Moje dokumenty” (także gościa).
+  **Sprawdź sprawę** (w zakładce Kalkulator): dane z dokumentów wpisane ręcznie → ubezpieczenie w dniu
+  zdarzenia, okres wyczekiwania, zaległość, kto wypłaca; „Przelicz w kalkulatorze”.
+- **Pliki:**
+  - `src/domain/wizards/` — `Wizard` (typy), `createWizardContext`, `wizardAnswers`, `checkStep`,
+    `prefillAnswers`, `describeAnswer`, `letterToText`, `createUpoNumber`, `SentDocument`.
+  - `src/data/wizards/` — 9 kreatorów (plik na kreator) + `index.ts` (`WIZARDS`, `findWizard`), `formsGlossary.ts`.
+  - `src/features/wizards/` — `useWizardForm`, `components/WizardStepInput`, `LetterPreview`, `InstitutionBadge`.
+  - `src/domain/caseCheck/verifyCase.ts`.
+  - `src/screens/WizardListScreen/`, `WizardScreen/`, `WizardResultScreen/`, `CaseCheckScreen/`; trasy
+    `src/app/(tabs)/wiecej/wnioski.tsx`, `wniosek/[wizardId].tsx`, `dokument/[documentId].tsx`,
+    `src/app/(tabs)/kalkulator/` (Stack: `index`, `sprawa`).
+  - `components/molecules/RadioRow`, `CheckList` (przeniesiony z kalkulatora); `utils/formatTime`;
+    sesja: `sentDocuments`; `legalParams.funeralAllowance`.
+- **Powiązania:** „Przygotuj wniosek” w artykułach Wiedzy, przyciski wniosków w Asystencie, Z-12 w trybie
+  wsparcia, hub „Sprawy”.
+- **Świadomie pominięte:** szkice zapisywane między wejściami, wybór plików i odczyt PDF (deklaracja
+  „dołączę” zamiast pliku), druk/PDF (udostępnianie tekstu zamiast), checklista dowodowa JDG.
 
 ## Asystent (baza wiedzy, bez AI)
 

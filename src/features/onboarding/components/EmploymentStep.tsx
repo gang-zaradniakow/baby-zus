@@ -12,7 +12,7 @@ type Props = {
   onToggle: (id: EmploymentId) => void;
 };
 
-/** Krok 2: formy zatrudnienia (można łączyć — zbieg tytułów ubezpieczenia). */
+/** Krok „Zatrudnienie”: formy zatrudnienia (można łączyć — zbieg tytułów ubezpieczenia). */
 export function EmploymentStep({ selected, onToggle }: Props) {
   return (
     <View>

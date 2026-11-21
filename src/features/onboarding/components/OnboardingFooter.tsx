@@ -1,14 +1,14 @@
 import { Button } from '@/components/atoms/Button';
 
-import { ONBOARDING_STEPS, type OnboardingForm } from '../useOnboardingForm';
+import type { OnboardingForm } from '../useOnboardingForm';
 
 type Props = { form: OnboardingForm };
 
-/** Przycisk na dole kreatora. W kroku 1 go nie ma — wybór karty sam przechodzi dalej. */
+/** Przycisk na dole ankiety. W krokach jednokrotnego wyboru go nie ma — wybór karty sam przechodzi dalej. */
 export function OnboardingFooter({ form }: Props) {
-  if (form.step === 1) return null;
+  if (form.autoAdvances) return null;
 
-  if (form.step === ONBOARDING_STEPS) {
+  if (form.isLastStep) {
     return <Button title="Zakończ i uruchom asystenta" onPress={form.finish} />;
   }
 

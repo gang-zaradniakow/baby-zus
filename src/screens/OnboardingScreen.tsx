@@ -2,7 +2,7 @@ import { StepLayout } from '@/components/templates/StepLayout';
 import { OnboardingFooter } from '@/features/onboarding/components/OnboardingFooter';
 import { OnboardingStepContent } from '@/features/onboarding/components/OnboardingStepContent';
 import { OnboardingTopBar } from '@/features/onboarding/components/OnboardingTopBar';
-import { ONBOARDING_STEPS, useOnboardingForm } from '@/features/onboarding/useOnboardingForm';
+import { useOnboardingForm } from '@/features/onboarding/useOnboardingForm';
 import { useSession } from '@/session';
 
 export function OnboardingScreen() {
@@ -13,9 +13,9 @@ export function OnboardingScreen() {
     <StepLayout
       header={
         <OnboardingTopBar
-          step={form.step}
-          total={ONBOARDING_STEPS}
-          onBack={form.step > 1 ? form.goBack : undefined}
+          step={form.stepNumber}
+          total={form.totalSteps}
+          onBack={form.isFirstStep ? undefined : form.goBack}
         />
       }
       footer={<OnboardingFooter form={form} />}

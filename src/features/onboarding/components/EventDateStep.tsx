@@ -12,7 +12,7 @@ type Props = {
   onChange: (text: string) => void;
 };
 
-/** Krok 2: data zdarzenia — pytanie dopasowane do etapu (termin porodu / urodzenie / przyjęcie). */
+/** Krok „Data”: data zdarzenia — pytanie dopasowane do etapu (termin porodu / urodzenie / przyjęcie). */
 export function EventDateStep({ stage, value, error, onChange }: Props) {
   const question = EVENT_DATE_QUESTIONS[stage];
 

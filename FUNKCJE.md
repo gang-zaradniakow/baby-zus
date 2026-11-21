@@ -25,7 +25,7 @@ rework nie zostanie zrobiony.
 | Faza | Branch | Czym jest | Status |
 |---|---|---|---|
 | 0 | — | Porządki: usunięcie `feat/ekran-swiadczenia`, ten wpis w FUNKCJE.md | ✅ |
-| 1 | `feat/guest-mode` | Nowe taby, tryb gościa (profil bez logowania), RootNavigator bez wymuszonych strażników | 🔄 w toku |
+| 1 | `feat/guest-mode` | Nowe taby, tryb gościa (profil bez logowania), RootNavigator bez wymuszonych strażników | ✅ |
 | 2 | `feat/guest-survey` | Ankieta gościa — 9 kroków (rola, etap, data, liczba dzieci, sytuacje specjalne, zatrudnienie, płatnik, partner, imiona) | ⏳ |
 | 3 | `feat/knowledge-base` | Zakładka Wiedza — 7 rozdziałów, ~20 artykułów Poradnika ZUS, wyszukiwarka | ⏳ |
 | 4 | `feat/calculator` | Zintegrowany kalkulator zasiłku (zbieg tytułów, Z-3, adopcja, „za życiem”, wcześniak, praca na urlopie) | ⏳ |
@@ -47,16 +47,19 @@ rework nie zostanie zrobiony.
   - `src/theme/spacing.ts`, `radius.ts`, `shadows.ts`, `typography.ts` — tokeny odstępów, zaokrągleń, cieni, wariantów tekstu.
   - `src/theme/ThemeProvider.tsx` + `ThemeContext.ts` + `useTheme.ts` — dostawca motywu i hook do niego.
 
-## Dolna nawigacja (NavBar) **[ZASTĄPIONE w Fazie 1]**
+## Dolna nawigacja (NavBar)
 
-- **Branch/commit:** `8ac33fb feat(nav): dolny pasek nawigacji z 5 zakładkami mZUS` (main)
-- **Czym było:** Pasek zakładek: Start, Świadczenia, Asystent, Wiadomości, Więcej.
-  Rework (Faza 1) zmienia zakładki na: Start, Wiedza, Asystent, Kalkulator, Więcej.
-- **Pliki (struktura zostaje, treść `TABS` się zmienia):**
+- **Branch/commit:** `8ac33fb feat(nav): dolny pasek nawigacji z 5 zakładkami mZUS` (main);
+  zakładki zamienione w Fazie 1 (`7b0a641 feat(nav): nowe zakładki Wiedza i Kalkulator zamiast
+  Świadczeń i Wiadomości`, branch `feat/guest-mode`).
+- **Czym jest:** Pasek zakładek: Start, **Wiedza**, Asystent, **Kalkulator**, Więcej (było:
+  Start, Świadczenia, Asystent, Wiadomości, Więcej).
+- **Pliki:**
   - `src/navigation/tabs.ts` — `TABS`, jedyne źródło prawdy o zakładkach (nazwa, ikona, trasa, ton).
   - `src/components/organisms/NavBar/` — pasek: dzieci + rola `tablist` + margines bezpieczny.
   - `src/components/molecules/NavBarItem/` — jedna zakładka (ikona + etykieta), kolory liczy `resolveNavBarItemColors.ts`.
   - `src/app/(tabs)/_layout.tsx` — łączy routing (`expo-router/ui`) z wyglądem (`NavBar` + `NavBarItem`).
+  - `src/app/(tabs)/wiedza.tsx`, `kalkulator.tsx` — nowe trasy (re-eksportują `KnowledgeScreen`/`CalculatorScreen`, na razie zaślepki).
 
 ## Kalendarz i strażnik terminów
 
@@ -79,19 +82,28 @@ rework nie zostanie zrobiony.
   - `src/domain/profile/describeStage.ts` — opis etapu („ciąża, 28. tydzień” itp.) po polsku.
   - `src/domain/profile/toggleEmployment.ts`, `validateEventDate.ts` — logika formularza.
 
-## Logowanie (mObywatel) i trasy chronione **[ZASTĄPIONE w Fazie 1 — logowanie staje się opcjonalne]**
+## Logowanie (mObywatel) i tryb gościa
 
-- **Branch/commit:** `7f06e6a feat(session): symulowane logowanie przez mObywatel i chronione trasy` (main)
-- **Czym było:** Zaślepka logowania przez mObywatel + stan sesji (zalogowanie, profil) +
-  `RootNavigator`, który wymuszał kolejność logowanie → onboarding → zakładki.
-  Rework (Faza 1): zakładki dostępne bez logowania; `profile` przestaje zależeć od
-  `isSignedIn` (gość może mieć profil z ankiety); logowanie potrzebne tylko do danych
-  z eZUS, Wiadomości i wyboru persony.
+- **Branch/commit:** `7f06e6a feat(session): symulowane logowanie przez mObywatel i chronione trasy`
+  (main); tryb gościa dodany w Fazie 1 (branch `feat/guest-mode`):
+  `1ca70cd feat(session): profil gościa niezależny od logowania`,
+  `7ada4eb feat(navigation): zakładki dostępne bez logowania`.
+- **Czym jest:** Zaślepka logowania przez mObywatel + stan sesji. Od Fazy 1: zakładki
+  (`(tabs)`) dostępne **zawsze**, bez logowania — `/login` chowa się tylko, gdy już
+  zalogowany; `/onboarding` chowa się, gdy profil już jest (gościa albo zalogowanego).
+  `profile` nie zależy od `isSignedIn` — gość ma profil z ankiety bez logowania; logowanie
+  jest osobnym przełącznikiem potrzebnym tylko do danych z eZUS, Wiadomości i person (Faza 5).
+  `signOut` czyści tylko `isSignedIn` (profil zostaje) — czyszczenie profilu to osobna akcja
+  `resetProfile` (patrz MoreScreen niżej).
 - **Pliki:**
   - `src/features/login/useSimulatedLogin.ts` — hook symulujący logowanie.
   - `src/screens/LoginScreen/` — ekran logowania.
-  - `src/session/SessionContext.ts`, `SessionProvider.tsx`, `useSession.ts` — kontekst sesji.
-  - `src/navigation/RootNavigator.tsx` — strażnicy trás (do przebudowy w Fazie 1).
+  - `src/session/SessionContext.ts`, `SessionProvider.tsx`, `useSession.ts` — kontekst sesji
+    (`isSignedIn`, `profile`, `signIn`, `completeOnboarding`, `signOut`, `resetProfile`).
+  - `src/navigation/RootNavigator.tsx` — jeden strażnik na `/login` (`!isSignedIn`), jeden na
+    `/onboarding` (`!hasProfile`), `(tabs)` bezwarunkowe.
+  - `src/screens/StartScreen.tsx` — gdy `profile === null`, pokazuje CTA „Sprawdź bez
+    logowania” (prowadzi do `/onboarding`) zamiast osi czasu.
 
 ## Onboarding (kreator sytuacji rodzica) **[Faza 2 rozszerzy do ankiety gościa]**
 
@@ -112,7 +124,9 @@ rework nie zostanie zrobiony.
 - **Czym jest:** Główny ekran po zalogowaniu/ankiecie. Pokazuje chronologiczną listę kroków
   urzędowych (zgłoszenie urodzenia, wniosek o zasiłek, 800+…) wyliczonych z profilu rodzica,
   z terminami, statusem (zrobione / pilne / spóźnione / przyszłe) i odhaczaniem zadań.
-  Faza 1 doda gościowi bez profilu skróty do Kalkulatora/Wiedzy/Asystenta/Kontaktu.
+  Od Fazy 1: gość bez profilu widzi zamiast tego CTA „Sprawdź bez logowania” (patrz sekcja
+  logowania wyżej) — skróty do Kalkulatora/Wiedzy/Asystenta to pomysł na później, gdy te
+  zakładki będą mieć realną treść (Fazy 3–4).
 - **Pliki:**
   - `src/domain/timeline/TimelineItem.ts` — typy: `Institution`, `TimelineEntry`, `TimelineStatus`, `TimelineItem`.
   - `src/domain/timeline/pregnancyEntries.ts`, `childEntries.ts`, `adoptionEntries.ts` — reguły: jakie wpisy dostaje rodzic w zależności od etapu.
@@ -156,13 +170,21 @@ usunięty lokalnie i na `origin`, nie scalony do `main`. Wzorce z niego (np. jed
 Na dziś bez logiki — sam nagłówek i opis (`ScreenLayout` bez treści):
 
 - **Asystent** (`src/screens/AssistantScreen.tsx`) — Faza 6 rework: wyszukiwanie w bazie wiedzy.
-- **Wiadomości** (`src/screens/MessagesScreen.tsx`) — Faza 1 usuwa z navbaru, Faza 5 wraca jako podekran Więcej.
-- Test obu: `src/screens/placeholderScreens.test.tsx` (sprawdza tylko nagłówek).
+- **Wiedza** (`src/screens/KnowledgeScreen.tsx`, nowy w Fazie 1) — Faza 3 rework: rozdziały i artykuły.
+- **Kalkulator** (`src/screens/CalculatorScreen.tsx`, nowy w Fazie 1) — Faza 4 rework: silnik kalkulatora.
+- **Wiadomości** (`src/screens/MessagesScreen.tsx`) — usunięty z navbaru w Fazie 1 (`BenefitsScreen`
+  usunięty całkowicie), Faza 5 wraca jako podekran Więcej.
+- Test wszystkich czterech: `src/screens/placeholderScreens.test.tsx` (sprawdza tylko nagłówek).
 
 ## Więcej (profil, wylogowanie) **[Faza 5 rozbuduje w hub]**
 
-- **Branch/commit:** `6209bbc test(screens): MoreScreen — wylogowanie czyści sesję`
-- **Czym jest:** Zakładka „Więcej” — przycisk wylogowania, który czyści sesję i wraca do ekranu logowania.
-  Faza 5 rozbuduje to w menu: Moje dane z ZUS, Wiadomości, Dzieci, Kontakt, Ustawienia, O aplikacji,
-  Wsparcie, Panel demo, Panel administracyjny.
+- **Branch/commit:** `6209bbc test(screens): MoreScreen — wylogowanie czyści sesję` (main);
+  rozróżnienie Wyloguj/Usuń moje odpowiedzi w Fazie 1
+  (`e910bc7 feat(screens): MoreScreen rozróżnia Wyloguj i Usuń moje odpowiedzi`,
+  branch `feat/guest-mode`).
+- **Czym jest:** Zakładka „Więcej”. Zalogowany widzi „Wyloguj” (czyści tylko `isSignedIn`,
+  profil zostaje). Gość (niezalogowany) widzi „Usuń moje odpowiedzi i zacznij od nowa”
+  (`resetProfile` — czyści profil i postęp zadań; to jego odpowiednik pełnego resetu, bo nie
+  ma się z czego wylogować). Faza 5 rozbuduje to w menu: Moje dane z ZUS, Wiadomości, Dzieci,
+  Kontakt, Ustawienia, O aplikacji, Wsparcie, Panel demo, Panel administracyjny.
 - **Pliki:** `src/screens/MoreScreen.tsx` (+ `.test.tsx`).

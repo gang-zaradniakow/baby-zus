@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: zus-baby-backend
+
+info:
+  app:
+    version: ${APP_VERSION:dev}
+
+management:
+  info:
+    env:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info

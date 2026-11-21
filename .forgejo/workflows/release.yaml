@@ -1,0 +1,57 @@
+name: Wydanie PROD
+
+on:
+  workflow_dispatch:
+
+env:
+  REGISTRY: git.hack.kulesz.pl
+  IMAGE: git.hack.kulesz.pl/zespol/java-app
+  SERVICE: java-app
+
+jobs:
+  deploy-prod:
+    if: github.ref == 'refs/heads/main'
+    runs-on: budowanie
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Numer wydania
+        id: version
+        run: |
+          git fetch --tags --force origin
+          TODAY=$(TZ=Europe/Warsaw date +%Y.%m.%d)
+          LAST=$(git tag -l "$TODAY.*" | sed "s/^$TODAY\.//" | sort -n | tail -1)
+          echo "version=$TODAY.$(( ${LAST:-0} + 1 ))" >> "$GITHUB_OUTPUT"
+
+      - name: Wdrożenie na PROD
+        run: |
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_ed25519 && chmod 600 ~/.ssh/id_ed25519
+          echo "${{ vars.DEPLOY_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+          ssh -p 2200 deploy@10.42.0.1 prod "$SERVICE" "$IMAGE:${{ github.sha }}" "${{ steps.version.outputs.version }}"
+
+      - name: Tag obrazu i tag Git
+        run: |
+          V=${{ steps.version.outputs.version }}
+          echo "${{ secrets.REGISTRY_TOKEN }}" | docker login "$REGISTRY" -u "${{ vars.REGISTRY_USER }}" --password-stdin
+          docker pull "$IMAGE:${{ github.sha }}"
+          docker tag "$IMAGE:${{ github.sha }}" "$IMAGE:$V"
+          docker push "$IMAGE:$V"
+          git -c user.name="Forgejo CI" -c user.email="ci@hack.kulesz.pl" \
+            tag -a "$V" -m "Wydanie $V" "${{ github.sha }}"
+          git push "https://${{ vars.REGISTRY_USER }}:${{ secrets.REGISTRY_TOKEN }}@$REGISTRY/${{ github.repository }}.git" "$V"
+          echo "Wydanie $V"
+
+      - name: Strona wydania
+        run: |
+          V=${{ steps.version.outputs.version }}
+          PREV=$(git tag -l '20*.*.*.*' --sort=-creatordate | grep -vx "$V" | head -1)
+          NOTES=$(git log --pretty='- %s (%h)' ${PREV:+$PREV..}${{ github.sha }})
+          jq -n --arg tag "$V" --arg body "$NOTES" \
+            '{tag_name: $tag, name: $tag, body: $body}' \
+          | curl -sf -X POST \
+              -H "Authorization: token ${{ secrets.REGISTRY_TOKEN }}" \
+              -H "Content-Type: application/json" \
+              -d @- "https://$REGISTRY/api/v1/repos/${{ github.repository }}/releases"

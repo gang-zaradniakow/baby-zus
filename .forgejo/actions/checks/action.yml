@@ -1,0 +1,32 @@
+name: Kontrole
+description: Spotless, testy jednostkowe i integracyjne
+
+runs:
+  using: composite
+  steps:
+    - name: Cache Mavena – odczyt
+      id: m2
+      uses: actions/cache/restore@v4
+      with:
+        path: ~/.m2/repository
+        key: maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: maven-
+
+    - name: Spotless
+      shell: bash
+      run: mvn -B spotless:check
+
+    - name: Testy jednostkowe
+      shell: bash
+      run: mvn -B test
+
+    - name: Testy integracyjne
+      shell: bash
+      run: mvn -B verify -DskipUnitTests=true
+
+    - name: Cache Mavena – zapis
+      if: steps.m2.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v4
+      with:
+        path: ~/.m2/repository
+        key: ${{ steps.m2.outputs.cache-primary-key }}

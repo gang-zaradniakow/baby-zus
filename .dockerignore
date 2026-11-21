@@ -1,0 +1,6 @@
+.git
+.forgejo
+target
+docs
+*.iml
+.idea

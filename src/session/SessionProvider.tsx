@@ -7,7 +7,7 @@ import { SessionContext, type SessionValue } from './SessionContext';
 
 type Props = { children: ReactNode };
 
-const NO_TASKS: ReadonlySet<string> = new Set();
+const NO_IDS: ReadonlySet<string> = new Set();
 
 /**
  * Stan sesji w pamięci (prototyp: logowanie jest symulowane, odświeżenie = wylogowanie).
@@ -16,7 +16,19 @@ const NO_TASKS: ReadonlySet<string> = new Set();
 export function SessionProvider({ children }: Props) {
   const [isSignedIn, setSignedIn] = useState(false);
   const [profile, setProfile] = useState<ParentProfile | null>(null);
-  const [completedTaskIds, setCompletedTaskIds] = useState<ReadonlySet<string>>(NO_TASKS);
+  const [completedTaskIds, setCompletedTaskIds] = useState<ReadonlySet<string>>(NO_IDS);
+  const [personaId, setPersonaId] = useState<string | null>(null);
+  const [readDocumentIds, setReadDocumentIds] = useState<ReadonlySet<string>>(NO_IDS);
+  const [movedDocumentIds, setMovedDocumentIds] = useState<ReadonlySet<string>>(NO_IDS);
+
+  /** Nowy profil = nowe terminy i pisma — czyścimy postęp i stan skrzynki. */
+  const startFresh = (newProfile: ParentProfile | null, newPersonaId: string | null) => {
+    setProfile(newProfile);
+    setPersonaId(newPersonaId);
+    setCompletedTaskIds(NO_IDS);
+    setReadDocumentIds(NO_IDS);
+    setMovedDocumentIds(NO_IDS);
+  };
 
   const value = useMemo<SessionValue>(
     () => ({
@@ -24,18 +36,21 @@ export function SessionProvider({ children }: Props) {
       profile,
       completedTaskIds,
       signIn: () => setSignedIn(true),
-      completeOnboarding: (newProfile) => {
-        setProfile(newProfile);
-        setCompletedTaskIds(NO_TASKS);
-      },
+      completeOnboarding: (newProfile) => startFresh(newProfile, null),
       toggleTask: (taskId) => setCompletedTaskIds((ids) => toggleInSet(ids, taskId)),
       signOut: () => setSignedIn(false),
-      resetProfile: () => {
-        setProfile(null);
-        setCompletedTaskIds(NO_TASKS);
+      resetProfile: () => startFresh(null, null),
+      personaId,
+      applyPersona: (id, personaProfile) => {
+        startFresh(personaProfile, id);
+        setSignedIn(true);
       },
+      readDocumentIds,
+      markDocumentRead: (id) => setReadDocumentIds((ids) => (ids.has(id) ? ids : new Set([...ids, id]))),
+      movedDocumentIds,
+      toggleDocumentArchived: (id) => setMovedDocumentIds((ids) => toggleInSet(ids, id)),
     }),
-    [isSignedIn, profile, completedTaskIds],
+    [isSignedIn, profile, completedTaskIds, personaId, readDocumentIds, movedDocumentIds],
   );
 
   return <SessionContext value={value}>{children}</SessionContext>;

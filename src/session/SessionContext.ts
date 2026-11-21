@@ -16,6 +16,16 @@ export type SessionValue = {
   signOut: () => void;
   /** Czyści profil i postęp (np. „Usuń moje odpowiedzi i zacznij od nowa” dla gościa). */
   resetProfile: () => void;
+  /** Przykładowa osoba z Panelu demo (`null` — własny profil). */
+  personaId: string | null;
+  /** Panel demo: podmienia profil na przykładową osobę i loguje (symulacja eZUS). */
+  applyPersona: (personaId: string, profile: ParentProfile) => void;
+  /** Pisma z ZUS otwarte przez użytkownika. */
+  readDocumentIds: ReadonlySet<string>;
+  markDocumentRead: (documentId: string) => void;
+  /** Pisma, którym użytkownik zmienił stan archiwum (przeniósł do archiwum albo z niego przywrócił). */
+  movedDocumentIds: ReadonlySet<string>;
+  toggleDocumentArchived: (documentId: string) => void;
 };
 
 export const SessionContext = createContext<SessionValue>({
@@ -27,4 +37,10 @@ export const SessionContext = createContext<SessionValue>({
   toggleTask: () => {},
   signOut: () => {},
   resetProfile: () => {},
+  personaId: null,
+  applyPersona: () => {},
+  readDocumentIds: new Set(),
+  markDocumentRead: () => {},
+  movedDocumentIds: new Set(),
+  toggleDocumentArchived: () => {},
 });

@@ -3,13 +3,11 @@ import type { ComponentType } from 'react';
 
 import { AssistantScreen } from './AssistantScreen';
 import { CalculatorScreen } from './CalculatorScreen';
-import { KnowledgeScreen } from './KnowledgeScreen';
 import { MessagesScreen } from './MessagesScreen';
 
 /** Ekrany-zaślepki zakładek: na razie tylko nagłówek i opis, treść dojdzie w kolejnych krokach. */
 describe.each<[string, ComponentType, string]>([
   ['AssistantScreen', AssistantScreen, 'Asystent'],
-  ['KnowledgeScreen', KnowledgeScreen, 'Wiedza'],
   ['CalculatorScreen', CalculatorScreen, 'Kalkulator'],
   ['MessagesScreen', MessagesScreen, 'Wiadomości'],
 ])('%s', (_name, Screen, title) => {

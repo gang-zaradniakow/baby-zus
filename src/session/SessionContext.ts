@@ -12,7 +12,10 @@ export type SessionValue = {
   signIn: () => void;
   completeOnboarding: (profile: ParentProfile) => void;
   toggleTask: (taskId: string) => void;
+  /** Wylogowuje — profil gościa (ankieta) zostaje, bo nie zależy od logowania. */
   signOut: () => void;
+  /** Czyści profil i postęp (np. „Usuń moje odpowiedzi i zacznij od nowa” dla gościa). */
+  resetProfile: () => void;
 };
 
 export const SessionContext = createContext<SessionValue>({
@@ -23,4 +26,5 @@ export const SessionContext = createContext<SessionValue>({
   completeOnboarding: () => {},
   toggleTask: () => {},
   signOut: () => {},
+  resetProfile: () => {},
 });

@@ -13,7 +13,7 @@ import { RootNavigator } from './RootNavigator';
  * Prawdziwy routing expo-router z RootNavigator jako głównym layoutem.
  * Ekrany to zaślepki z tekstem — test sprawdza tylko, który ekran jest dostępny.
  */
-async function renderApp() {
+async function renderApp(initialUrl = '/') {
   const { Probe, session } = createSessionProbe();
 
   const result = await renderRouter(
@@ -31,47 +31,51 @@ async function renderApp() {
       '(tabs)/_layout': () => <Slot />,
       '(tabs)/index': () => <Text>ekran Start</Text>,
     },
-    { initialUrl: '/' },
+    { initialUrl },
   );
 
   return { ...result, session };
 }
 
-describe('RootNavigator — strażnicy tras', () => {
-  it('niezalogowany trafia na logowanie, nawet gdy otwiera Start', async () => {
-    const app = await renderApp();
+describe('RootNavigator — tryb gościa i logowanie', () => {
+  it('gość (bez logowania, bez profilu) od razu widzi zakładki ze Startem', async () => {
+    const app = await renderApp('/');
+
+    expect(screen.getByText('ekran Start')).toBeOnTheScreen();
+    expect(app).toHavePathname('/');
+  });
+
+  it('ekran logowania jest dostępny pod /login, nawet dla gościa', async () => {
+    await renderApp('/login');
 
     expect(screen.getByText('ekran logowania')).toBeOnTheScreen();
-    expect(app).toHavePathname('/login');
   });
 
-  it('po zalogowaniu bez profilu: onboarding', async () => {
-    const app = await renderApp();
-
-    await act(() => app.session().signIn());
-
+  it('gość wypełnia ankietę bez logowania — po zakończeniu trafia na zakładki', async () => {
+    const app = await renderApp('/onboarding');
     expect(screen.getByText('ekran onboardingu')).toBeOnTheScreen();
-    expect(app).toHavePathname('/onboarding');
-  });
 
-  it('po onboardingu: zakładki z ekranem Start', async () => {
-    const app = await renderApp();
-
-    await act(() => app.session().signIn());
     await act(() => app.session().completeOnboarding(makeProfile()));
 
     expect(screen.getByText('ekran Start')).toBeOnTheScreen();
     expect(app).toHavePathname('/');
   });
 
-  it('wylogowanie wraca na ekran logowania', async () => {
-    const app = await renderApp();
+  it('logowanie trafia na zakładki — tam gości CTA ankiety, gdy nie ma jeszcze profilu', async () => {
+    const app = await renderApp('/login');
 
     await act(() => app.session().signIn());
-    await act(() => app.session().completeOnboarding(makeProfile()));
-    await act(() => app.session().signOut());
 
-    expect(screen.getByText('ekran logowania')).toBeOnTheScreen();
-    expect(app).toHavePathname('/login');
+    expect(screen.getByText('ekran Start')).toBeOnTheScreen();
+    expect(app).toHavePathname('/');
+  });
+
+  it('logowanie z profilem gościa (ankieta już wypełniona) trafia na zakładki', async () => {
+    const app = await renderApp('/login');
+
+    await act(() => app.session().completeOnboarding(makeProfile()));
+    await act(() => app.session().signIn());
+
+    expect(screen.getByText('ekran Start')).toBeOnTheScreen();
   });
 });

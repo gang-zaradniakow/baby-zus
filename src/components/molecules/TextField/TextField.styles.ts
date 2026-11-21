@@ -12,4 +12,10 @@ export const styles = StyleSheet.create({
     borderRadius: radius.md,
     borderWidth: 2,
   },
+  multiline: {
+    minHeight: 120,
+    padding: spacing.md,
+    borderRadius: radius.md,
+    borderWidth: 2,
+  },
 });

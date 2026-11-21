@@ -14,10 +14,12 @@ type Props = {
   hint?: string;
   /** Np. `'name'` dla imienia — podpowiedzi klawiatury i autouzupełnianie. */
   autoComplete?: 'name' | 'given-name' | 'off';
+  /** Kilka linii (np. treść wiadomości). */
+  multiline?: boolean;
 };
 
-/** Jednowierszowe pole tekstowe z etykietą — ten sam wygląd co `DateField`. */
-export function TextField({ value, onChangeText, label, placeholder, hint, autoComplete = 'off' }: Props) {
+/** Pole tekstowe z etykietą (jedno- lub wielowierszowe) — ten sam wygląd co `DateField`. */
+export function TextField({ value, onChangeText, label, placeholder, hint, autoComplete = 'off', multiline = false }: Props) {
   const { colors } = useTheme();
   const [isFocused, setFocused] = useState(false);
 
@@ -32,12 +34,14 @@ export function TextField({ value, onChangeText, label, placeholder, hint, autoC
         placeholder={placeholder}
         placeholderTextColor={colors.textMuted}
         autoComplete={autoComplete}
-        autoCapitalize="words"
+        autoCapitalize={multiline ? 'sentences' : 'words'}
+        multiline={multiline}
+        textAlignVertical={multiline ? 'top' : 'center'}
         accessibilityLabel={label}
         accessibilityHint={hint}
         style={[
-          styles.input,
-          typography.input,
+          multiline ? styles.multiline : styles.input,
+          multiline ? typography.body : typography.input,
           {
             color: colors.textPrimary,
             backgroundColor: colors.surface,

@@ -5,4 +5,8 @@ export const moreRoutes = {
   support: '/wiecej/wsparcie',
   about: '/wiecej/o-aplikacji',
   settings: '/wiecej/ustawienia',
+  zusData: '/wiecej/dane-zus',
+  messages: '/wiecej/wiadomosci',
+  document: (documentId: string) => `/wiecej/pismo/${documentId}`,
+  demo: '/wiecej/demo',
 } as const;

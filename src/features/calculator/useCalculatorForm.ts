@@ -1,8 +1,10 @@
 import { useState } from 'react';
 
+import { useZusData } from '@/features/zus/useZusData';
 import { useToday } from '@/hooks/useToday';
 import { useSession } from '@/session';
 
+import { applyZusAccount } from './applyZusAccount';
 import type { CalculatorForm, CalculatorSituation, FormParent, PersonForm } from './CalculatorForm';
 import { computeCalculation } from './computeCalculation';
 import { createCalculatorForm } from './createCalculatorForm';
@@ -15,8 +17,25 @@ type Patch<K extends keyof CalculatorForm> = Partial<CalculatorForm[K]>;
  */
 export function useCalculatorForm(initialSituation?: CalculatorSituation) {
   const today = useToday();
-  const { profile } = useSession();
-  const [form, setForm] = useState<CalculatorForm>(() => createCalculatorForm(profile, today, initialSituation));
+  const { profile, isSignedIn } = useSession();
+  const zus = useZusData();
+
+  /** Formularz z ankiety; po zalogowaniu moja osoba dostaje podstawy z eZUS. */
+  const initialForm = (situation?: CalculatorSituation): CalculatorForm => {
+    const form = createCalculatorForm(profile, today, situation);
+    if (!isSignedIn || !zus) return form;
+    const me: FormParent = profile?.role === 'tata' ? 'father' : 'mother';
+    return { ...form, [me]: applyZusAccount(form[me], zus.account) };
+  };
+
+  const [form, setForm] = useState<CalculatorForm>(() => initialForm(initialSituation));
+
+  // Zakładka zostaje zamontowana — nowa ankieta, osoba z Panelu demo albo logowanie wypełniają formularz od nowa.
+  const [source, setSource] = useState({ profile, isSignedIn });
+  if (source.profile !== profile || source.isSignedIn !== isSignedIn) {
+    setSource({ profile, isSignedIn });
+    setForm(initialForm(form.situation));
+  }
 
   const set = <K extends keyof CalculatorForm>(key: K, value: CalculatorForm[K]) =>
     setForm((f) => ({ ...f, [key]: value }));
@@ -39,8 +58,8 @@ export function useCalculatorForm(initialSituation?: CalculatorSituation) {
     /** Zmiana osoby czystą funkcją z `personForm.ts` (toggleTitle, patchTitle, patchZ3Month…). */
     updatePerson: (who: FormParent, update: (person: PersonForm) => PersonForm) =>
       setForm((f) => ({ ...f, [who]: update(f[who]) })),
-    /** Wraca do danych z ankiety. */
-    reset: () => setForm(createCalculatorForm(profile, today, form.situation)),
+    /** Wraca do danych z ankiety (i z eZUS po zalogowaniu). */
+    reset: () => setForm(initialForm(form.situation)),
   };
 }
 

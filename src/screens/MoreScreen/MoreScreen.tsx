@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { HeartHandshake, Info, LogIn, LogOut, PenLine, Settings, Video } from 'lucide-react-native';
+import { HeartHandshake, Info, LogIn, LogOut, Mail, PenLine, Settings, ShieldCheck, Sparkles, Video } from 'lucide-react-native';
 import { View } from 'react-native';
 
 import { Button } from '@/components/atoms/Button';
@@ -9,6 +9,7 @@ import { LinkRow } from '@/components/molecules/LinkRow';
 import { ScreenLayout } from '@/components/templates/ScreenLayout';
 import { MoreSection } from '@/features/more/components/MoreSection';
 import { moreRoutes } from '@/features/more/moreRoutes';
+import { useZusData } from '@/features/zus/useZusData';
 import { useSession } from '@/session';
 import { useTheme } from '@/theme';
 
@@ -18,6 +19,7 @@ import { styles } from './MoreScreen.styles';
 export function MoreScreen() {
   const { colors } = useTheme();
   const { isSignedIn, profile, signOut, resetProfile } = useSession();
+  const unread = useZusData()?.unreadCount ?? 0;
 
   const retakeSurvey = () => {
     resetProfile();
@@ -28,12 +30,30 @@ export function MoreScreen() {
     <ScreenLayout title="Więcej" subtitle="Konto, pomoc i informacje o aplikacji.">
       <View style={styles.content}>
         {isSignedIn ? (
-          <Card>
-            <AppText variant="label">{profile?.name ?? 'Twoje konto'}</AppText>
-            <AppText variant="caption" color={colors.textMuted}>
-              Zalogowano przez mObywatel (symulacja) · PESEL ukryty
-            </AppText>
-          </Card>
+          <>
+            <Card>
+              <AppText variant="label">{profile?.name ?? 'Twoje konto'}</AppText>
+              <AppText variant="caption" color={colors.textMuted}>
+                Zalogowano przez mObywatel (symulacja) · PESEL ukryty
+              </AppText>
+            </Card>
+            <MoreSection title="Moje sprawy w ZUS">
+              <LinkRow
+                icon={Mail}
+                tone="accent"
+                title="Wiadomości i dokumenty"
+                subtitle={`Pisma z ZUS z „tłumaczem pism”${unread ? ` · nieprzeczytane: ${unread}` : ''}`}
+                onPress={() => router.push(moreRoutes.messages)}
+              />
+              <LinkRow
+                icon={ShieldCheck}
+                tone="info"
+                title="Moje dane z ZUS"
+                subtitle="Ubezpieczenie, e-ZLA, zadłużenie — z eZUS (symulacja)"
+                onPress={() => router.push(moreRoutes.zusData)}
+              />
+            </MoreSection>
+          </>
         ) : (
           <>
             <Button title="Zaloguj przez mObywatel" variant="mobywatel" icon={LogIn} onPress={() => router.push('/login')} />
@@ -70,6 +90,15 @@ export function MoreScreen() {
             title="Wygląd"
             subtitle="Motyw jasny / ciemny, rozmiar tekstu"
             onPress={() => router.push(moreRoutes.settings)}
+          />
+        </MoreSection>
+
+        <MoreSection title="Dla prezentacji">
+          <LinkRow
+            icon={Sparkles}
+            title="Panel demo (dla jury)"
+            subtitle="Przykładowe osoby, reset prototypu"
+            onPress={() => router.push(moreRoutes.demo)}
           />
         </MoreSection>
 

@@ -55,6 +55,7 @@ export const EDITABLE_PARAM_GROUPS: readonly EditableParamGroup[] = [
       top('businessStandardBase', 'Standardowa podstawa składek JDG'),
       top('parentalBenefitMonthly', 'Minimum zasiłku macierzyńskiego na rękę'),
       top('debtLimit', 'Próg zaległości blokującej zasiłek'),
+      top('funeralAllowance', 'Zasiłek pogrzebowy'),
     ],
   },
   {

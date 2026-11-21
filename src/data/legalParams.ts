@@ -22,6 +22,8 @@ export type LegalParams = {
   debtLimit: number;
   /** Zaliczka PIT od zasiłku — orientacyjnie, bez kwoty zmniejszającej (PIT). */
   pitRate: number;
+  /** Zasiłek pogrzebowy (ZAS_POGRZEBOWY) — od 1.01.2026. */
+  funeralAllowance: number;
 
   rates: {
     maternity: number;
@@ -80,6 +82,7 @@ export const LEGAL_PARAMS: LegalParams = {
   parentalBenefitWeeks: [52, 65, 67, 69, 71],
   debtLimit: 48.06,
   pitRate: 0.12,
+  funeralAllowance: 7000,
   rates: {
     maternity: 1,
     parental: 0.7,

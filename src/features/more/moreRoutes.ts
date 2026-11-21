@@ -4,4 +4,5 @@ export const moreRoutes = {
   contact: '/wiecej/kontakt',
   support: '/wiecej/wsparcie',
   about: '/wiecej/o-aplikacji',
+  settings: '/wiecej/ustawienia',
 } as const;

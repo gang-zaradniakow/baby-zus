@@ -2,26 +2,27 @@ import { useMemo, useState, type ReactNode } from 'react';
 import { useColorScheme } from 'react-native';
 
 import { darkColors, lightColors } from './colors';
-import { ThemeContext, type ThemeValue } from './ThemeContext';
+import { ThemeContext, type TextScale, type ThemeMode, type ThemeValue } from './ThemeContext';
 
 type Props = { children: ReactNode };
 
-/**
- * Trzyma wybór trybu jasny/ciemny. Domyślnie bierze ustawienie systemu;
- * `setDark` pozwoli później podpiąć przełącznik „Tryb nocny” z profilu.
- */
+/** Trzyma wybór motywu (jak w systemie / jasny / ciemny) i rozmiar tekstu z Ustawień. */
 export function ThemeProvider({ children }: Props) {
   const systemScheme = useColorScheme();
-  const [override, setOverride] = useState<boolean | null>(null);
-  const isDark = override ?? systemScheme === 'dark';
+  const [mode, setMode] = useState<ThemeMode>('system');
+  const [textScale, setTextScale] = useState<TextScale>(1);
+  const isDark = mode === 'system' ? systemScheme === 'dark' : mode === 'dark';
 
   const value = useMemo<ThemeValue>(
     () => ({
       colors: isDark ? darkColors : lightColors,
       isDark,
-      setDark: setOverride,
+      mode,
+      setMode,
+      textScale,
+      setTextScale,
     }),
-    [isDark],
+    [isDark, mode, textScale],
   );
 
   return <ThemeContext value={value}>{children}</ThemeContext>;

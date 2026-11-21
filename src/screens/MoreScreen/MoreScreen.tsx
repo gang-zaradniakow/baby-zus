@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { HeartHandshake, Info, LogIn, LogOut, PenLine, Video } from 'lucide-react-native';
+import { HeartHandshake, Info, LogIn, LogOut, PenLine, Settings, Video } from 'lucide-react-native';
 import { View } from 'react-native';
 
 import { Button } from '@/components/atoms/Button';
@@ -61,6 +61,15 @@ export function MoreScreen() {
             title="Wsparcie i organizacje"
             subtitle="Fundacje, telefony wsparcia, strony ZUS, MRPiPS i PIP"
             onPress={() => router.push(moreRoutes.support)}
+          />
+        </MoreSection>
+
+        <MoreSection title="Ustawienia">
+          <LinkRow
+            icon={Settings}
+            title="Wygląd"
+            subtitle="Motyw jasny / ciemny, rozmiar tekstu"
+            onPress={() => router.push(moreRoutes.settings)}
           />
         </MoreSection>
 

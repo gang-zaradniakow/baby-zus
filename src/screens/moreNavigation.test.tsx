@@ -9,6 +9,7 @@ import { ThemeProvider } from '@/theme';
 import { AboutScreen } from './AboutScreen';
 import { ContactScreen } from './ContactScreen';
 import { MoreScreen } from './MoreScreen';
+import { SettingsScreen } from './SettingsScreen';
 import { SupportScreen } from './SupportScreen';
 
 /** Prawdziwy routing expo-router z ekranami „Więcej” — jak w `src/app/(tabs)/wiecej/`. */
@@ -27,6 +28,7 @@ async function renderMore(initialUrl = '/wiecej') {
       'wiecej/kontakt': ContactScreen,
       'wiecej/wsparcie': SupportScreen,
       'wiecej/o-aplikacji': AboutScreen,
+      'wiecej/ustawienia': SettingsScreen,
       onboarding: () => <Text>ekran ankiety</Text>,
       login: () => <Text>ekran logowania</Text>,
     },
@@ -84,6 +86,25 @@ describe('Więcej — hub i podekrany', () => {
     expect(screen.getByRole('link', { name: /^Fundacja Wcześniak Rodzice-Rodzicom/ })).toBeOnTheScreen();
     expect(screen.getByText('Bractwo Małych Stópek')).toBeOnTheScreen(); // bez adresu — sama nazwa
     expect(screen.getByRole('link', { name: /^116 123/ })).toBeOnTheScreen();
+  });
+
+  it('Ustawienia: rozmiar tekstu A++ powiększa napisy w aplikacji', async () => {
+    const user = userEvent.setup();
+    await renderMore('/wiecej/ustawienia');
+
+    expect(screen.getByText('Tak wygląda tekst w aplikacji.')).toHaveStyle({ fontSize: 14 });
+    await user.press(screen.getByRole('radio', { name: 'A++' }));
+
+    expect(screen.getByText('Tak wygląda tekst w aplikacji.')).toHaveStyle({ fontSize: 18 });
+  });
+
+  it('Ustawienia: wybór ciemnego motywu', async () => {
+    const user = userEvent.setup();
+    await renderMore('/wiecej/ustawienia');
+
+    await user.press(screen.getByRole('radio', { name: 'Ciemny' }));
+
+    expect(screen.getByRole('radio', { name: 'Ciemny' })).toBeChecked();
   });
 
   it('„Wypełnij ankietę” prowadzi do ankiety', async () => {

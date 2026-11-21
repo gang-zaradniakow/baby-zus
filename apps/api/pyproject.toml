@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=80"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "zus-api"
+version = "0.1.0"
+description = "API REST: poziom 1 (lista pytań), czat (poziom 2), eskalacja (poziom 3)"
+requires-python = ">=3.14"
+dependencies = [
+  "zus-contracts",
+  "zus-rules-engine",
+  "zus-profile-source",
+  "fastapi>=0.165,<1",
+  "uvicorn[standard]>=0.54,<1",
+  "sqlalchemy[asyncio]>=2.1,<3",
+  "asyncpg>=0.32,<1",
+  "alembic>=1.20,<2",
+  "pydantic-settings>=2.16,<3",
+  "httpx>=0.28,<1",
+]
+
+[tool.setuptools.package-data]
+api = ["py.typed"]

@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=80"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "zus-profile-source"
+version = "0.1.0"
+description = "Port i adaptery (mock, http) do zewnętrznego backendu z danymi profilu"
+requires-python = ">=3.14"
+dependencies = ["zus-contracts", "httpx>=0.28,<1"]
+
+[tool.setuptools.package-data]
+profile_source = ["py.typed"]

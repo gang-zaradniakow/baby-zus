@@ -1,0 +1,390 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$defs": {
+    "Action": {
+      "additionalProperties": false,
+      "description": "Przycisk „Co dalej” (blok 6). ``ref`` wskazuje cel, np. formularz ``ZAM`` albo intencję.",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/ActionType"
+        },
+        "label": {
+          "maxLength": 40,
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        },
+        "ref": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ref"
+        }
+      },
+      "required": [
+        "type",
+        "label"
+      ],
+      "title": "Action",
+      "type": "object"
+    },
+    "ActionType": {
+      "description": "Przyciski „Co dalej”. ``REMINDER`` usunięty razem z powiadomieniami (ustalenie U9).",
+      "enum": [
+        "FORM",
+        "SIMULATE",
+        "ESCALATE"
+      ],
+      "title": "ActionType",
+      "type": "string"
+    },
+    "Calculation": {
+      "additionalProperties": false,
+      "description": "Wynik kalkulatora (blok 4 „Wyliczenie i założenia”).",
+      "properties": {
+        "base": {
+          "examples": [
+            "4890.00"
+          ],
+          "pattern": "^\\d+\\.\\d{2}$",
+          "title": "Base",
+          "type": "string"
+        },
+        "rate": {
+          "examples": [
+            "0.815"
+          ],
+          "pattern": "^(0(\\.\\d{1,4})?|1(\\.0{1,4})?)$",
+          "title": "Rate",
+          "type": "string"
+        },
+        "periods": {
+          "items": {
+            "$ref": "#/$defs/Period"
+          },
+          "title": "Periods",
+          "type": "array"
+        },
+        "monthly": {
+          "anyOf": [
+            {
+              "examples": [
+                "4890.00"
+              ],
+              "pattern": "^\\d+\\.\\d{2}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Monthly"
+        },
+        "total": {
+          "anyOf": [
+            {
+              "examples": [
+                "4890.00"
+              ],
+              "pattern": "^\\d+\\.\\d{2}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Total"
+        },
+        "assumptions": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Assumptions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "base",
+        "rate"
+      ],
+      "title": "Calculation",
+      "type": "object"
+    },
+    "Fact": {
+      "additionalProperties": false,
+      "description": "Fakt, który zdecydował o wyniku (blok 3 „Dlaczego”).",
+      "properties": {
+        "label": {
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        },
+        "value": {
+          "minLength": 1,
+          "title": "Value",
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/$defs/FactSource"
+        }
+      },
+      "required": [
+        "label",
+        "value",
+        "source"
+      ],
+      "title": "Fact",
+      "type": "object"
+    },
+    "FactSource": {
+      "description": "Skąd pochodzi fakt: pobrany z ZUS, wpisany przez użytkownika, odczytany z dokumentu.",
+      "enum": [
+        "ZUS",
+        "USER",
+        "DOCUMENT"
+      ],
+      "title": "FactSource",
+      "type": "string"
+    },
+    "GeneratedBy": {
+      "description": "Autor tekstu karty.\n\n``RULES`` – szablon silnika; ``LLM_EXPLAINED`` – tekst napisał LLM (oznaczenie AI wg AI Act).",
+      "enum": [
+        "RULES",
+        "LLM_EXPLAINED"
+      ],
+      "title": "GeneratedBy",
+      "type": "string"
+    },
+    "LegalRef": {
+      "additionalProperties": false,
+      "description": "Podstawa prawna (blok 5) – zawsze z linkiem do zus.pl lub gov.pl.",
+      "properties": {
+        "act": {
+          "minLength": 1,
+          "title": "Act",
+          "type": "string"
+        },
+        "article": {
+          "minLength": 1,
+          "title": "Article",
+          "type": "string"
+        },
+        "url": {
+          "format": "uri",
+          "title": "Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "act",
+        "article",
+        "url"
+      ],
+      "title": "LegalRef",
+      "type": "object"
+    },
+    "MissingField": {
+      "additionalProperties": false,
+      "description": "Brakujący fakt przy werdykcie NEED_INFO – staje się polem formularza.",
+      "properties": {
+        "field": {
+          "minLength": 1,
+          "title": "Field",
+          "type": "string"
+        },
+        "question": {
+          "minLength": 1,
+          "title": "Question",
+          "type": "string"
+        }
+      },
+      "required": [
+        "field",
+        "question"
+      ],
+      "title": "MissingField",
+      "type": "object"
+    },
+    "Period": {
+      "additionalProperties": false,
+      "description": "Okres świadczenia. ``amount`` to kwota za cały okres, ``monthly`` – miesięczna.",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/PeriodType"
+        },
+        "from": {
+          "format": "date",
+          "title": "From",
+          "type": "string"
+        },
+        "to": {
+          "format": "date",
+          "title": "To",
+          "type": "string"
+        },
+        "rate": {
+          "examples": [
+            "0.815"
+          ],
+          "pattern": "^(0(\\.\\d{1,4})?|1(\\.0{1,4})?)$",
+          "title": "Rate",
+          "type": "string"
+        },
+        "amount": {
+          "examples": [
+            "4890.00"
+          ],
+          "pattern": "^\\d+\\.\\d{2}$",
+          "title": "Amount",
+          "type": "string"
+        },
+        "monthly": {
+          "anyOf": [
+            {
+              "examples": [
+                "4890.00"
+              ],
+              "pattern": "^\\d+\\.\\d{2}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Monthly"
+        }
+      },
+      "required": [
+        "type",
+        "from",
+        "to",
+        "rate",
+        "amount"
+      ],
+      "title": "Period",
+      "type": "object"
+    },
+    "PeriodType": {
+      "description": "Rodzaj świadczenia w okresie wyliczenia albo w planie urlopu.",
+      "enum": [
+        "MACIERZYNSKI",
+        "NA_WARUNKACH_MACIERZYNSKIEGO",
+        "UZUPELNIAJACY_MACIERZYNSKI",
+        "RODZICIELSKI",
+        "OJCOWSKI",
+        "CHOROBOWY",
+        "W_WYSOKOSCI_MACIERZYNSKIEGO",
+        "OPIEKUNCZY",
+        "SWIADCZENIE_REHABILITACYJNE"
+      ],
+      "title": "PeriodType",
+      "type": "string"
+    },
+    "Verdict": {
+      "enum": [
+        "YES",
+        "NO",
+        "NEED_INFO"
+      ],
+      "title": "Verdict",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Odpowiedź asystenta w 6 blokach (§5). Ten sam format z silnika i z LLM.",
+  "properties": {
+    "intentId": {
+      "examples": [
+        "B.01_wysokosc_macierzynskiego",
+        "OUT_OF_CATALOG"
+      ],
+      "pattern": "^(?:[A-H]\\.\\d{2}(?:_[a-z0-9_]+)?|OUT_OF_CATALOG)$",
+      "title": "Intentid",
+      "type": "string"
+    },
+    "verdict": {
+      "$ref": "#/$defs/Verdict"
+    },
+    "summary": {
+      "maxLength": 500,
+      "minLength": 1,
+      "title": "Summary",
+      "type": "string"
+    },
+    "facts": {
+      "items": {
+        "$ref": "#/$defs/Fact"
+      },
+      "title": "Facts",
+      "type": "array"
+    },
+    "calculation": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Calculation"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "missing": {
+      "items": {
+        "$ref": "#/$defs/MissingField"
+      },
+      "title": "Missing",
+      "type": "array"
+    },
+    "legalBasis": {
+      "items": {
+        "$ref": "#/$defs/LegalRef"
+      },
+      "minItems": 1,
+      "title": "Legalbasis",
+      "type": "array"
+    },
+    "actions": {
+      "items": {
+        "$ref": "#/$defs/Action"
+      },
+      "maxItems": 3,
+      "minItems": 1,
+      "title": "Actions",
+      "type": "array"
+    },
+    "engineVersion": {
+      "examples": [
+        "params-2026-10-24"
+      ],
+      "pattern": "^params-\\d{4}-\\d{2}-\\d{2}$",
+      "title": "Engineversion",
+      "type": "string"
+    },
+    "generatedBy": {
+      "$ref": "#/$defs/GeneratedBy"
+    }
+  },
+  "required": [
+    "intentId",
+    "verdict",
+    "summary",
+    "legalBasis",
+    "actions",
+    "engineVersion",
+    "generatedBy"
+  ],
+  "title": "AnswerCard",
+  "type": "object"
+}

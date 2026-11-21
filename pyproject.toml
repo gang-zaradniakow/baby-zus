@@ -1,0 +1,122 @@
+# Wspólna konfiguracja narzędzi dla całego monorepo.
+# To NIE jest pakiet – każdy pakiet i aplikacja ma własny pyproject.toml.
+
+[tool.ruff]
+target-version = "py314"
+line-length = 100
+src = [
+  "packages/contracts/src",
+  "packages/rules_engine/src",
+  "packages/profile_source/src",
+  "apps/api/src",
+  "apps/mcp_servers/src",
+  "apps/assistant/src",
+  "apps/admin/src",
+]
+extend-exclude = ["data", "**/alembic/versions"]
+
+[tool.ruff.lint]
+select = [
+  "E", "W",   # pycodestyle
+  "F",        # pyflakes
+  "I",        # isort
+  "N",        # pep8-naming
+  "UP",       # pyupgrade
+  "B",        # bugbear
+  "SIM",      # simplify
+  "C4",       # comprehensions
+  "DTZ",      # daty bez strefy czasowej
+  "T20",      # print()
+  "PT",       # styl pytest
+  "RET",      # return
+  "ASYNC",    # async
+  "S",        # bezpieczeństwo (bandit)
+  "RUF",      # reguły ruff
+]
+ignore = [
+  "RUF001", "RUF002", "RUF003",  # polskie znaki w tekstach i komentarzach są zamierzone
+]
+
+[tool.ruff.lint.per-file-ignores]
+"**/tests/**" = ["S101", "S105", "S106"]   # assert i „hasła” w testach są OK
+"scripts/**" = ["T20"]
+"scripts/spike_llm.py" = ["T20", "E501"]   # tabele danych testowych w jednym pliku
+"tasks.py" = ["T20", "S603", "S607"]   # skrypt CLI: print i uruchamianie narzędzi
+"**/contracts/schema.py" = ["T20"]      # CLI eksportu schematów
+
+[tool.ruff.lint.isort]
+known-first-party = [
+  "contracts", "rules_engine", "profile_source", "api", "mcp_servers", "assistant", "admin",
+]
+
+[tool.ruff.format]
+quote-style = "double"
+docstring-code-format = true
+
+[tool.mypy]
+python_version = "3.14"
+mypy_path = [
+  "packages/contracts/src",
+  "packages/rules_engine/src",
+  "packages/profile_source/src",
+  "apps/api/src",
+  "apps/mcp_servers/src",
+  "apps/assistant/src",
+  "apps/admin/src",
+]
+explicit_package_bases = true
+namespace_packages = true
+warn_unused_configs = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+check_untyped_defs = true
+plugins = ["pydantic.mypy"]
+# Tryb --strict dla contracts i rules_engine uruchamia Makefile (make typecheck),
+# bo mypy nie pozwala włączyć `strict` per moduł.
+
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
+
+[tool.pytest.ini_options]
+minversion = "9.0"
+testpaths = [
+  "packages/contracts/tests",
+  "packages/rules_engine/tests",
+  "packages/profile_source/tests",
+  "apps/api/tests",
+  "apps/mcp_servers/tests",
+  "apps/assistant/tests",
+  "apps/admin/tests",
+  "tests/e2e",
+]
+# importlib: pliki testów o tych samych nazwach w różnych pakietach nie kolidują.
+addopts = "-ra --strict-markers --strict-config --import-mode=importlib -m 'not live_llm and not e2e'"
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+xfail_strict = true
+filterwarnings = ["error"]
+markers = [
+  "integration: wymaga Postgresa (testcontainers) lub serwera MCP w pamięci",
+  "e2e: wymaga docker compose; uruchamiane osobnym jobem CI",
+  "live_llm: prawdziwy model przez API; wymaga LLM_API_KEY; domyślnie wyłączone",
+  "golden: sprawy ZUS z data/golden",
+]
+
+[tool.coverage.run]
+branch = true
+source = [
+  "contracts", "rules_engine", "profile_source", "api", "mcp_servers", "assistant", "admin",
+]
+
+[tool.coverage.report]
+fail_under = 80
+show_missing = true
+skip_covered = true
+exclude_also = [
+  "if TYPE_CHECKING:",
+  "raise NotImplementedError",
+  "^\\s*\\.\\.\\.$",
+  "if __name__ == .__main__.:",
+]

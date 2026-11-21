@@ -1,0 +1,51 @@
+{
+  "profileId": "p-7f3a9c",
+  "applicant": {
+    "role": "MOTHER",
+    "birthDate": "1993-05-14",
+    "insurance": {
+      "source": "ZUS",
+      "periods": [
+        {"title": "EMPLOYMENT", "sickness": "MANDATORY", "dateFrom": "2023-01-02"}
+      ],
+      "payer": {"insuredCountNov30": 45, "countDate": "2025-11-30"},
+      "salaries": [
+        {"month": "2025-10", "gross": "7000.00"},
+        {"month": "2025-11", "gross": "7000.00"},
+        {"month": "2025-12", "gross": "7000.00"},
+        {"month": "2026-01", "gross": "7000.00"},
+        {"month": "2026-02", "gross": "7000.00"},
+        {"month": "2026-03", "gross": "7000.00"},
+        {"month": "2026-04", "gross": "7000.00"},
+        {"month": "2026-05", "gross": "7000.00"},
+        {"month": "2026-06", "gross": "7000.00"},
+        {"month": "2026-07", "gross": "7000.00"},
+        {"month": "2026-08", "gross": "7000.00"},
+        {"month": "2026-09", "gross": "7000.00"}
+      ],
+      "deductionRate": "0.1371",
+      "sickLeaves": [
+        {"dateFrom": "2026-08-03", "dateTo": "2026-09-30", "code": "B"}
+      ]
+    }
+  },
+  "partner": {
+    "role": "FATHER",
+    "insurance": {
+      "source": "USER",
+      "periods": [
+        {"title": "BUSINESS", "sickness": "VOLUNTARY", "dateFrom": "2021-06-01"}
+      ]
+    }
+  },
+  "partnerConsent": false,
+  "child": {
+    "source": "USER",
+    "expectedBirthDate": "2026-11-15",
+    "birthDate": "2026-11-12",
+    "childrenCount": 1,
+    "zaZyciem": false
+  },
+  "specialEvents": [],
+  "leavePlan": []
+}

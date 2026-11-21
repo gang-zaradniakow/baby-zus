@@ -1,0 +1,15 @@
+# Instaluj z katalogu apps/api (pip liczy ścieżki -e względem bieżącego katalogu):
+#   cd apps/api && pip install -r requirements.txt
+-e ../../packages/contracts
+-e ../../packages/rules_engine
+-e ../../packages/profile_source
+-e .
+
+fastapi==0.165.0
+uvicorn[standard]==0.54.0
+sqlalchemy[asyncio]==2.1.9
+asyncpg==0.32.0
+alembic==1.20.1
+pydantic==2.14.4
+pydantic-settings==2.16.3
+httpx==0.28.1

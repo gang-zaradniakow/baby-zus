@@ -1,0 +1,36 @@
+{
+  "intentId": "B.01_wysokosc_macierzynskiego",
+  "verdict": "YES",
+  "summary": "Przy wariancie 81,5% dostaniesz ok. 4890,00 zł brutto miesięcznie przez 52 tygodnie. Wniosek o ten wariant trzeba złożyć w ciągu 21 dni po porodzie.",
+  "facts": [
+    {"label": "Podstawa wymiaru", "value": "6000,00 zł (średnia z 12 miesięcy z Z-3)", "source": "ZUS"},
+    {"label": "Liczba dzieci przy porodzie", "value": "1", "source": "USER"},
+    {"label": "Termin wniosku o wariant 81,5%", "value": "do 03.12.2026 (pozostało 9 dni)", "source": "USER"}
+  ],
+  "calculation": {
+    "base": "6000.00",
+    "rate": "0.815",
+    "periods": [
+      {"type": "MACIERZYNSKI", "from": "2026-11-12", "to": "2027-03-31", "rate": "0.815", "amount": "22820.00", "monthly": "4890.00"},
+      {"type": "RODZICIELSKI", "from": "2027-04-01", "to": "2027-11-10", "rate": "0.815", "amount": "36512.00", "monthly": "4890.00"}
+    ],
+    "monthly": "4890.00",
+    "total": "59332.00",
+    "assumptions": [
+      "Przykład ilustracyjny – kwoty umowne (dzienna stawka 163,00 zł).",
+      "Jedno dziecko, brak zaświadczenia „Za życiem”.",
+      "Matka wykorzystuje cały urlop rodzicielski poza 9 tygodniami ojca."
+    ]
+  },
+  "missing": [],
+  "legalBasis": [
+    {"act": "ustawa zasiłkowa", "article": "art. 31", "url": "https://isap.sejm.gov.pl/isap.nsf/DocDetails.xsp?id=WDU19990600636"}
+  ],
+  "actions": [
+    {"type": "FORM", "label": "Wypełnij wniosek", "ref": "wniosek_urlopowy"},
+    {"type": "SIMULATE", "label": "Porównaj warianty", "ref": "B.04_warianty_urlopu"},
+    {"type": "ESCALATE", "label": "Zapytaj urzędnika"}
+  ],
+  "engineVersion": "params-2026-10-24",
+  "generatedBy": "RULES"
+}

@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=80"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "zus-assistant"
+version = "0.1.0"
+description = "Poziom 2: orkiestrator LLM (wymienny model), walidator liczb, RAG, klient MCP"
+requires-python = ">=3.14"
+dependencies = [
+  "zus-contracts",
+  "openai>=3.57,<4",
+  "httpx>=0.28,<1",
+  "mcp>=2.3,<3",
+  "pydantic-settings>=2.16,<3",
+]
+
+[tool.setuptools.package-data]
+assistant = ["py.typed"]

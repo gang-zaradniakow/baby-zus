@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$defs": {
+    "AnswerType": {
+      "description": "Typ odpowiedzi intencji (§4).",
+      "enum": [
+        "W",
+        "K",
+        "P",
+        "I",
+        "S"
+      ],
+      "title": "AnswerType",
+      "type": "string"
+    },
+    "Category": {
+      "description": "Kategoria katalogu pytań (§4).",
+      "enum": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H"
+      ],
+      "title": "Category",
+      "type": "string"
+    },
+    "Flag": {
+      "description": "Flagi nakładane na etap (ustalenie U3).",
+      "enum": [
+        "ADOPTION",
+        "DIFFICULT"
+      ],
+      "title": "Flag",
+      "type": "string"
+    },
+    "Stage": {
+      "description": "Etap ścieżki rodzica (ustalenie U3).",
+      "enum": [
+        "E0",
+        "E1",
+        "E2",
+        "E3"
+      ],
+      "title": "Stage",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Pytanie z katalogu: typ odpowiedzi, etapy/flagi, na których się pokazuje, wymagane dane.",
+  "properties": {
+    "id": {
+      "examples": [
+        "B.01_wysokosc_macierzynskiego",
+        "OUT_OF_CATALOG"
+      ],
+      "pattern": "^(?:[A-H]\\.\\d{2}(?:_[a-z0-9_]+)?|OUT_OF_CATALOG)$",
+      "title": "Id",
+      "type": "string"
+    },
+    "category": {
+      "$ref": "#/$defs/Category"
+    },
+    "question": {
+      "minLength": 1,
+      "title": "Question",
+      "type": "string"
+    },
+    "answerTypes": {
+      "items": {
+        "$ref": "#/$defs/AnswerType"
+      },
+      "minItems": 1,
+      "title": "Answertypes",
+      "type": "array"
+    },
+    "stages": {
+      "items": {
+        "$ref": "#/$defs/Stage"
+      },
+      "title": "Stages",
+      "type": "array"
+    },
+    "flags": {
+      "items": {
+        "$ref": "#/$defs/Flag"
+      },
+      "title": "Flags",
+      "type": "array"
+    },
+    "requiredFields": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "title": "Requiredfields",
+      "type": "array"
+    },
+    "priority": {
+      "default": 100,
+      "description": "Kolejność na liście – mniejsza liczba wyżej.",
+      "minimum": 0,
+      "title": "Priority",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "id",
+    "category",
+    "question",
+    "answerTypes"
+  ],
+  "title": "Intent",
+  "type": "object"
+}

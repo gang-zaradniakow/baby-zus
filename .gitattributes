@@ -1,0 +1,5 @@
+# Jednolite końce linii (LF) niezależnie od systemu – ważne dla Makefile, YAML i skryptów.
+* text=auto eol=lf
+*.pdf binary
+*.png binary
+*.whl binary

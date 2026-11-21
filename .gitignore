@@ -39,3 +39,6 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# testy — raport pokrycia (jest --coverage)
+coverage/

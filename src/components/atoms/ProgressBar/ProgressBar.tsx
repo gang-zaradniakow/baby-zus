@@ -19,6 +19,7 @@ export function ProgressBar({ total, current }: Props) {
   return (
     <View
       style={styles.bar}
+      accessible
       accessibilityRole="progressbar"
       accessibilityLabel={`Krok ${current} z ${total}`}
       accessibilityValue={{ min: 1, max: total, now: current }}

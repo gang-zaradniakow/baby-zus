@@ -10,7 +10,7 @@ export function BrandLogo() {
   const { colors } = useTheme();
 
   return (
-    <View style={styles.logo} accessibilityRole="image" accessibilityLabel="mZUS dla Rodzica">
+    <View style={styles.logo} accessible accessibilityRole="image" accessibilityLabel="mZUS dla Rodzica">
       <AppText variant="logoMark" color={colors.primary}>
         mZUS
       </AppText>

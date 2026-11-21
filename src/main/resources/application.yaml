@@ -18,6 +18,12 @@ spring:
     # absent optional fields are left out of JSON instead of being sent as null (see openapi.yaml conventions)
     default-property-inclusion: non_null
 
+server:
+  # Behind the reverse proxy the backend is mounted under a path prefix (TEST: /api/baby-zus-backend). The proxy
+  # strips the prefix and sends X-Forwarded-Prefix/-Host/-Proto; honouring them lets generated links (Swagger UI
+  # spec URL, redirects) include the prefix. Without the headers nothing changes.
+  forward-headers-strategy: framework
+
 zusbaby:
   web:
     # comma-separated frontend origins allowed by CORS; default = prototype served by server.py

@@ -7,7 +7,7 @@
 
 | Funkcja makiety | Backend? | Uwagi |
 |---|---|---|
-| Parametry prawne + panel administracyjny (rejestr zmian) | **Tak, rdzeń** | Wersjonowanie i data obowiązywania |
+| Parametry prawne + panel administracyjny (rejestr zmian) | **Tak, rdzeń** | Parametry są **częścią kodu** (klasa na stan prawny, wersja i data obowiązywania). Panel admina na razie **tylko podgląd** (PR 13) |
 | Zintegrowany kalkulator: ciąża (L4), poród, adopcja, oboje rodzice, zbieg tytułów, Z-3, wcześniak, „Za życiem”, praca na urlopie | **Tak, rdzeń** | Port `calc.js` (`simulate`, `resolvePerson`, `chorobowyCiaza`, `adoptWeeks`, `uzupelniajacy`, `podstawaZ3`) |
 | Strażnik terminów (święta, `after` / `before`) | **Tak, rdzeń** | |
 | Ankieta → „Mój przewodnik” (oś czasu, alerty, plan, karta tygodnia) | **Tak** | Gość: zapytanie bezstanowe. Zalogowany: profil w bazie |
@@ -35,7 +35,7 @@
 - **Lombok w miarę potrzeby** (sekcja 2.10).
 - **CQRS na PipelinR** (sekcja 2.4): komendy i zapytania implementują wprost `an.awesome.pipelinr.Command<R>`. Jedna baza PostgreSQL:
   - Komendy przechodzą przez agregat i repozytorium. Zwracają `Voidy` albo identyfikator.
-  - Zapytania omijają model domenowy: `JdbcClient` → rekordy DTO.
+  - Zapytania czytają przez **interfejs repozytorium** (port z `domain`) i zwracają rekordy `*Dto`; SQL i JPA zostają w adapterach `infrastructure`.
   - Obliczenia (kalkulatory, terminy, przewodnik gościa) to zapytania bezstanowe, które wołają usługi domenowe.
 - **Zdarzenia między modułami** publikuje Spring Modulith (`@ApplicationModuleListener`, rejestr publikacji). Zdarzenia wewnątrz jednego modułu mogą iść przez `Notification` z PipelinR.
 - **Mapowanie MapStruct** (sekcja 2.5).
@@ -77,11 +77,12 @@ Moduł udostępnia innym tylko **publiczne API** (pakiet główny modułu: inter
 ### 2.3 Konteksty i model domenowy
 
 **`legalrules` — parametry prawne**
-- Agregat `ParameterSet`: `version`, `validFrom`, `description` (stan prawny), wartości `ParameterKey → ParameterValue` (liczba albo lista, np. `MAC_WEEKS`). Niezmienniki: znane klucze, typy i zakresy (np. stopa w przedziale 0..1).
-- VO `LegalParameters`: typowany widok dla obliczeń (`minWage()`, `parentalRate()`, `maternityWeeks(int children)`…).
-- Komendy: `ChangeParameters` (tworzy nową wersję), `ResetParametersToDefault`. Zdarzenie `ParametersChanged`.
-- Zapytania: `GetCurrentParameters`, `GetParameterHistory`.
-- API dla innych modułów: `LegalParametersProvider.current()`. Wynik jest buforowany i unieważniany po `ParametersChanged`.
+- **Parametry są w kodzie, nie w bazie:** każdy stan prawny to klasa (np. `LegalState2026`) z wersją, datą obowiązywania i wszystkimi wartościami. Nowe przepisy to nowa klasa z kolejną wersją.
+- Agregat `ParameterSet`: `version`, `validFrom`, `description` (stan prawny), `LegalParameters`. Port `ParameterSetRepository.findEffectiveOn(day)` zwraca najnowszą wersję, która w danym dniu już obowiązuje. Adapter `InCodeParameterSetRepository` (infrastructure) trzyma wersje z kodu.
+- Logika (kompletność, walidacja wartości, wybór wymiaru wg liczby dzieci i „Za życiem”) jest w domenie: `LegalParameters`, `ParameterValue`.
+- Publikowane innym modułom: zapytania `application.query` (`GetCurrentLegalParametersQuery`, `GetLegalParametersEffectiveOnQuery`), ich wyniki `application.dto` (`LegalParametersDto`, `ParameterDto`: proste rekordy bez logiki) oraz pakiet `api` z typami bez logiki: `api.model` (`ParameterKey`, `ParameterKind`) i `api.exception`. Każdy z tych pakietów ma `@NamedInterface`.
+- Inne moduły pobierają parametry zapytaniem przez `Pipeline`, np. `GetLegalParametersEffectiveOnQuery(dzień porodu)`, i budują z DTO własny model do obliczeń.
+- Panel admina (PR 13): na razie tylko podgląd parametrów, bez edycji.
 
 **`calendar` — terminy**
 - `PolishHolidays` (Wielkanoc metodą Meeusa, Wigilia od 2025), `WorkingDays`.
@@ -140,8 +141,9 @@ Moduł udostępnia innym tylko **publiczne API** (pakiet główny modułu: inter
 ### 2.4 CQRS z PipelinR
 
 PipelinR (`net.sizovs:pipelinr`, pakiet `an.awesome.pipelinr`) ma jeden typ `Command<R>` z `Command.Handler<C, R>` oraz `Notification`. **Komendy i zapytania implementują bezpośrednio `an.awesome.pipelinr.Command<R>`**, bez własnych interfejsów pośrednich. Rozróżnienie wynika z konwencji, a pilnują go testy ArchUnit:
-- komenda leży w `application.command`, a jej handler ma `@Transactional`,
-- zapytanie leży w `application.query`, a jej handler ma `@Transactional(readOnly = true)`,
+- komenda leży w `application.command`, a zapytanie w `application.query` (pakiety publikowane innym modułom oznaczamy `@NamedInterface`),
+- handlery leżą osobno, w `application.handler`; handler komendy ma `@Transactional`, a handler zapytania `@Transactional(readOnly = true)` (reguła sprawdza pakiet obsługiwanego typu),
+- wyniki zapytań to proste rekordy `*Dto` w `application.dto`,
 - komenda zwraca `Voidy` albo identyfikator, zapytanie zwraca rekord wyniku.
 
 ```java
@@ -205,7 +207,7 @@ class AdminParametersController implements AdminLegalParametersApi {
 }
 ```
 
-Konwencja nazw: komendy w trybie rozkazującym (`ChangeParameters`, `SubmitApplication`), zapytania `Get…` / `Preview…` / `Calculate…`. Jedna komenda to jeden handler w pakiecie `application.command` lub `application.query`.
+Konwencja nazw: komendy w trybie rozkazującym (`ChangeParameters`, `SubmitApplication`), zapytania zawsze z sufiksem `Query` (`GetCurrentLegalParametersQuery`, `PreviewGuideQuery`, `CalculateMaternityBenefitQuery`; pilnuje tego ArchUnit), handler to nazwa zapytania bez sufiksu `Query` + `Handler` (`GetCurrentLegalParametersQuery` → `GetCurrentLegalParametersHandler`; pilnuje tego ArchUnit). Jedna komenda lub zapytanie to jeden handler w `application.handler`.
 
 ### 2.5 Mapowanie MapStruct
 
@@ -254,11 +256,14 @@ target/generated-sources/openapi/...          // wygenerowane: com.hn26.zaradnia
 com.hn26.zaradniaki.zusbaby
 ├── shared            // kernel: Money, Rate, Weeks, DateRange, Check, cqrs/*, mapping/*, web/ProblemDetails
 ├── legalrules
-│   ├── LegalParametersProvider.java          // publiczne API modułu
-│   ├── domain/        ParameterSet, ParameterKey, LegalParameters, ParametersChanged, ParameterSetRepository
-│   ├── application/   command/ChangeParameters(+Handler), query/GetCurrentParameters(+Handler)
-│   └── infrastructure/persistence (ParameterSetEntity, JpaParameterSetRepository, ParameterSetPersistenceMapper)
-│                      web (LegalParametersController, AdminParametersController, LegalParametersWebMapper)
+│   ├── api/           // publikowane typy bez logiki (@NamedInterface)
+│   │   ├── model/     ParameterKey, ParameterKind
+│   │   └── exception/ LegalParametersNotFoundException
+│   ├── domain/        ParameterSet, LegalParameters, ParameterValue, InvalidLegalParametersException,
+│   │                  ParameterSetRepository (port)
+│   ├── application/   query/ (publikowane), dto/ (publikowane), handler/, mapper/ (ParameterSet → DTO)
+│   └── infrastructure/catalog (LegalState2026, InCodeParameterSetRepository)
+│                      web (LegalParametersController, LegalParametersWebMapper)
 ├── calendar
 ├── benefits
 ├── guide
@@ -366,7 +371,6 @@ Konwencje: błędy jako `ProblemDetail` z polem `gentleMessage`, daty ISO-8601, 
 ## 4. Model danych (Flyway)
 
 ```
-parameter_set(id, version int UNIQUE, valid_from date, description text, values jsonb, created_by, created_at)
 user_account(id uuid, idp_subject text UNIQUE, persona_id text, roles text[], created_at)
 auth_code(code_hash, subject, persona_id, redirect_uri, expires_at)          -- mock mObywatel
 refresh_token(id, user_id, token_hash, expires_at, revoked_at)
@@ -392,7 +396,7 @@ Dane mock eZUS i person trzymamy w `resources/mock/` (JSON), nie w bazie, bo to 
 | Handlery | Komendy i zapytania PipelinR z repozytoriami in-memory | JUnit |
 | Mapery | MapStruct w obie strony | JUnit |
 | Modułowe | Granice, publikacja i obsługa zdarzeń | `@ApplicationModuleTest`, `Scenario` |
-| Architektury | `domain` bez Springa i JPA; kontrolery wołają tylko `Pipeline` i implementują `*Api`; handlery z `application.command` mają `@Transactional`, a z `application.query` `@Transactional(readOnly = true)`; brak setterów w `domain` | ArchUnit + `ApplicationModules.verify()` |
+| Architektury | `domain` bez Springa i JPA; kontrolery wołają tylko `Pipeline` i implementują `*Api`; handlery leżą w `application.handler`; handler komendy ma `@Transactional`, a handler zapytania `@Transactional(readOnly = true)`; brak setterów w `domain` | ArchUnit + `ApplicationModules.verify()` |
 | Integracyjne (`*IT`) | REST end-to-end, Flyway, JPA, security, PDF; żądania i odpowiedzi walidowane względem `openapi.yaml` | Testcontainers PostgreSQL, `MockMvc` + `OpenApiContract.matchesContract()`, failsafe |
 
 ## 6. Sposób pracy (ja + agent)
@@ -424,7 +428,7 @@ Od PR 05 każdy PR z endpointem zaczyna się od wpisu w `openapi.yaml` (patrz 2.
 ### Faza 1 — przepisy i obliczenia
 | # | PR | Zawartość | Testy | P |
 |---|---|---|---|---|
-| 05 | Parametry prawne (odczyt) | `ParameterSet`, `LegalParameters`, migracja z wartościami domyślnymi, encja i mapper, `GetCurrentParameters`, `GET /legal-parameters` | Jednostkowe niezmienników, mappera, IT | P0 |
+| 05 | Parametry prawne (odczyt) | Parametry w kodzie (`LegalState2026`), `ParameterSet`, `LegalParameters`, port i adapter z kodu, publikowane zapytania `GetCurrentLegalParametersQuery` i `GetLegalParametersEffectiveOnQuery`, `GET /legal-parameters` | Jednostkowe modelu, repozytorium i handlerów, IT | P0 |
 | 06 | Kalendarz i terminy | `PolishHolidays`, `DeadlinePolicy`, zapytanie `CalculateDeadline`, `GET /deadlines` | Parametryzowane (Wigilia, sobota, Boże Ciało, `before` w niedzielę), IT | P0 |
 | 07 | Harness testów golden | `tools/golden/generate.mjs`, format fixture, bazowa klasa testu, fixture terminów | Golden: terminy | P0 |
 | 08 | Zbieg tytułów i podstawa z Z-3 | `InsuranceTitles`, `InsuranceTitleResolver`, `BenefitBaseCalculator`, `POST /calculations/benefit-base` | Jednostkowe + golden `resolvePerson`, `podstawaZ3` | P0 |
@@ -436,7 +440,7 @@ Od PR 05 każdy PR z endpointem zaczyna się od wpisu w `openapi.yaml` (patrz 2.
 ### Faza 2 — panel administracyjny
 | # | PR | Zawartość | Testy | P |
 |---|---|---|---|---|
-| 13 | Admin: zmiana parametrów | Rola `ADMIN` (hasło → JWT), `ChangeParameters`, `ResetParametersToDefault`, `ParametersChanged` → unieważnienie cache, historia | Jednostkowe agregatu, `@ApplicationModuleTest`, IT: zmiana stopy rodzicielskiego zmienia wynik `/calculations/maternity` | P0 |
+| 13 | Admin: podgląd parametrów | Rola `ADMIN` (hasło → JWT) i podgląd parametrów (wersja, data obowiązywania, opis stanu prawnego, wartości) bez edycji. Zmiana wartości = nowa wersja w kodzie | IT: dostęp tylko dla `ADMIN` | P1 |
 
 ### Faza 3 — przewodnik bez logowania
 | # | PR | Zawartość | Testy | P |

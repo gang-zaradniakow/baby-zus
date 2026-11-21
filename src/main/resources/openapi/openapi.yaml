@@ -10,6 +10,7 @@ info:
     - all paths start with `/api/v1`,
     - dates are ISO-8601 (`2026-11-21`), moments are ISO-8601 with offset,
     - money is a decimal string with two places (`"4147.10"`),
+    - optional fields without a value are omitted, never sent as `null`,
     - every error is an RFC 9457 problem with `code` (stable, for the frontend) and `gentleMessage`
       (Polish text that can be shown to the user as is).
 servers:
@@ -17,6 +18,8 @@ servers:
 tags:
   - name: System
     description: Technical endpoints.
+  - name: LegalParameters
+    description: Legal parameters (rates, amounts, leave dimensions) used by all calculations.
 
 paths:
   /api/v1/ping:
@@ -32,6 +35,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PingResponse'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/legal-parameters:
+    get:
+      tags: [LegalParameters]
+      operationId: getLegalParameters
+      summary: Legal parameters in force today
+      description: |
+        Returns the newest parameter set whose `validFrom` is not later than today. The same values are used by
+        every calculation in the backend. Parameters are defined in code; a new legal state means a new version.
+      responses:
+        '200':
+          description: Parameters in force.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegalParametersResponse'
+        '404':
+          description: No parameter set is in force yet (`code` = `legal-parameters-not-found`).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
         default:
           $ref: '#/components/responses/Problem'
 
@@ -56,6 +83,56 @@ components:
           type: string
           format: date-time
           description: Current server time.
+
+    LegalParametersResponse:
+      type: object
+      required: [version, validFrom, description, parameters]
+      properties:
+        version:
+          type: integer
+          format: int32
+          description: Version of the parameter set; every change creates a new one.
+          example: 1
+        validFrom:
+          type: string
+          format: date
+          description: Day from which this version is in force.
+        description:
+          type: string
+          description: Legal basis of the values (acts, ZUS guide).
+        parameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/LegalParameter'
+
+    LegalParameter:
+      type: object
+      description: |
+        One parameter. Single-valued kinds use `value`; `WEEKS_BY_CHILDREN` uses `values` (for 1, 2, 3, 4 and 5 or
+        more children). Values are plain numbers: amounts in PLN, rates as fractions (0.815 = 81.5%).
+      required: [key, kind, label]
+      properties:
+        key:
+          type: string
+          example: MINIMUM_WAGE
+        kind:
+          $ref: '#/components/schemas/LegalParameterKind'
+        label:
+          type: string
+          description: Polish label for the admin panel.
+          example: Płaca minimalna
+        value:
+          type: number
+          example: 4806
+        values:
+          type: array
+          items:
+            type: number
+          example: [20, 31, 33, 35, 37]
+
+    LegalParameterKind:
+      type: string
+      enum: [AMOUNT, RATE, WEEKS, DAYS, MONTHS, YEARS, WEEKS_BY_CHILDREN]
 
     ProblemDetail:
       type: object

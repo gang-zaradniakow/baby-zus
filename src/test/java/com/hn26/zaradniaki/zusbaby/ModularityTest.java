@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 import org.springframework.modulith.core.ApplicationModule;
 import org.springframework.modulith.core.ApplicationModules;
+import org.springframework.modulith.core.NamedInterface;
 import org.springframework.modulith.docs.Documenter;
 
 class ModularityTest {
@@ -21,6 +22,14 @@ class ModularityTest {
         assertThat(MODULES.stream().map(ApplicationModule::getIdentifier).map(Object::toString)).containsExactlyInAnyOrder(
                 "shared", "api", "legalrules", "calendar", "benefits", "guide", "applications", "correspondence",
                 "insuredaccount", "identity", "knowledge");
+    }
+
+    @Test
+    void legalRulesPublishesQueriesResultsAndApiPackages() {
+        var legalRules = MODULES.getModuleByName("legalrules").orElseThrow();
+
+        assertThat(legalRules.getNamedInterfaces().stream().map(NamedInterface::getName)).contains("query", "dto",
+                "api-model", "api-exception");
     }
 
     @Test

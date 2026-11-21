@@ -19,7 +19,8 @@ class CqrsRulesTest {
     private static final JavaClasses BAD = new ClassFileImporter().importPackages("com.hn26.archfixtures.bad");
 
     static Stream<ArchRule> rules() {
-        return Stream.of(CqrsRules.handlersLiveInCommandOrQueryPackage, CqrsRules.commandsAndQueriesAreRecords,
+        return Stream.of(CqrsRules.handlersLiveInHandlerPackage, CqrsRules.handlersEndWithHandler, CqrsRules.commandsAndQueriesLiveInTheirPackages,
+                CqrsRules.queriesEndWithQuery, CqrsRules.commandsAndQueriesAreRecords,
                 CqrsRules.commandHandlersAreTransactional, CqrsRules.queryHandlersAreReadOnly,
                 CqrsRules.controllersUseOnlyPipeline);
     }

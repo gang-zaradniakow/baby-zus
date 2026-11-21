@@ -1,0 +1,3 @@
+### Legal parameters in force today
+GET {{baseUrl}}/api/v1/legal-parameters
+Accept: application/json

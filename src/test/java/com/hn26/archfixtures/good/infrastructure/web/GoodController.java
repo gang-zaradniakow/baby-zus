@@ -2,7 +2,7 @@ package com.hn26.archfixtures.good.infrastructure.web;
 
 import an.awesome.pipelinr.Pipeline;
 import com.hn26.archfixtures.good.api.ChildApi;
-import com.hn26.archfixtures.good.application.query.GetChild;
+import com.hn26.archfixtures.good.application.query.GetChildQuery;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -16,6 +16,6 @@ class GoodController implements ChildApi {
 
     @Override
     public String child(String id) {
-        return pipeline.send(new GetChild(id));
+        return pipeline.send(new GetChildQuery(id));
     }
 }

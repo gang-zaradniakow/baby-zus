@@ -1,7 +1,7 @@
 package com.hn26.archfixtures.bad.infrastructure.web;
 
 import com.hn26.archfixtures.bad.application.command.MutableCommand;
-import com.hn26.archfixtures.bad.application.command.MutableCommandHandler;
+import com.hn26.archfixtures.bad.application.handler.MutableCommandHandler;
 import org.springframework.web.bind.annotation.RestController;
 
 /**

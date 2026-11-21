@@ -45,7 +45,16 @@ class ArchitectureTest {
             .allowEmptyShould(true);
 
     @ArchTest
-    static final ArchRule handlersLiveInCommandOrQueryPackage = CqrsRules.handlersLiveInCommandOrQueryPackage;
+    static final ArchRule handlersLiveInHandlerPackage = CqrsRules.handlersLiveInHandlerPackage;
+
+    @ArchTest
+    static final ArchRule handlersEndWithHandler = CqrsRules.handlersEndWithHandler;
+
+    @ArchTest
+    static final ArchRule commandsAndQueriesLiveInTheirPackages = CqrsRules.commandsAndQueriesLiveInTheirPackages;
+
+    @ArchTest
+    static final ArchRule queriesEndWithQuery = CqrsRules.queriesEndWithQuery;
 
     @ArchTest
     static final ArchRule commandsAndQueriesAreRecords = CqrsRules.commandsAndQueriesAreRecords;

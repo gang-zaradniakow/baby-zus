@@ -13,37 +13,66 @@ import com.tngtech.archunit.lang.ArchCondition;
 import com.tngtech.archunit.lang.ArchRule;
 import com.tngtech.archunit.lang.ConditionEvents;
 import com.tngtech.archunit.lang.SimpleConditionEvent;
+import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * CQRS conventions (plan, section 2.4). Rules are shared by
- * {@link ArchitectureTest} (production code) and {@code CqrsRulesTest}
- * (fixtures proving that each rule catches violations).
+ * CQRS conventions (plan, section 2.4):
+ * <ul>
+ * <li>commands are records in a {@code command} package, queries are records in
+ * a {@code query} package ({@code application.*} when used only by the module,
+ * {@code api.*} when published to other modules),</li>
+ * <li>handlers live in {@code application.handler}; a handler of a command is
+ * {@code @Transactional}, a handler of a query is
+ * {@code @Transactional(readOnly = true)},</li>
+ * <li>controllers talk to the application only through the Pipeline.</li>
+ * </ul>
+ * Shared by {@link ArchitectureTest} (production code) and
+ * {@code CqrsRulesTest} (fixtures).
  */
 public final class CqrsRules {
 
-    private static final String COMMANDS = "..application.command..";
-    private static final String QUERIES = "..application.query..";
+    private static final String COMMANDS = "..command..";
+    private static final String QUERIES = "..query..";
+    private static final String COMMAND_SEGMENT = "command";
+    private static final String QUERY_SEGMENT = "query";
+    private static final String HANDLERS = "..application.handler..";
 
-    /** Handlers live next to their commands or queries. */
-    public static final ArchRule handlersLiveInCommandOrQueryPackage = classes().that()
-            .implement(Command.Handler.class).should().resideInAnyPackage(COMMANDS, QUERIES)
-            .because("handlers belong to application.command or application.query").allowEmptyShould(true);
+    /** Handlers live in application.handler. */
+    public static final ArchRule handlersLiveInHandlerPackage = classes().that(implementHandler()).should()
+            .resideInAPackage(HANDLERS).because("handlers belong to application.handler").allowEmptyShould(true);
+
+    /**
+     * Handler names end with "Handler", without the "Query" suffix:
+     * GetCurrentLegalParametersHandler.
+     */
+    public static final ArchRule handlersEndWithHandler = classes().that(implementHandler()).should()
+            .haveSimpleNameEndingWith("Handler").andShould().haveSimpleNameNotEndingWith("QueryHandler")
+            .because("a handler is named after its query without the Query suffix, plus Handler")
+            .allowEmptyShould(true);
+
+    /** Commands and queries live in a command or query package. */
+    public static final ArchRule commandsAndQueriesLiveInTheirPackages = classes().that(areCommandsOrQueries())
+            .should().resideInAnyPackage(COMMANDS, QUERIES)
+            .because("commands belong to a command package and queries to a query package").allowEmptyShould(true);
+
+    /** Query names end with "Query", e.g. GetCurrentLegalParametersQuery. */
+    public static final ArchRule queriesEndWithQuery = classes().that(areCommandsOrQueries()).and()
+            .resideInAPackage(QUERIES).should().haveSimpleNameEndingWith("Query")
+            .because("every query is named *Query").allowEmptyShould(true);
 
     /** Commands and queries are immutable records. */
-    public static final ArchRule commandsAndQueriesAreRecords = classes().that().implement(Command.class).and()
-            .resideInAnyPackage(COMMANDS, QUERIES).should(beRecords()).allowEmptyShould(true);
+    public static final ArchRule commandsAndQueriesAreRecords = classes().that(areCommandsOrQueries())
+            .should(beRecords()).allowEmptyShould(true);
 
-    /** Command handlers write in a read-write transaction. */
-    public static final ArchRule commandHandlersAreTransactional = methods().that(areHandleMethods()).and()
-            .areDeclaredInClassesThat().resideInAPackage(COMMANDS).should(beTransactional(false))
-            .allowEmptyShould(true);
+    /** A handler of a command writes in a read-write transaction. */
+    public static final ArchRule commandHandlersAreTransactional = methods().that(handle(COMMAND_SEGMENT))
+            .should(beTransactional(false)).allowEmptyShould(true);
 
-    /** Query handlers only read, in a read-only transaction. */
-    public static final ArchRule queryHandlersAreReadOnly = methods().that(areHandleMethods()).and()
-            .areDeclaredInClassesThat().resideInAPackage(QUERIES).should(beTransactional(true))
-            .allowEmptyShould(true);
+    /** A handler of a query only reads, in a read-only transaction. */
+    public static final ArchRule queryHandlersAreReadOnly = methods().that(handle(QUERY_SEGMENT))
+            .should(beTransactional(true)).allowEmptyShould(true);
 
     /** Controllers talk to the application only through the Pipeline. */
     public static final ArchRule controllersUseOnlyPipeline = noClasses().that()
@@ -55,16 +84,29 @@ public final class CqrsRules {
     private CqrsRules() {
     }
 
-    private static DescribedPredicate<JavaMethod> areHandleMethods() {
-        return DescribedPredicate.describe("handle methods of Command.Handler implementations",
-                method -> method.getName().equals("handle") && !method.getModifiers().contains(JavaModifier.BRIDGE)
-                        && !method.getModifiers().contains(JavaModifier.SYNTHETIC)
-                        && method.getOwner().isAssignableTo(Command.Handler.class));
-    }
-
     private static DescribedPredicate<JavaClass> implementHandler() {
         return DescribedPredicate.describe("implement Command.Handler",
                 javaClass -> javaClass.isAssignableTo(Command.Handler.class) && !javaClass.isInterface());
+    }
+
+    private static DescribedPredicate<JavaClass> areCommandsOrQueries() {
+        return DescribedPredicate.describe("are commands or queries",
+                javaClass -> javaClass.isAssignableTo(Command.class) && !javaClass.isInterface()
+                        && !javaClass.isAssignableTo(Command.Handler.class));
+    }
+
+    /**
+     * {@code handle} methods (not bridges) whose argument lives in a package named
+     * {@code segment}.
+     */
+    private static DescribedPredicate<JavaMethod> handle(String segment) {
+        return DescribedPredicate.describe("handle a type from a '" + segment + "' package",
+                method -> method.getName().equals("handle") && !method.getModifiers().contains(JavaModifier.BRIDGE)
+                        && !method.getModifiers().contains(JavaModifier.SYNTHETIC)
+                        && method.getOwner().isAssignableTo(Command.Handler.class)
+                        && method.getRawParameterTypes().size() == 1 && List
+                                .of(method.getRawParameterTypes().getFirst().getPackageName().split("\\."))
+                                .contains(segment));
     }
 
     private static ArchCondition<JavaClass> beRecords() {

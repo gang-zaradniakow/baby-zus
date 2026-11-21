@@ -9,4 +9,5 @@ export const moreRoutes = {
   messages: '/wiecej/wiadomosci',
   document: (documentId: string) => `/wiecej/pismo/${documentId}`,
   demo: '/wiecej/demo',
+  admin: '/wiecej/admin',
 } as const;

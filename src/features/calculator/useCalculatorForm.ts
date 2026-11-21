@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { useZusData } from '@/features/zus/useZusData';
 import { useToday } from '@/hooks/useToday';
+import { useLegalParams } from '@/params';
 import { useSession } from '@/session';
 
 import { applyZusAccount } from './applyZusAccount';
@@ -19,13 +20,14 @@ export function useCalculatorForm(initialSituation?: CalculatorSituation) {
   const today = useToday();
   const { profile, isSignedIn } = useSession();
   const zus = useZusData();
+  const { params } = useLegalParams();
 
   /** Formularz z ankiety; po zalogowaniu moja osoba dostaje podstawy z eZUS. */
   const initialForm = (situation?: CalculatorSituation): CalculatorForm => {
-    const form = createCalculatorForm(profile, today, situation);
+    const form = createCalculatorForm(profile, today, situation, params);
     if (!isSignedIn || !zus) return form;
     const me: FormParent = profile?.role === 'tata' ? 'father' : 'mother';
-    return { ...form, [me]: applyZusAccount(form[me], zus.account) };
+    return { ...form, [me]: applyZusAccount(form[me], zus.account, params) };
   };
 
   const [form, setForm] = useState<CalculatorForm>(() => initialForm(initialSituation));
@@ -44,7 +46,7 @@ export function useCalculatorForm(initialSituation?: CalculatorSituation) {
 
   return {
     form,
-    result: computeCalculation(form, today),
+    result: computeCalculation(form, today, params),
     setSituation: (situation: CalculatorSituation) => set('situation', situation),
     setDateText: (dateText: string) => set('dateText', dateText),
     setChildrenCount: (childrenCount: number) => set('childrenCount', childrenCount),

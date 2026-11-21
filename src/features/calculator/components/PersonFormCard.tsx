@@ -6,9 +6,9 @@ import { TextButton } from '@/components/atoms/TextButton';
 import { CheckboxRow } from '@/components/molecules/CheckboxRow';
 import { NumberField } from '@/components/molecules/NumberField';
 import { ToggleChip } from '@/components/molecules/ToggleChip';
-import { LEGAL_PARAMS } from '@/data/legalParams';
-import { formatMoney } from '@/utils/formatMoney';
+import { useLegalParams } from '@/params';
 import { useTheme } from '@/theme';
+import { formatMoney } from '@/utils/formatMoney';
 
 import type { PersonForm } from '../CalculatorForm';
 import { hasNoTitles, patchTitle, patchZ3Month, toggleTitle, type TitleChipId } from '../personForm';
@@ -34,6 +34,7 @@ const TITLE_CHIPS: readonly { id: Exclude<TitleChipId, 'none'>; label: string }[
 /** Karta osoby: jak pracuje (kilka tytułów naraz) i podstawa z każdego tytułu — jak `personForm` w prototypie. */
 export function PersonFormCard({ title, person, resolved, onUpdate }: Props) {
   const { colors } = useTheme();
+  const { params } = useLegalParams();
   const { uop, zlec, jdg } = person.titles;
 
   return (
@@ -79,7 +80,7 @@ export function PersonFormCard({ title, person, resolved, onUpdate }: Props) {
             </>
           )}
           <CheckboxRow
-            label={`Co najmniej płaca minimalna (${formatMoney(LEGAL_PARAMS.minWage, 0)} brutto)`}
+            label={`Co najmniej płaca minimalna (${formatMoney(params.minWage, 0)} brutto)`}
             checked={uop.atLeastMinWage}
             onToggle={() => onUpdate((p) => patchTitle(p, 'uop', { atLeastMinWage: !uop.atLeastMinWage }))}
           />

@@ -6,13 +6,13 @@ import { AppText } from '@/components/atoms/AppText';
 import { Button } from '@/components/atoms/Button';
 import { Card } from '@/components/atoms/Card';
 import { ScreenLayout } from '@/components/templates/ScreenLayout';
-import { LEGAL_PARAMS } from '@/data/legalParams';
 import { LoginRequired } from '@/features/more/components/LoginRequired';
 import { MoreSection } from '@/features/more/components/MoreSection';
 import { moreRoutes } from '@/features/more/moreRoutes';
 import { SickLeaveRow } from '@/features/zus/components/SickLeaveRow';
 import { ZusTitleRow } from '@/features/zus/components/ZusTitleRow';
 import { useZusData } from '@/features/zus/useZusData';
+import { useLegalParams } from '@/params';
 import { useSession } from '@/session';
 import { useTheme } from '@/theme';
 import { formatMoney } from '@/utils/formatMoney';
@@ -23,6 +23,7 @@ import { styles } from './ZusDataScreen.styles';
 export function ZusDataScreen() {
   const { colors } = useTheme();
   const { isSignedIn } = useSession();
+  const { params } = useLegalParams();
   const zus = useZusData();
   const back = () => router.dismissTo(moreRoutes.home);
 
@@ -42,7 +43,7 @@ export function ZusDataScreen() {
 
   const { account } = zus;
   const insured = account.hasSicknessInsurance;
-  const blocked = account.debt > LEGAL_PARAMS.debtLimit;
+  const blocked = account.debt > params.debtLimit;
 
   return (
     <ScreenLayout
@@ -84,7 +85,7 @@ export function ZusDataScreen() {
           <Card tone={blocked ? 'danger' : undefined}>
             <AppText variant="label">Zadłużenie: {formatMoney(account.debt)}</AppText>
             <AppText variant="caption" color={colors.textMuted}>
-              Próg blokujący zasiłek (1% płacy minimalnej): {formatMoney(LEGAL_PARAMS.debtLimit)}
+              Próg blokujący zasiłek (1% płacy minimalnej): {formatMoney(params.debtLimit)}
             </AppText>
             <AppText variant="caption">
               {blocked

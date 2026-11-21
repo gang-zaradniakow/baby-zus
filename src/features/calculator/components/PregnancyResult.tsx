@@ -2,6 +2,7 @@ import { View } from 'react-native';
 
 import { AppText } from '@/components/atoms/AppText';
 import { toNetAmount } from '@/domain/calculator/toNetAmount';
+import { useLegalParams } from '@/params';
 import { useTheme } from '@/theme';
 import { formatMoney } from '@/utils/formatMoney';
 import { formatPercent } from '@/utils/formatPercent';
@@ -22,6 +23,7 @@ type Props = {
 /** Wynik L4 w ciąży: kwota na rękę, wyjaśnienia i rozbicie (pracodawca / zasiłek / rehabilitacyjne). */
 export function PregnancyResult({ result, days }: Props) {
   const { colors } = useTheme();
+  const { params } = useLegalParams();
   const { sickPay, checks, allowance, mother } = result;
 
   if (sickPay.parts.length === 0) {
@@ -47,7 +49,7 @@ export function PregnancyResult({ result, days }: Props) {
     <View style={styles.section}>
       <ResultHero
         label={`Zasiłek chorobowy w ciąży · ${days} dni L4 · 100%`}
-        value={formatMoney(toNetAmount(sickPay.total), 0)}
+        value={formatMoney(toNetAmount(sickPay.total, params), 0)}
         caption={`na rękę · ${formatMoney(sickPay.total, 0)} brutto`}
       />
       <CheckList checks={checks} />

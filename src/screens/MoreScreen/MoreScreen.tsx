@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { HeartHandshake, Info, LogIn, LogOut, Mail, PenLine, Settings, ShieldCheck, Sparkles, Video } from 'lucide-react-native';
+import { HeartHandshake, Info, LogIn, LogOut, Mail, PenLine, Settings, ShieldCheck, SlidersHorizontal, Sparkles, Video } from 'lucide-react-native';
 import { View } from 'react-native';
 
 import { Button } from '@/components/atoms/Button';
@@ -99,6 +99,12 @@ export function MoreScreen() {
             title="Panel demo (dla jury)"
             subtitle="Przykładowe osoby, reset prototypu"
             onPress={() => router.push(moreRoutes.demo)}
+          />
+          <LinkRow
+            icon={SlidersHorizontal}
+            title="Panel administracyjny (ZUS)"
+            subtitle="Stopy, kwoty i wymiary zasiłków — zmiana bez zmiany kodu"
+            onPress={() => router.push(moreRoutes.admin)}
           />
         </MoreSection>
 

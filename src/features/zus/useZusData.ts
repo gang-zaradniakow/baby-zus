@@ -4,6 +4,7 @@ import { buildZusDocuments } from '@/domain/zus/buildZusDocuments';
 import type { ZusAccount } from '@/domain/zus/ZusAccount';
 import type { ZusDocument } from '@/domain/zus/ZusDocument';
 import { useToday } from '@/hooks/useToday';
+import { useLegalParams } from '@/params';
 import { useSession } from '@/session';
 
 /** Pismo ze stanem skrzynki (przeczytane / w archiwum). */
@@ -22,11 +23,12 @@ export type ZusData = {
 export function useZusData(): ZusData | null {
   const today = useToday();
   const { profile, personaId, readDocumentIds, movedDocumentIds } = useSession();
+  const { params } = useLegalParams();
   if (!profile) return null;
 
   const persona = findPersona(personaId);
-  const account = buildZusAccount(profile, persona?.zus(today));
-  const documents = buildZusDocuments(profile, account, today, persona?.documents(today)).map((doc) => ({
+  const account = buildZusAccount(profile, persona?.zus(today), params);
+  const documents = buildZusDocuments(profile, account, today, persona?.documents(today), params).map((doc) => ({
     ...doc,
     isRead: !!doc.read || readDocumentIds.has(doc.id),
     // Przeniesienie zmienia stan początkowy: z archiwum do skrzynki i odwrotnie.

@@ -1,7 +1,7 @@
 import { CheckboxRow } from '@/components/molecules/CheckboxRow';
 import { SliderField } from '@/components/molecules/SliderField';
 import type { FatherPlan } from '@/domain/calculator/BenefitSimulation';
-import { LEGAL_PARAMS } from '@/data/legalParams';
+import { useLegalParams } from '@/params';
 
 type Props = {
   plan: FatherPlan;
@@ -15,13 +15,14 @@ type Props = {
 
 /** Plan taty: ojcowski, ile tygodni rodzicielskiego i ile macierzyńskiego przejmuje. */
 export function FatherPlanFields({ plan, maternityWeeks, parentalWeeks, canTakeOverMaternity, onChange }: Props) {
-  const maxParental = Math.max(0, parentalWeeks - LEGAL_PARAMS.nonTransferableWeeks);
-  const maxTakeover = Math.max(0, maternityWeeks - LEGAL_PARAMS.motherOnlyMaternityWeeks);
+  const { params } = useLegalParams();
+  const maxParental = Math.max(0, parentalWeeks - params.nonTransferableWeeks);
+  const maxTakeover = Math.max(0, maternityWeeks - params.motherOnlyMaternityWeeks);
 
   return (
     <>
       <CheckboxRow
-        label={`Urlop ojcowski (${LEGAL_PARAMS.paternityWeeks} tyg.)`}
+        label={`Urlop ojcowski (${params.paternityWeeks} tyg.)`}
         checked={plan.paternity}
         onToggle={() => onChange({ paternity: !plan.paternity })}
       />

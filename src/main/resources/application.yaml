@@ -25,13 +25,14 @@ zusbaby:
 
 # API contract is the static src/main/resources/openapi/openapi.yaml, not generated from code.
 # Swagger UI needs springdoc's api-docs endpoint to be on, so it stays enabled but documents no paths
-# (/v3/api-docs is intentionally empty); the UI shows only /openapi.yaml.
+# (/v3/api-docs is intentionally empty); the UI shows only the spec served at /api/v1/openapi.yaml.
+# The spec lives under the API prefix: on the TEST environment /openapi.yaml was answered by the frontend.
 springdoc:
   api-docs:
     enabled: true
   paths-to-match: /__generated-docs-disabled__
   swagger-ui:
-    url: /openapi.yaml
+    url: /api/v1/openapi.yaml
 
 info:
   app:

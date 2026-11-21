@@ -283,7 +283,7 @@ Spring Boot 4.0.9, Java 25, Maven (jest). Do dodania:
 - `spring-boot-starter-security` + `oauth2-resource-server` (JWT)
 - `spring-boot-starter-thymeleaf` (strona mock mObywatel, szablony pism) + OpenHTMLtoPDF
 - Spring Modulith (core, jpa, test) w wersji zgodnej z Boot 4
-- Swagger UI wskazujący na statyczny `openapi.yaml` (springdoc-openapi-starter-webmvc-ui 3.0.x, linia dla Boot 4.0, `springdoc.swagger-ui.url=/openapi.yaml`). Specyfikacji nie generujemy z kodu, bo źródłem jest plik. Swagger UI wymaga włączonego endpointu `api-docs`, więc zostaje włączony, ale z `springdoc.paths-to-match` ustawionym na nieistniejącą ścieżkę: `/v3/api-docs` jest celowo pusty (sprawdza to test IT).
+- Swagger UI wskazujący na statyczny `openapi.yaml` (springdoc-openapi-starter-webmvc-ui 3.0.x, linia dla Boot 4.0, `springdoc.swagger-ui.url=/api/v1/openapi.yaml`). Plik jest serwowany pod `/api/v1/openapi.yaml`, bo za reverse proxy do backendu trafia pewnie tylko prefiks `/api`. Specyfikacji nie generujemy z kodu, bo źródłem jest plik. Swagger UI wymaga włączonego endpointu `api-docs`, więc zostaje włączony, ale z `springdoc.paths-to-match` ustawionym na nieistniejącą ścieżkę: `/v3/api-docs` jest celowo pusty (sprawdza to test IT).
 - ArchUnit, Testcontainers PostgreSQL (`@ServiceConnection`), `openapi-request-validator-mockmvc` 3.0.0 (dawniej `swagger-request-validator-mockmvc`; zgodność żądań i odpowiedzi ze specyfikacją w testach IT, helper `OpenApiContract.matchesContract()`)
 
 ### 2.9 API first

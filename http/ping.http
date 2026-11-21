@@ -3,4 +3,4 @@ GET {{baseUrl}}/api/v1/ping
 Accept: application/json
 
 ### API contract served by the backend
-GET {{baseUrl}}/openapi.yaml
+GET {{baseUrl}}/api/v1/openapi.yaml

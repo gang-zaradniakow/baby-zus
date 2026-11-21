@@ -11,7 +11,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * CORS for the frontend and publishing the API contract.
  * <p>
  * The contract lives in {@code src/main/resources/openapi/openapi.yaml} (single
- * source of truth). It is served as {@code /openapi.yaml}, and Swagger UI
+ * source of truth). It is served under the API prefix as
+ * {@code /api/v1/openapi.yaml} (behind the reverse proxy only {@code /api/**}
+ * reliably reaches the backend), and Swagger UI
  * ({@code /swagger-ui/index.html}) displays that file.
  */
 @Configuration(proxyBeanMethods = false)
@@ -19,7 +21,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @RequiredArgsConstructor
 class WebConfiguration implements WebMvcConfigurer {
 
-    static final String SPEC_PATH = "/openapi.yaml";
+    /**
+     * Under the API prefix: behind the reverse proxy only /api/** reliably reaches
+     * the backend.
+     */
+    static final String SPEC_PATTERN = "/api/v1/*.yaml";
 
     private final WebProperties properties;
 
@@ -32,6 +38,6 @@ class WebConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler(SPEC_PATH).addResourceLocations("classpath:/openapi/");
+        registry.addResourceHandler(SPEC_PATTERN).addResourceLocations("classpath:/openapi/");
     }
 }

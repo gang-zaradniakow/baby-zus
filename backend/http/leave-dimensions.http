@@ -1,0 +1,11 @@
+### Premature twins: maternity, parental and supplementary leave
+POST {{baseUrl}}/api/v1/calculations/leave-dimensions
+Content-Type: application/json
+
+{"children": 2, "preterm": {"gestationWeek": 27, "birthWeightGrams": 950, "hospitalDays": 49}}
+
+### Foster family, child close to the age limit
+POST {{baseUrl}}/api/v1/calculations/leave-dimensions
+Content-Type: application/json
+
+{"children": 1, "adoption": {"type": "FOSTER_FAMILY", "childAge": 6.9}}

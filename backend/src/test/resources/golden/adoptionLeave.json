@@ -1,0 +1,213 @@
+{
+  "source": "js/calc.js: adoptWeeks()",
+  "cases": [
+    {
+      "name": "adoption of a 1-year-old",
+      "input": {
+        "children": 1,
+        "zaZyciem": false,
+        "type": "ADOPTION",
+        "childAge": 1,
+        "deferredSchool": false
+      },
+      "expected": {
+        "maternityWeeks": 20,
+        "parentalWeeks": 41,
+        "ageLimit": 14,
+        "note": "Pełny wymiar: 20 tyg. + rodzicielski 41 tyg. (limit wieku: 14 lat)."
+      }
+    },
+    {
+      "name": "adoption of a newborn",
+      "input": {
+        "children": 1,
+        "zaZyciem": false,
+        "type": "ADOPTION",
+        "childAge": 0,
+        "deferredSchool": false
+      },
+      "expected": {
+        "maternityWeeks": 20,
+        "parentalWeeks": 41,
+        "ageLimit": 14,
+        "note": "Pełny wymiar: 20 tyg. + rodzicielski 41 tyg. (limit wieku: 14 lat)."
+      }
+    },
+    {
+      "name": "adoption close to the age limit",
+      "input": {
+        "children": 1,
+        "zaZyciem": false,
+        "type": "ADOPTION",
+        "childAge": 13.8,
+        "deferredSchool": false
+      },
+      "expected": {
+        "maternityWeeks": 10,
+        "parentalWeeks": 38,
+        "ageLimit": 14,
+        "note": "Dziecko zbliża się do limitu wieku (14 lat): urlop trwa do tego wieku, ale nie krócej niż 9 tyg.; rodzicielski 38 tyg. (art. 183 § 3 i § 4 KP)."
+      }
+    },
+    {
+      "name": "adoption just before the age limit (minimum 9 weeks)",
+      "input": {
+        "children": 1,
+        "zaZyciem": false,
+        "type": "ADOPTION",
+        "childAge": 13.95,
+        "deferredSchool": false
+      },
+      "expected": {
+        "maternityWeeks": 9,
+        "parentalWeeks": 38,
+        "ageLimit": 14,
+        "note": "Dziecko zbliża się do limitu wieku (14 lat): urlop trwa do tego wieku, ale nie krócej niż 9 tyg.; rodzicielski 38 tyg. (art. 183 § 3 i § 4 KP)."
+      }
+    },
+    {
+      "name": "adoption at the age limit",
+      "input": {
+        "children": 1,
+        "zaZyciem": false,
+        "type": "ADOPTION",
+        "childAge": 14,
+        "deferredSchool": false
+      },
+      "expected": {
+        "maternityWeeks": 0,
+        "parentalWeeks": 0,
+        "ageLimit": 14,
+        "note": "Dziecko ma już 14 lat — urlop na warunkach urlopu macierzyńskiego nie przysługuje."
+      }
+    },
+    {
+      "name": "adoption of twins close to the age limit",
+      "input": {
+        "children": 2,
+        "zaZyciem": false,
+        "type": "ADOPTION",
+        "childAge": 13.5,
+        "deferredSchool": false
+      },
+      "expected": {
+        "maternityWeeks": 26,
+        "parentalWeeks": 38,
+        "ageLimit": 14,
+        "note": "Dziecko zbliża się do limitu wieku (14 lat): urlop trwa do tego wieku, ale nie krócej niż 9 tyg.; rodzicielski 38 tyg. (art. 183 § 3 i § 4 KP)."
+      }
+    },
+    {
+      "name": "adoption with Za zyciem close to the limit, full maternity",
+      "input": {
+        "children": 1,
+        "zaZyciem": true,
+        "type": "ADOPTION",
+        "childAge": 13.5,
+        "deferredSchool": false
+      },
+      "expected": {
+        "maternityWeeks": 20,
+        "parentalWeeks": 65,
+        "ageLimit": 14,
+        "note": "Pełny wymiar: 20 tyg. + rodzicielski 65 tyg. (limit wieku: 14 lat)."
+      }
+    },
+    {
+      "name": "adoption of twins with Za zyciem close to the limit",
+      "input": {
+        "children": 2,
+        "zaZyciem": true,
+        "type": "ADOPTION",
+        "childAge": 13.6,
+        "deferredSchool": false
+      },
+      "expected": {
+        "maternityWeeks": 20,
+        "parentalWeeks": 62,
+        "ageLimit": 14,
+        "note": "Dziecko zbliża się do limitu wieku (14 lat): urlop trwa do tego wieku, ale nie krócej niż 9 tyg.; rodzicielski 62 tyg. (art. 183 § 3 i § 4 KP)."
+      }
+    },
+    {
+      "name": "foster family, 2-year-old",
+      "input": {
+        "children": 1,
+        "zaZyciem": false,
+        "type": "FOSTER_FAMILY",
+        "childAge": 2,
+        "deferredSchool": false
+      },
+      "expected": {
+        "maternityWeeks": 20,
+        "parentalWeeks": 41,
+        "ageLimit": 7,
+        "note": "Pełny wymiar: 20 tyg. + rodzicielski 41 tyg. (limit wieku: 7 lat)."
+      }
+    },
+    {
+      "name": "foster family just before 7 years",
+      "input": {
+        "children": 1,
+        "zaZyciem": false,
+        "type": "FOSTER_FAMILY",
+        "childAge": 6.9,
+        "deferredSchool": false
+      },
+      "expected": {
+        "maternityWeeks": 9,
+        "parentalWeeks": 38,
+        "ageLimit": 7,
+        "note": "Dziecko zbliża się do limitu wieku (7 lat): urlop trwa do tego wieku, ale nie krócej niż 9 tyg.; rodzicielski 38 tyg. (art. 183 § 3 i § 4 KP)."
+      }
+    },
+    {
+      "name": "foster family at 7 years",
+      "input": {
+        "children": 1,
+        "zaZyciem": false,
+        "type": "FOSTER_FAMILY",
+        "childAge": 7,
+        "deferredSchool": false
+      },
+      "expected": {
+        "maternityWeeks": 0,
+        "parentalWeeks": 0,
+        "ageLimit": 7,
+        "note": "Dziecko ma już 7 lat — urlop na warunkach urlopu macierzyńskiego nie przysługuje."
+      }
+    },
+    {
+      "name": "foster family at 7 years with deferred school",
+      "input": {
+        "children": 1,
+        "zaZyciem": false,
+        "type": "FOSTER_FAMILY",
+        "childAge": 6.9,
+        "deferredSchool": true
+      },
+      "expected": {
+        "maternityWeeks": 20,
+        "parentalWeeks": 41,
+        "ageLimit": 10,
+        "note": "Pełny wymiar: 20 tyg. + rodzicielski 41 tyg. (limit wieku: 10 lat)."
+      }
+    },
+    {
+      "name": "foster family, three children",
+      "input": {
+        "children": 3,
+        "zaZyciem": false,
+        "type": "FOSTER_FAMILY",
+        "childAge": 3,
+        "deferredSchool": false
+      },
+      "expected": {
+        "maternityWeeks": 33,
+        "parentalWeeks": 43,
+        "ageLimit": 7,
+        "note": "Pełny wymiar: 33 tyg. + rodzicielski 43 tyg. (limit wieku: 7 lat)."
+      }
+    }
+  ]
+}

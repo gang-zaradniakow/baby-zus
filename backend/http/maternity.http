@@ -1,0 +1,37 @@
+### Maternity simulator: father takes 6 weeks of maternity leave and his 9 weeks
+POST {{baseUrl}}/api/v1/calculations/maternity
+Content-Type: application/json
+
+{
+  "situation": "BIRTH",
+  "startDate": "2026-03-02",
+  "children": 1,
+  "variant": "STANDARD",
+  "mother": {"employment": {"base": "5177.40"}},
+  "father": {"titles": {"employment": {"base": "6000.00"}}, "paternityLeave": true, "parentalWeeks": 9, "maternityWeeksTaken": 6}
+}
+
+### Mother works half time for 8 weeks of her parental leave
+POST {{baseUrl}}/api/v1/calculations/maternity
+Content-Type: application/json
+
+{
+  "situation": "BIRTH",
+  "startDate": "2026-03-02",
+  "children": 1,
+  "mother": {"employment": {"base": "5177.40"}},
+  "father": {"titles": {"employment": {"base": "6040.40"}}},
+  "work": {"parent": "MOTHER", "share": 0.5, "weeks": 8}
+}
+
+### Mother in KRUS: maternity benefit from KRUS instead of ZUS
+POST {{baseUrl}}/api/v1/calculations/maternity
+Content-Type: application/json
+
+{
+  "situation": "BIRTH",
+  "startDate": "2026-03-02",
+  "children": 1,
+  "mother": {"agriculturalInsurance": true},
+  "father": {"titles": {"employment": {"base": "6040.40"}}}
+}

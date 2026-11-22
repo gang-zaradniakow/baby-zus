@@ -1,0 +1,6 @@
+### Ping (API is up, current server time)
+GET {{baseUrl}}/api/v1/ping
+Accept: application/json
+
+### API contract served by the backend
+GET {{baseUrl}}/api/v1/openapi.yaml

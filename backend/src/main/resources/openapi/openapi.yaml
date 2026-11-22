@@ -1,0 +1,1789 @@
+openapi: 3.0.3
+info:
+  title: mZUS dla Rodzica — backend API
+  version: 0.1.0
+  description: |
+    Backend of the "mZUS dla Rodzica" prototype (HackNation 2026). Contract-first: every endpoint is described here
+    before it is implemented; Spring interfaces are generated from this file.
+
+    Conventions:
+    - all paths start with `/api/v1`,
+    - dates are ISO-8601 (`2026-11-21`), moments are ISO-8601 with offset,
+    - money is a decimal string with two places (`"4147.10"`),
+    - optional fields without a value are omitted, never sent as `null`,
+    - every error is an RFC 9457 problem with `code` (stable, for the frontend) and `gentleMessage`
+      (Polish text that can be shown to the user as is).
+servers:
+  - url: /
+tags:
+  - name: System
+    description: Technical endpoints.
+  - name: LegalParameters
+    description: Legal parameters (rates, amounts, leave dimensions) used by all calculations.
+  - name: Deadlines
+    description: Statutory deadlines counted with the Polish calendar of public holidays.
+  - name: Calculations
+    description: Benefit calculations (insurance titles, benefit base, sickness and maternity benefits).
+  - name: Identity
+    description: |
+      Mocked login with mObywatel (authorization-code flow like OIDC), tokens and the logged-in user. The mock login
+      page itself (`/api/v1/mock/mobywatel/login`, HTML) is the identity provider's screen and is not part of this API.
+  - name: Guide
+    description: Personal guide for parents (timeline of deadlines, alerts).
+  - name: Knowledge
+    description: Guide for parents ("Wiedza"), chapters and articles based on the ZUS guide for parents.
+  - name: Content
+    description: Read-only dictionaries (form glossary, facts, support contacts, week cards).
+
+paths:
+  /api/v1/ping:
+    get:
+      tags: [System]
+      operationId: ping
+      summary: Check that the API is up
+      description: Returns a fixed status and the current server time (from DateTimeGenerator).
+      responses:
+        '200':
+          description: API is up.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PingResponse'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/legal-parameters:
+    get:
+      tags: [LegalParameters]
+      operationId: getLegalParameters
+      summary: Legal parameters in force today
+      description: |
+        Returns the newest parameter set whose `validFrom` is not later than today. The same values are used by
+        every calculation in the backend. Parameters are defined in code; a new legal state means a new version.
+      responses:
+        '200':
+          description: Parameters in force.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegalParametersResponse'
+        '404':
+          description: No parameter set is in force yet (`code` = `legal-parameters-not-found`).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/deadlines:
+    get:
+      tags: [Deadlines]
+      operationId: calculateDeadline
+      summary: Calculate a statutory deadline
+      description: |
+        Counts a deadline from an event using the Polish calendar (Saturdays, Sundays, public holidays incl.
+        Christmas Eve since 2025). Give exactly one of `days` or `months`; `BEFORE` accepts only `days`.
+        - `AFTER` + `days`: "within X days of the event", e.g. 21 days after birth for the 81.5% variant.
+        - `AFTER` + `months`: "within X months of the event", e.g. 3 months.
+        - `BEFORE` + `days`: "at least X days before the event", e.g. 21 days before parental leave starts.
+      parameters:
+        - name: event
+          in: query
+          required: true
+          description: Day of the event (birth, start of leave...).
+          schema:
+            type: string
+            format: date
+          example: '2026-11-21'
+        - name: type
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/DeadlineType'
+        - name: days
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+            maximum: 3660
+          example: 21
+        - name: months
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+            maximum: 120
+      responses:
+        '200':
+          description: Calculated deadline.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deadline'
+        '400':
+          description: Missing or contradictory parameters (`code` = `validation-failed`).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/calculations/insurance:
+    post:
+      tags: [Calculations]
+      operationId: resolveInsurance
+      summary: Resolve concurrent insurance titles
+      description: |
+        Decides which insurance titles give a sickness/maternity benefit and with what base (Poradnik ZUS 2026,
+        s. 9–14): full-time employment at minimum wage excludes the firm and the mandate contract, a student on a
+        mandate contract is not insured, startup relief means no social insurance, contribution debt of the firm above
+        1% of the minimum wage blocks the benefit. Every decision is explained in `checks`.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InsuranceTitlesRequest'
+      responses:
+        '200':
+          description: Titles that give a benefit and the explanation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InsuranceResolution'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/calculations/benefit-base:
+    post:
+      tags: [Calculations]
+      operationId: calculateBenefitBase
+      summary: Benefit base from the payer's certificate (Z-3 / Z-3a)
+      description: |
+        Average gross pay of up to 12 months minus employee contributions. Months with less than half of the working
+        time are skipped. Full-time employment gets at least the minimum base; voluntary sickness insurance is capped.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BenefitBaseRequest'
+      responses:
+        '200':
+          description: Calculated benefit base.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BenefitBase'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/calculations/leave-dimensions:
+    post:
+      tags: [Calculations]
+      operationId: calculateLeaveDimensions
+      summary: Length of maternity, parental and supplementary leave
+      description: |
+        Maternity leave by the number of children (20–37 weeks) and parental leave (41/43 weeks, 65/67 with the
+        "Za życiem" certificate). For a child taken in (`adoption`) the age limit applies (14 years for adoption,
+        7 or 10 for a foster family) with at least 9 weeks of leave. For a premature or hospitalised newborn
+        (`preterm`) the supplementary maternity leave is added (up to 15 or 8 weeks). `adoption` and `preterm`
+        exclude each other.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeaveDimensionsRequest'
+      responses:
+        '200':
+          description: Calculated leave lengths.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeaveDimensions'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/calculations/sickness-in-pregnancy:
+    post:
+      tags: [Calculations]
+      operationId: calculatePregnancySickness
+      summary: Sickness benefit in pregnancy (sick leave with code B)
+      description: |
+        Pay during sick leave in pregnancy, 100% of the base, for each insurance title separately (titles resolved as
+        in `/calculations/insurance`). Employment: sick pay from the employer for the first 33 days of the year
+        (14 days from the age of 50), then the sickness benefit. Mandate contract and own firm: benefit from the first
+        day. The benefit period in pregnancy is 270 days, then the rehabilitation benefit (up to 12 months). The
+        waiting period (30 / 90 days of insurance) is checked and explained.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PregnancySicknessRequest'
+      responses:
+        '200':
+          description: Calculated pay for the sick leave.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PregnancySickness'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/calculations/maternity:
+    post:
+      tags: [Calculations]
+      operationId: simulateMaternityBenefit
+      summary: Maternity benefit simulator for both parents
+      description: |
+        Splits maternity and parental leave between the mother and the father and lays the leaves out on a
+        timeline: the first 14 weeks of maternity leave are the mother's, the father may take over the rest; each
+        parent has 9 non-transferable weeks of parental leave; supplementary leave for a premature baby follows the
+        maternity leave; paternity leave (2 weeks) starts on the day of birth. Insurance titles of each parent are
+        resolved as in `/calculations/insurance`.
+
+        Each leave has its monthly benefit (gross and after the 12% income tax advance, at least 1000 PLN net when
+        not working) and its total. One parent may combine parental leave with part-time work (up to half time):
+        the benefit drops by the part worked and the leave is extended accordingly. When the mother has no ZUS
+        title, the response names the benefit she gets instead (KRUS or the municipality).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MaternitySimulationRequest'
+      responses:
+        '200':
+          description: Leave split, timeline and amounts.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MaternitySimulation'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/auth/mobywatel/authorize:
+    get:
+      tags: [Identity]
+      operationId: authorizeWithMObywatel
+      summary: Start the mObywatel login
+      description: |
+        Redirects the browser to the mock mObywatel login page. After choosing a persona (or a new user) the page
+        redirects back to `redirect_uri` with `code` and the unchanged `state`; the frontend checks `state` and
+        exchanges `code` at `/auth/token`. `redirect_uri` must be on the configured list.
+      parameters:
+        - name: redirect_uri
+          in: query
+          required: true
+          schema:
+            type: string
+          example: http://localhost:8765/
+        - name: state
+          in: query
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 200
+          description: Opaque value of the frontend, returned unchanged.
+      responses:
+        '302':
+          description: Redirect to the mock login page.
+          headers:
+            Location:
+              schema:
+                type: string
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/auth/token:
+    post:
+      tags: [Identity]
+      operationId: exchangeAuthorizationCode
+      summary: Exchange the login code for tokens
+      description: |
+        The code is valid once, for 2 minutes, and only with the `redirectUri` it was issued for. The first login of
+        an identity creates the user account.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRequest'
+      responses:
+        '200':
+          description: Access and refresh token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tokens'
+        '400':
+          description: Invalid, used or expired code (`code` = `invalid-grant`), or invalid request.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/auth/refresh:
+    post:
+      tags: [Identity]
+      operationId: refreshTokens
+      summary: New tokens for a refresh token
+      description: The refresh token is rotated, the old one stops working.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshRequest'
+      responses:
+        '200':
+          description: New access and refresh token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tokens'
+        '400':
+          description: Unknown, revoked or expired refresh token (`code` = `invalid-grant`), or invalid request.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/auth/logout:
+    post:
+      tags: [Identity]
+      operationId: logout
+      summary: Log out
+      description: Revokes the refresh token. Logging out with an unknown or revoked token also succeeds.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshRequest'
+      responses:
+        '204':
+          description: Logged out.
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/me:
+    get:
+      tags: [Identity]
+      operationId: getCurrentUser
+      summary: The logged-in user
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: The user of the access token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrentUser'
+        '401':
+          description: Missing, invalid or expired access token (`code` = `unauthorized`).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/guide/preview:
+    post:
+      tags: [Guide]
+      operationId: previewGuide
+      summary: Guide of a guest, from the survey answers
+      description: |
+        What a parent sees after the survey without logging in: week of pregnancy or age of the child, alerts, the
+        timeline of deadlines and milestones (sorted by date), the benefit plan ("Co Ci przysługuje"), the benefits
+        of the catalog the family can get and the card of the week. Deadlines are counted with the Polish calendar as
+        in `/deadlines`; `status` says whether an item is late, due within 30 days, past or ahead today. Leave
+        lengths are those of `/calculations/leave-dimensions`. Nothing is stored.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GuideSurvey'
+      responses:
+        '200':
+          description: The guide.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GuidePreview'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/knowledge/chapters:
+    get:
+      tags: [Knowledge]
+      operationId: getKnowledgeChapters
+      summary: Chapters of the guide with their articles
+      description: Chapters in reading order, each with the summaries of its articles (also in reading order).
+      responses:
+        '200':
+          description: All chapters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KnowledgeChapters'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/knowledge/articles/{id}:
+    get:
+      tags: [Knowledge]
+      operationId: getKnowledgeArticle
+      summary: One article of the guide
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: urlop-mac
+      responses:
+        '200':
+          description: The article, with the next article of its chapter.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KnowledgeArticle'
+        '404':
+          description: No such article (`code` = `article-not-found`).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/knowledge/search:
+    get:
+      tags: [Knowledge]
+      operationId: searchKnowledge
+      summary: Search the articles
+      description: |
+        Finds articles whose title, lead or text (without HTML tags) contains the phrase. Case and Polish
+        diacritics are ignored ("zasilek" finds "Zasiłek"). Results keep the reading order.
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+            minLength: 2
+            maxLength: 100
+          example: kod B
+      responses:
+        '200':
+          description: Matching articles (possibly none).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KnowledgeSearchResult'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/content/forms:
+    get:
+      tags: [Content]
+      operationId: getForms
+      summary: Glossary of ZUS forms
+      description: Form codes explained in plain Polish (e.g. `Z-3`, `ZAM`).
+      responses:
+        '200':
+          description: All forms.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentForms'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/content/facts:
+    get:
+      tags: [Content]
+      operationId: getFacts
+      summary: Facts for the "Did you know" box
+      description: Verified facts shown on the splash screen and the dashboard.
+      responses:
+        '200':
+          description: All facts.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentFacts'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/content/support:
+    get:
+      tags: [Content]
+      operationId: getSupportContacts
+      summary: Support organisations, helplines and useful pages
+      description: Charity organisations helping parents in difficult situations, support phone numbers and links to official pages.
+      responses:
+        '200':
+          description: All contacts.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupportContacts'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/content/week-cards:
+    get:
+      tags: [Content]
+      operationId: getWeekCards
+      summary: Cards of the week
+      description: Short tips for a week of pregnancy or a month of the child's life, each pointing to an article of the guide.
+      responses:
+        '200':
+          description: All cards.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentWeekCards'
+        default:
+          $ref: '#/components/responses/Problem'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access token from `/auth/token` or `/auth/refresh`.
+  responses:
+    ValidationProblem:
+      description: Invalid request (`code` = `validation-failed` or `bad-request`).
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+    Problem:
+      description: Error described as an RFC 9457 problem.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+
+  schemas:
+    PingResponse:
+      type: object
+      required: [status, time]
+      properties:
+        status:
+          type: string
+          enum: [UP]
+        time:
+          type: string
+          format: date-time
+          description: Current server time.
+
+    LegalParametersResponse:
+      type: object
+      required: [version, validFrom, description, parameters]
+      properties:
+        version:
+          type: integer
+          format: int32
+          description: Version of the parameter set; every change creates a new one.
+          example: 1
+        validFrom:
+          type: string
+          format: date
+          description: Day from which this version is in force.
+        description:
+          type: string
+          description: Legal basis of the values (acts, ZUS guide).
+        parameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/LegalParameter'
+
+    LegalParameter:
+      type: object
+      description: |
+        One parameter. Single-valued kinds use `value`; `WEEKS_BY_CHILDREN` uses `values` (for 1, 2, 3, 4 and 5 or
+        more children). Values are plain numbers: amounts in PLN, rates as fractions (0.815 = 81.5%).
+      required: [key, kind, label]
+      properties:
+        key:
+          type: string
+          example: MINIMUM_WAGE
+        kind:
+          $ref: '#/components/schemas/LegalParameterKind'
+        label:
+          type: string
+          description: Polish label for the admin panel.
+          example: Płaca minimalna
+        value:
+          type: number
+          example: 4806
+        values:
+          type: array
+          items:
+            type: number
+          example: [20, 31, 33, 35, 37]
+
+    LegalParameterKind:
+      type: string
+      enum: [AMOUNT, RATE, WEEKS, DAYS, MONTHS, YEARS, WEEKS_BY_CHILDREN]
+
+    InsuranceTitle:
+      type: string
+      description: Insurance title with sickness insurance in ZUS.
+      enum: [EMPLOYMENT, MANDATE_CONTRACT, SELF_EMPLOYMENT]
+
+    InsuranceTitlesRequest:
+      type: object
+      description: Titles of one person; leave out a title the person does not have.
+      properties:
+        employment:
+          $ref: '#/components/schemas/EmploymentTitle'
+        mandateContract:
+          $ref: '#/components/schemas/MandateContractTitle'
+        selfEmployment:
+          $ref: '#/components/schemas/SelfEmploymentTitle'
+        agriculturalInsurance:
+          type: boolean
+          default: false
+          description: Insured as a farmer in KRUS.
+
+    EmploymentTitle:
+      type: object
+      required: [base]
+      properties:
+        base:
+          $ref: '#/components/schemas/Money'
+        atLeastMinimumWage:
+          type: boolean
+          default: true
+          description: Pay at least the minimum wage (excludes sickness insurance from other titles).
+
+    MandateContractTitle:
+      type: object
+      required: [base, voluntarySickness]
+      properties:
+        base:
+          $ref: '#/components/schemas/Money'
+        voluntarySickness:
+          type: boolean
+          description: Joined voluntary sickness insurance.
+        student:
+          type: boolean
+          default: false
+          description: Student or pupil under 26 (not insured on a mandate contract).
+
+    SelfEmploymentTitle:
+      type: object
+      required: [base, voluntarySickness]
+      properties:
+        base:
+          $ref: '#/components/schemas/Money'
+        voluntarySickness:
+          type: boolean
+        startupRelief:
+          type: boolean
+          default: false
+          description: First 6 months on startup relief (no social insurance).
+        debt:
+          $ref: '#/components/schemas/Money'
+
+    InsuranceResolution:
+      type: object
+      required: [base, parts, checks, agriculturalInsurance, blockingDebt]
+      properties:
+        mainTitle:
+          $ref: '#/components/schemas/InsuranceTitle'
+        base:
+          $ref: '#/components/schemas/Money'
+        parts:
+          type: array
+          description: Titles that give a benefit, each with its own base.
+          items:
+            $ref: '#/components/schemas/TitleBase'
+        checks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Check'
+        agriculturalInsurance:
+          type: boolean
+        blockingDebt:
+          $ref: '#/components/schemas/Money'
+
+    TitleBase:
+      type: object
+      required: [title, base]
+      properties:
+        title:
+          $ref: '#/components/schemas/InsuranceTitle'
+        base:
+          $ref: '#/components/schemas/Money'
+
+    BenefitBaseRequest:
+      type: object
+      required: [months, title]
+      properties:
+        months:
+          type: array
+          minItems: 1
+          maxItems: 12
+          description: Gross pay of the last (up to) 12 months from Z-3 / Z-3a.
+          items:
+            $ref: '#/components/schemas/MonthlyPay'
+        title:
+          $ref: '#/components/schemas/InsuranceTitle'
+        fullTime:
+          type: boolean
+          default: true
+
+    MonthlyPay:
+      type: object
+      required: [amount]
+      properties:
+        amount:
+          $ref: '#/components/schemas/Money'
+        skip:
+          type: boolean
+          default: false
+          description: Less than half of the working time in the month — left out of the average.
+
+    BenefitBase:
+      type: object
+      required: [base, average, monthsCounted, note]
+      properties:
+        base:
+          $ref: '#/components/schemas/Money'
+        average:
+          $ref: '#/components/schemas/Money'
+        monthsCounted:
+          type: integer
+          format: int32
+        note:
+          type: string
+          description: Polish explanation of how the base was calculated.
+
+    LeaveDimensionsRequest:
+      type: object
+      required: [children]
+      properties:
+        children:
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 10
+          description: Children born (or taken in) at once.
+        zaZyciem:
+          type: boolean
+          default: false
+          description: The child has the "Za życiem" certificate.
+        adoption:
+          $ref: '#/components/schemas/AdoptionDetails'
+        preterm:
+          $ref: '#/components/schemas/PretermDetails'
+
+    AdoptionDetails:
+      type: object
+      required: [type, childAge]
+      properties:
+        type:
+          type: string
+          enum: [ADOPTION, FOSTER_FAMILY]
+          description: Adoption (court proceedings started) or a non-professional foster family.
+        childAge:
+          type: number
+          minimum: 0
+          maximum: 18
+          description: Age of the child in years when taken in, e.g. 1.5.
+        deferredSchool:
+          type: boolean
+          default: false
+          description: Compulsory schooling deferred (foster family age limit 10 instead of 7 years).
+
+    PretermDetails:
+      type: object
+      required: [gestationWeek, birthWeightGrams, hospitalDays]
+      properties:
+        gestationWeek:
+          type: integer
+          format: int32
+          minimum: 20
+          maximum: 44
+        birthWeightGrams:
+          type: integer
+          format: int32
+          minimum: 300
+          maximum: 7000
+        hospitalDays:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 365
+          description: Days the child stayed in hospital (until the 8th / 15th week after birth).
+        hospitalStartDay:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 365
+          default: 5
+          description: Day after birth the stay started (matters for children born after the 37th week).
+
+    LeaveDimensions:
+      type: object
+      required: [maternityWeeks, parentalWeeks]
+      properties:
+        maternityWeeks:
+          type: integer
+          format: int32
+          description: Maternity leave (or leave on maternity terms for a child taken in).
+        parentalWeeks:
+          type: integer
+          format: int32
+        adoption:
+          $ref: '#/components/schemas/AdoptionLeave'
+        supplementary:
+          $ref: '#/components/schemas/SupplementaryLeave'
+
+    AdoptionLeave:
+      type: object
+      required: [ageLimit, note]
+      properties:
+        ageLimit:
+          type: integer
+          format: int32
+        note:
+          type: string
+
+    SupplementaryLeave:
+      type: object
+      required: [weeks, limit, rule]
+      properties:
+        weeks:
+          type: integer
+          format: int32
+        limit:
+          type: integer
+          format: int32
+        rule:
+          type: string
+
+    PregnancySicknessRequest:
+      type: object
+      required: [titles, days]
+      properties:
+        titles:
+          $ref: '#/components/schemas/InsuranceTitlesRequest'
+        days:
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 2000
+          description: Days of sick leave in pregnancy.
+        usedSickPayDays:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 400
+          default: 0
+          description: Sick-pay days from the employer already used this calendar year.
+        aged50OrMore:
+          type: boolean
+          default: false
+          description: Aged 50 or more (14 days of sick pay instead of 33).
+        insuredDays:
+          type: integer
+          format: int32
+          minimum: 0
+          default: 365
+          description: Days of uninterrupted sickness insurance before the sick leave (waiting period).
+
+    PregnancySickness:
+      type: object
+      required: [checks, parts, total, netTotal]
+      properties:
+        checks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Check'
+        parts:
+          type: array
+          description: Periods paid differently (sick pay, sickness benefit, rehabilitation benefit), per title.
+          items:
+            $ref: '#/components/schemas/SicknessPayPart'
+        total:
+          $ref: '#/components/schemas/Money'
+        netTotal:
+          $ref: '#/components/schemas/Money'
+
+    SicknessPayPart:
+      type: object
+      required: [title, label, days, rate, amount]
+      properties:
+        title:
+          $ref: '#/components/schemas/InsuranceTitle'
+        label:
+          type: string
+          description: Polish description of the period.
+        days:
+          type: integer
+          format: int32
+        rate:
+          type: number
+          description: Part of the base paid, as a fraction (1 = 100%).
+        amount:
+          $ref: '#/components/schemas/Money'
+
+    MaternitySimulationRequest:
+      type: object
+      required: [situation, startDate, children, mother, father]
+      properties:
+        situation:
+          type: string
+          enum: [BIRTH, ADOPTION]
+        startDate:
+          type: string
+          format: date
+          description: Day of birth (or planned birth), or the day the child was taken in.
+        children:
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 10
+        zaZyciem:
+          type: boolean
+          default: false
+        variant:
+          type: string
+          enum: [STANDARD, AVERAGED]
+          default: STANDARD
+          description: STANDARD = 100% maternity + 70% parental; AVERAGED = 81.5% for the whole leave.
+        preterm:
+          $ref: '#/components/schemas/PretermDetails'
+        adoption:
+          $ref: '#/components/schemas/AdoptionDetails'
+        mother:
+          $ref: '#/components/schemas/InsuranceTitlesRequest'
+        father:
+          $ref: '#/components/schemas/FatherLeaveRequest'
+        work:
+          $ref: '#/components/schemas/PartTimeWorkRequest'
+
+    PartTimeWorkRequest:
+      type: object
+      description: One parent combines parental leave with part-time work.
+      required: [parent, share, weeks]
+      properties:
+        parent:
+          $ref: '#/components/schemas/Parent'
+        share:
+          type: number
+          minimum: 0
+          exclusiveMinimum: true
+          maximum: 0.5
+          description: Part of full time worked (0.25 = quarter time, 0.5 = half time).
+        weeks:
+          type: integer
+          format: int32
+          minimum: 0
+          description: Weeks of parental leave combined with work.
+
+    Parent:
+      type: string
+      enum: [MOTHER, FATHER]
+
+    FatherLeaveRequest:
+      type: object
+      required: [titles]
+      properties:
+        titles:
+          $ref: '#/components/schemas/InsuranceTitlesRequest'
+        paternityLeave:
+          type: boolean
+          default: true
+        parentalWeeks:
+          type: integer
+          format: int32
+          minimum: 0
+          default: 9
+          description: Weeks of parental leave the father takes (his 9 are non-transferable).
+        maternityWeeksTaken:
+          type: integer
+          format: int32
+          minimum: 0
+          default: 0
+          description: Weeks of the mother's maternity leave the father takes over (after her first 14 weeks).
+
+    MaternitySimulation:
+      type: object
+      required: [maternityWeeks, parentalWeeks, supplementaryWeeks, mother, father, averagedVariant, segments,
+                 totals, checks, notes]
+      properties:
+        maternityWeeks:
+          type: integer
+          format: int32
+        parentalWeeks:
+          type: integer
+          format: int32
+        supplementaryWeeks:
+          type: integer
+          format: int32
+        mother:
+          $ref: '#/components/schemas/ParentLeaveShare'
+        father:
+          $ref: '#/components/schemas/ParentLeaveShare'
+        averagedVariant:
+          type: boolean
+          description: Whether the 81.5% variant applies.
+        segments:
+          type: array
+          items:
+            $ref: '#/components/schemas/LeaveSegment'
+        totals:
+          $ref: '#/components/schemas/MaternityTotals'
+        checks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Check'
+        notes:
+          type: array
+          items:
+            type: string
+        alternative:
+          $ref: '#/components/schemas/AlternativeBenefit'
+
+    MaternityTotals:
+      type: object
+      description: Benefits for the whole leave, after the income tax advance.
+      required: [mother, father, family]
+      properties:
+        mother:
+          $ref: '#/components/schemas/Money'
+        father:
+          $ref: '#/components/schemas/Money'
+        family:
+          $ref: '#/components/schemas/Money'
+
+    AlternativeBenefit:
+      type: object
+      description: What the mother gets instead of the ZUS maternity benefit when she has no ZUS title.
+      required: [kind, title, payer, monthly, weeks]
+      properties:
+        kind:
+          type: string
+          enum: [KRUS, MUNICIPALITY]
+        title:
+          type: string
+        payer:
+          type: string
+          description: Who pays it and where to apply (Polish).
+        monthly:
+          $ref: '#/components/schemas/Money'
+        weeks:
+          type: integer
+          format: int32
+
+    ParentLeaveShare:
+      type: object
+      required: [maternityWeeks, parentalWeeks]
+      properties:
+        maternityWeeks:
+          type: integer
+          format: int32
+        parentalWeeks:
+          type: integer
+          format: int32
+
+    LeaveSegment:
+      type: object
+      required: [parent, label, weeks, rate, workFactor, from, to, monthlyGross, monthlyNet, total]
+      properties:
+        parent:
+          $ref: '#/components/schemas/Parent'
+        label:
+          type: string
+        weeks:
+          type: number
+          description: Length in weeks, rounded to 0.1.
+        rate:
+          type: number
+          description: Benefit rate as a fraction of the base (0.7 = 70%).
+        workFactor:
+          type: number
+          description: Part of the benefit kept while working part-time (1 = not working).
+        from:
+          type: string
+          format: date
+        to:
+          type: string
+          format: date
+        monthlyGross:
+          $ref: '#/components/schemas/Money'
+        monthlyNet:
+          $ref: '#/components/schemas/Money'
+        total:
+          $ref: '#/components/schemas/Money'
+
+    TokenRequest:
+      type: object
+      required: [code, redirectUri]
+      properties:
+        code:
+          type: string
+          minLength: 1
+        redirectUri:
+          type: string
+          minLength: 1
+          description: The same `redirect_uri` the login was started with.
+
+    RefreshRequest:
+      type: object
+      required: [refreshToken]
+      properties:
+        refreshToken:
+          type: string
+          minLength: 1
+
+    Tokens:
+      type: object
+      required: [accessToken, tokenType, expiresIn, refreshToken, refreshExpiresIn]
+      properties:
+        accessToken:
+          type: string
+          description: 'JWT for the `Authorization: Bearer` header.'
+        tokenType:
+          type: string
+          enum: [Bearer]
+        expiresIn:
+          type: integer
+          format: int64
+          description: Seconds until the access token expires.
+        refreshToken:
+          type: string
+        refreshExpiresIn:
+          type: integer
+          format: int64
+          description: Seconds until the refresh token expires.
+
+    CurrentUser:
+      type: object
+      required: [id, roles]
+      properties:
+        id:
+          type: string
+          format: uuid
+        personaId:
+          type: string
+          description: Demo persona of the identity (e.g. `kasia`); left out for a new user.
+        displayName:
+          type: string
+          description: First name, when known.
+        roles:
+          type: array
+          items:
+            type: string
+            enum: [USER]
+
+    GuideSurvey:
+      type: object
+      description: Answers of the guest survey.
+      required: [role, stage, date, children, work, partner]
+      properties:
+        role:
+          type: string
+          enum: [MOTHER, FATHER, GUARDIAN]
+          description: GUARDIAN = adoptive parent or foster family.
+        stage:
+          type: string
+          enum: [PREGNANCY, CHILD, ADOPTION]
+        date:
+          type: string
+          format: date
+          description: Due date (PREGNANCY), birth date (CHILD) or the day the child was taken in (ADOPTION).
+        childBirthDate:
+          type: string
+          format: date
+          description: Birth date of the child taken in; required for ADOPTION, not allowed otherwise.
+        children:
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 5
+        preterm:
+          $ref: '#/components/schemas/GuidePreterm'
+        zaZyciem:
+          type: boolean
+          default: false
+          description: '"Za życiem" certificate (not for a pregnancy).'
+        work:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/WorkForm'
+        partner:
+          type: string
+          enum: [SHOW_PARTNER, ONLY_ME, SINGLE_PARENT]
+          description: SHOW_PARTNER = also the other parent's entitlements; SINGLE_PARENT = raises the child alone.
+
+    GuidePreterm:
+      type: object
+      description: Premature baby or a baby in hospital (only for a born child, stage CHILD).
+      required: [gestationWeek, birthWeightGrams, hospitalDays]
+      properties:
+        gestationWeek:
+          type: integer
+          format: int32
+          minimum: 20
+          maximum: 42
+        birthWeightGrams:
+          type: integer
+          format: int32
+          minimum: 1
+        hospitalDays:
+          type: integer
+          format: int32
+          minimum: 0
+
+    WorkForm:
+      type: string
+      description: |
+        EMPLOYMENT = employment contract; SELF_EMPLOYMENT(_WITHOUT_SICKNESS) = own firm with (without) voluntary
+        sickness insurance; MANDATE_CONTRACT(_WITHOUT_SICKNESS) = mandate contract with (without) sickness insurance
+        or a contract for specific work; STARTUP_RELIEF = firm on the startup relief; FARMER = KRUS;
+        NOT_WORKING = not working, studying or unemployed.
+      enum: [EMPLOYMENT, SELF_EMPLOYMENT, SELF_EMPLOYMENT_WITHOUT_SICKNESS, MANDATE_CONTRACT,
+             MANDATE_CONTRACT_WITHOUT_SICKNESS, STARTUP_RELIEF, FARMER, NOT_WORKING]
+
+    GuidePreview:
+      type: object
+      required: [stage, alerts, timeline, plan, benefits]
+      properties:
+        stage:
+          $ref: '#/components/schemas/GuideStage'
+        alerts:
+          type: array
+          items:
+            $ref: '#/components/schemas/GuideAlert'
+        timeline:
+          type: array
+          items:
+            $ref: '#/components/schemas/TimelineItem'
+        plan:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlanItem'
+        benefits:
+          type: array
+          description: Benefits of the catalog the family can (YES) or may (MAYBE) get, in the catalog's order.
+          items:
+            $ref: '#/components/schemas/EntitledBenefit'
+        weekCard:
+          $ref: '#/components/schemas/CardOfTheWeek'
+
+    PlanItem:
+      type: object
+      description: |
+        Row of the benefit plan. NOTICE = no benefits from ZUS (what to do); BENEFIT = one benefit; LEAVES = the
+        leaves one after another with their weeks and rates.
+      required: [kind, title, text, articleId, leaves]
+      properties:
+        kind:
+          type: string
+          enum: [NOTICE, BENEFIT, LEAVES]
+        icon:
+          type: string
+          description: Name of the frontend icon (BENEFIT only).
+        title:
+          type: string
+        text:
+          type: string
+          description: Polish text; for LEAVES HTML with `<b>`.
+        articleId:
+          type: string
+        totalWeeks:
+          type: integer
+          format: int32
+          description: Weeks of all leaves (LEAVES only).
+        leaves:
+          type: array
+          description: Empty unless LEAVES.
+          items:
+            $ref: '#/components/schemas/PlannedLeave'
+
+    PlannedLeave:
+      type: object
+      required: [kind, label, weeks, rate]
+      properties:
+        kind:
+          type: string
+          enum: [MATERNITY, SUPPLEMENTARY, PARENTAL]
+          description: MATERNITY also covers the leave on maternity terms of a child taken in.
+        label:
+          type: string
+        weeks:
+          type: integer
+          format: int32
+        rate:
+          type: number
+          description: Benefit rate as a fraction (0.7 = 70%).
+
+    EntitledBenefit:
+      type: object
+      required: [key, title, summary, institution, eligibility]
+      properties:
+        key:
+          type: string
+          example: rodz
+        title:
+          type: string
+        summary:
+          type: string
+        institution:
+          type: string
+          enum: [ZUS, EMPLOYER, INFO]
+        eligibility:
+          type: string
+          enum: ['YES', 'MAYBE']
+          description: MAYBE = depends on details the survey does not ask about.
+        articleId:
+          type: string
+        wizardId:
+          type: string
+        calculator:
+          type: string
+
+    CardOfTheWeek:
+      type: object
+      required: [period, articleId, title, text]
+      properties:
+        period:
+          type: string
+          enum: [WEEK, MONTH]
+          description: WEEK = for this week of pregnancy; MONTH = for this month of the child's life.
+        articleId:
+          type: string
+        title:
+          type: string
+        text:
+          type: string
+
+    GuideStage:
+      type: object
+      required: [stage]
+      properties:
+        stage:
+          type: string
+          enum: [PREGNANCY, CHILD, ADOPTION]
+        pregnancyWeek:
+          type: integer
+          format: int32
+          description: Week of pregnancy (1–42), only for PREGNANCY.
+        childAgeMonths:
+          type: integer
+          format: int32
+          description: Full months of the child's life, when the birth date is known.
+        childAgeLabel:
+          type: string
+          description: Polish age, e.g. `2 tyg. 3 dni`, `10 mies.`, `2 lata`.
+
+    GuideAlert:
+      type: object
+      required: [level, icon, title, text, href]
+      properties:
+        level:
+          type: string
+          enum: [DANGER, WARNING, INFO]
+        icon:
+          type: string
+          description: Name of the frontend icon.
+        title:
+          type: string
+        text:
+          type: string
+        href:
+          type: string
+          description: Frontend route with more information, e.g. `#/wiedza/a/jdg`.
+
+    TimelineItem:
+      type: object
+      required: [key, title, institution, date, optional, estimate, milestone, due, daysLeft, status]
+      properties:
+        key:
+          type: string
+          description: Stable identifier of the item, e.g. `w81`.
+        title:
+          type: string
+        description:
+          type: string
+        lateNote:
+          type: string
+          description: Shown when the deadline has passed.
+        institution:
+          type: string
+          enum: [ZUS, EMPLOYER, INFO]
+          description: Who handles it (EMPLOYER = employer, HR or payroll; INFO = nobody to apply to).
+        date:
+          type: string
+          format: date
+        deadline:
+          $ref: '#/components/schemas/Deadline'
+        articleId:
+          type: string
+          description: Article of the guide (`/knowledge/articles/{id}`).
+        wizardId:
+          type: string
+          description: Application wizard, e.g. `w-81`.
+        calculator:
+          type: string
+          description: Calculator to open, e.g. `zasilek`.
+        optional:
+          type: boolean
+        estimate:
+          type: boolean
+          description: The date is estimated (e.g. counted from the due date).
+        milestone:
+          type: boolean
+          description: A point in time, nothing to submit.
+        due:
+          type: string
+          format: date
+          description: Day the item is due (the deadline's raw day before an event, legal day after it, otherwise `date`).
+        daysLeft:
+          type: integer
+          format: int32
+          description: Days from today to `due`, negative when passed.
+        status:
+          type: string
+          enum: [LATE, NOW, PAST, FUTURE]
+          description: LATE = the deadline has passed; NOW = due within 30 days; PAST = the day has passed.
+
+    KnowledgeChapters:
+      type: object
+      required: [chapters]
+      properties:
+        chapters:
+          type: array
+          items:
+            $ref: '#/components/schemas/KnowledgeChapter'
+
+    KnowledgeChapter:
+      type: object
+      required: [id, title, icon, lead, articles]
+      properties:
+        id:
+          type: string
+          example: po
+        title:
+          type: string
+        icon:
+          type: string
+          description: Name of the frontend icon.
+        lead:
+          type: string
+        articles:
+          type: array
+          items:
+            $ref: '#/components/schemas/KnowledgeArticleSummary'
+
+    KnowledgeArticleSummary:
+      type: object
+      required: [id, chapterId, title, lead]
+      properties:
+        id:
+          type: string
+        chapterId:
+          type: string
+        title:
+          type: string
+        lead:
+          type: string
+
+    KnowledgeArticle:
+      type: object
+      required: [id, chapterId, title, lead, body, source, links]
+      properties:
+        id:
+          type: string
+        chapterId:
+          type: string
+        title:
+          type: string
+        lead:
+          type: string
+        body:
+          type: string
+          description: Article text as HTML (paragraphs, lists, "WAŻNE!" and "Przykład" boxes).
+        source:
+          type: string
+          description: Where the content comes from (pages of the ZUS guide).
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/KnowledgeLink'
+        action:
+          $ref: '#/components/schemas/KnowledgeAction'
+        next:
+          $ref: '#/components/schemas/KnowledgeArticleSummary'
+
+    KnowledgeLink:
+      type: object
+      description: External page (zus.pl, gov.pl).
+      required: [url, label]
+      properties:
+        url:
+          type: string
+        label:
+          type: string
+
+    KnowledgeAction:
+      type: object
+      description: Button leading to a screen of the application.
+      required: [href, label]
+      properties:
+        href:
+          type: string
+          description: Frontend route, e.g. `#/kontakt`.
+        label:
+          type: string
+
+    KnowledgeSearchResult:
+      type: object
+      required: [query, articles]
+      properties:
+        query:
+          type: string
+        articles:
+          type: array
+          items:
+            $ref: '#/components/schemas/KnowledgeArticleSummary'
+
+    ContentForms:
+      type: object
+      required: [forms]
+      properties:
+        forms:
+          type: array
+          items:
+            $ref: '#/components/schemas/FormEntry'
+
+    FormEntry:
+      type: object
+      required: [code, description]
+      properties:
+        code:
+          type: string
+          example: Z-3
+        description:
+          type: string
+
+    ContentFacts:
+      type: object
+      required: [facts]
+      properties:
+        facts:
+          type: array
+          items:
+            type: string
+
+    SupportContacts:
+      type: object
+      required: [organizations, helplines, links]
+      properties:
+        organizations:
+          type: array
+          items:
+            $ref: '#/components/schemas/SupportOrganization'
+        helplines:
+          type: array
+          items:
+            $ref: '#/components/schemas/SupportHelpline'
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/KnowledgeLink'
+
+    SupportOrganization:
+      type: object
+      required: [name, topic]
+      properties:
+        name:
+          type: string
+        topic:
+          type: string
+          description: What the organisation helps with.
+        url:
+          type: string
+          description: Website, when known.
+
+    SupportHelpline:
+      type: object
+      required: [number, description]
+      properties:
+        number:
+          type: string
+          example: 116 123
+        description:
+          type: string
+
+    ContentWeekCards:
+      type: object
+      required: [pregnancy, child]
+      properties:
+        pregnancy:
+          type: array
+          description: Cards by week of pregnancy.
+          items:
+            $ref: '#/components/schemas/ContentWeekCard'
+        child:
+          type: array
+          description: Cards by month of the child's life (0 = first month).
+          items:
+            $ref: '#/components/schemas/ContentWeekCard'
+
+    ContentWeekCard:
+      type: object
+      description: Card shown from week (or month) `from` to `to`, both inclusive.
+      required: [from, articleId, title, text]
+      properties:
+        from:
+          type: integer
+          format: int32
+        to:
+          type: integer
+          format: int32
+          description: Left out when the card has no upper limit.
+        articleId:
+          type: string
+          description: Article of the guide (`/knowledge/articles/{id}`).
+        title:
+          type: string
+        text:
+          type: string
+
+    ProblemDetail:
+      type: object
+      description: RFC 9457 problem with the application-specific `code` and `gentleMessage`.
+      required: [status, code, gentleMessage]
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        status:
+          type: integer
+          format: int32
+        detail:
+          type: string
+        instance:
+          type: string
+        code:
+          type: string
+          description: Stable machine-readable error code, e.g. `validation-failed`.
+          example: validation-failed
+        gentleMessage:
+          type: string
+          description: Calm Polish explanation that can be shown to the user as is.
+          example: Wygląda na to, że część danych jest niepełna lub niepoprawna. Sprawdź je i spróbuj jeszcze raz.
+        errors:
+          type: array
+          description: Invalid fields (only for validation errors).
+          items:
+            $ref: '#/components/schemas/FieldError'
+
+    FieldError:
+      type: object
+      required: [field, message]
+      properties:
+        field:
+          type: string
+        message:
+          type: string
+
+    Money:
+      type: string
+      description: Amount in PLN with exactly two decimal places.
+      pattern: '^-?\d+\.\d{2}$'
+      example: '4147.10'
+
+    Check:
+      type: object
+      description: One explained result of a rule shown next to a calculation.
+      required: [level, message]
+      properties:
+        level:
+          type: string
+          enum: ['OK', 'INFO', 'NO']
+        message:
+          type: string
+          description: Polish, user-facing.
+
+    DeadlineType:
+      type: string
+      description: |
+        `AFTER` = "within X days/months of an event" (a deadline ending on a day off moves to the next working day);
+        `BEFORE` = "at least X days before an event" (counted backwards, never moved forward).
+      enum: [AFTER, BEFORE]
+
+    Deadline:
+      type: object
+      description: Statutory deadline with the legally valid day and the recommended day to act.
+      required: [type, raw, legal, shifted, safe]
+      properties:
+        type:
+          $ref: '#/components/schemas/DeadlineType'
+        raw:
+          type: string
+          format: date
+          description: Day counted from the event, before any shift.
+        legal:
+          type: string
+          format: date
+          description: Last legally valid day.
+        shifted:
+          type: boolean
+          description: Whether the legal day was moved because the raw day was a day off.
+        reason:
+          type: string
+          description: Why the raw day is a day off (holiday name, `sobota`, `niedziela`).
+        safe:
+          type: string
+          format: date
+          description: Recommended day to submit.

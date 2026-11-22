@@ -1,0 +1,11 @@
+### Glossary of ZUS forms
+GET {{baseUrl}}/api/v1/content/forms
+
+### Facts for the "Did you know" box
+GET {{baseUrl}}/api/v1/content/facts
+
+### Support organisations, helplines and useful pages
+GET {{baseUrl}}/api/v1/content/support
+
+### Cards of the week (pregnancy and child)
+GET {{baseUrl}}/api/v1/content/week-cards

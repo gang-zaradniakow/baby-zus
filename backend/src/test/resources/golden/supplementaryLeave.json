@@ -1,0 +1,159 @@
+{
+  "source": "js/calc.js: uzupelniajacy()",
+  "cases": [
+    {
+      "name": "27th week, 950 g, 49 days in hospital",
+      "input": {
+        "gestationWeek": 27,
+        "birthWeightGrams": 950,
+        "hospitalDays": 49,
+        "hospitalStartDay": 5
+      },
+      "expected": {
+        "weeks": 7,
+        "limit": 15,
+        "rule": "Urodzenie przed 28. tygodniem ciąży lub masa ≤ 1000 g: tydzień urlopu za każdy tydzień pobytu w szpitalu do 15. tygodnia po porodzie."
+      }
+    },
+    {
+      "name": "26th week, 1200 g, 120 days (capped at 15)",
+      "input": {
+        "gestationWeek": 26,
+        "birthWeightGrams": 1200,
+        "hospitalDays": 120,
+        "hospitalStartDay": 5
+      },
+      "expected": {
+        "weeks": 15,
+        "limit": 15,
+        "rule": "Urodzenie przed 28. tygodniem ciąży lub masa ≤ 1000 g: tydzień urlopu za każdy tydzień pobytu w szpitalu do 15. tygodnia po porodzie."
+      }
+    },
+    {
+      "name": "30th week, exactly 1000 g",
+      "input": {
+        "gestationWeek": 30,
+        "birthWeightGrams": 1000,
+        "hospitalDays": 30,
+        "hospitalStartDay": 5
+      },
+      "expected": {
+        "weeks": 5,
+        "limit": 15,
+        "rule": "Urodzenie przed 28. tygodniem ciąży lub masa ≤ 1000 g: tydzień urlopu za każdy tydzień pobytu w szpitalu do 15. tygodnia po porodzie."
+      }
+    },
+    {
+      "name": "30th week, 1500 g, 40 days",
+      "input": {
+        "gestationWeek": 30,
+        "birthWeightGrams": 1500,
+        "hospitalDays": 40,
+        "hospitalStartDay": 5
+      },
+      "expected": {
+        "weeks": 6,
+        "limit": 8,
+        "rule": "Urodzenie między 28. a 37. tygodniem ciąży i masa > 1000 g: tydzień za tydzień pobytu do 8. tygodnia po porodzie."
+      }
+    },
+    {
+      "name": "34th week, 2200 g, 70 days (capped at 8)",
+      "input": {
+        "gestationWeek": 34,
+        "birthWeightGrams": 2200,
+        "hospitalDays": 70,
+        "hospitalStartDay": 5
+      },
+      "expected": {
+        "weeks": 8,
+        "limit": 8,
+        "rule": "Urodzenie między 28. a 37. tygodniem ciąży i masa > 1000 g: tydzień za tydzień pobytu do 8. tygodnia po porodzie."
+      }
+    },
+    {
+      "name": "36th week, no hospital stay",
+      "input": {
+        "gestationWeek": 36,
+        "birthWeightGrams": 2500,
+        "hospitalDays": 0,
+        "hospitalStartDay": 5
+      },
+      "expected": {
+        "weeks": 0,
+        "limit": 8,
+        "rule": "Urodzenie między 28. a 37. tygodniem ciąży i masa > 1000 g: tydzień za tydzień pobytu do 8. tygodnia po porodzie."
+      }
+    },
+    {
+      "name": "full term, 3 days in hospital from day 6",
+      "input": {
+        "gestationWeek": 38,
+        "birthWeightGrams": 3500,
+        "hospitalDays": 3,
+        "hospitalStartDay": 6
+      },
+      "expected": {
+        "weeks": 1,
+        "limit": 8,
+        "rule": "Urodzenie po 37. tygodniu ciąży: pobyt min. 2 kolejne dni, rozpoczęty między 5. a 28. dniem po porodzie — liczy się pobyt od 5. dnia do 8. tygodnia."
+      }
+    },
+    {
+      "name": "full term, 14 days from day 5",
+      "input": {
+        "gestationWeek": 39,
+        "birthWeightGrams": 3600,
+        "hospitalDays": 14,
+        "hospitalStartDay": 5
+      },
+      "expected": {
+        "weeks": 2,
+        "limit": 8,
+        "rule": "Urodzenie po 37. tygodniu ciąży: pobyt min. 2 kolejne dni, rozpoczęty między 5. a 28. dniem po porodzie — liczy się pobyt od 5. dnia do 8. tygodnia."
+      }
+    },
+    {
+      "name": "full term, one day in hospital",
+      "input": {
+        "gestationWeek": 38,
+        "birthWeightGrams": 3500,
+        "hospitalDays": 1,
+        "hospitalStartDay": 5
+      },
+      "expected": {
+        "weeks": 0,
+        "limit": 0,
+        "rule": "Po 37. tygodniu urlop przysługuje, gdy pobyt w szpitalu trwa min. 2 kolejne dni i zaczyna się między 5. a 28. dniem po porodzie."
+      }
+    },
+    {
+      "name": "full term, stay started after day 28",
+      "input": {
+        "gestationWeek": 38,
+        "birthWeightGrams": 3500,
+        "hospitalDays": 10,
+        "hospitalStartDay": 30
+      },
+      "expected": {
+        "weeks": 0,
+        "limit": 0,
+        "rule": "Po 37. tygodniu urlop przysługuje, gdy pobyt w szpitalu trwa min. 2 kolejne dni i zaczyna się między 5. a 28. dniem po porodzie."
+      }
+    },
+    {
+      "name": "full term, stay started before day 5",
+      "input": {
+        "gestationWeek": 40,
+        "birthWeightGrams": 3400,
+        "hospitalDays": 10,
+        "hospitalStartDay": 2
+      },
+      "expected": {
+        "weeks": 0,
+        "limit": 0,
+        "rule": "Po 37. tygodniu urlop przysługuje, gdy pobyt w szpitalu trwa min. 2 kolejne dni i zaczyna się między 5. a 28. dniem po porodzie."
+      }
+    }
+  ]
+}

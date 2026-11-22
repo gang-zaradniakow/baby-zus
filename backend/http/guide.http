@@ -1,0 +1,26 @@
+### Guest guide: self-employed mother, child born on 6 November 2026
+POST {{baseUrl}}/api/v1/guide/preview
+Content-Type: application/json
+
+{
+  "role": "MOTHER",
+  "stage": "CHILD",
+  "date": "2026-11-06",
+  "children": 1,
+  "work": ["SELF_EMPLOYMENT"],
+  "partner": "SHOW_PARTNER"
+}
+
+### Guest guide: foster family, child taken in on 17 November 2026
+POST {{baseUrl}}/api/v1/guide/preview
+Content-Type: application/json
+
+{
+  "role": "GUARDIAN",
+  "stage": "ADOPTION",
+  "date": "2026-11-17",
+  "childBirthDate": "2024-10-23",
+  "children": 1,
+  "work": ["EMPLOYMENT"],
+  "partner": "SHOW_PARTNER"
+}

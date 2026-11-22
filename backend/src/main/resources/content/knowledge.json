@@ -1,0 +1,526 @@
+{
+  "source": "js/wiedza.js of the frontend prototype (Poradnik ZUS dla rodziców, stan prawny 1.04.2026)",
+  "chapters": [
+    {
+      "id": "start",
+      "title": "Zanim zaczniesz",
+      "icon": "info",
+      "lead": "Najważniejsze pojęcia i kontakt z ZUS."
+    },
+    {
+      "id": "ubezp",
+      "title": "Ubezpieczenie — klucz do zasiłków",
+      "icon": "shield",
+      "lead": "Kto podlega ubezpieczeniu chorobowemu i co z tego wynika."
+    },
+    {
+      "id": "ciaza",
+      "title": "W ciąży",
+      "icon": "heart",
+      "lead": "Zwolnienie lekarskie, zasiłek chorobowy, urlop przed porodem."
+    },
+    {
+      "id": "po",
+      "title": "Po narodzinach i przyjęciu dziecka",
+      "icon": "baby",
+      "lead": "Zasiłek macierzyński za wszystkie urlopy."
+    },
+    {
+      "id": "trudne",
+      "title": "Trudne sytuacje",
+      "icon": "hospital",
+      "lead": "Martwe urodzenie, śmierć dziecka, szpital, wsparcie."
+    },
+    {
+      "id": "opieka",
+      "title": "Gdy dziecko choruje",
+      "icon": "users",
+      "lead": "Zasiłek opiekuńczy."
+    },
+    {
+      "id": "ryzyka",
+      "title": "Ryzyka — czego unikać",
+      "icon": "alert",
+      "lead": "Kiedy można stracić albo obniżyć świadczenie."
+    }
+  ],
+  "articles": [
+    {
+      "id": "pojecia",
+      "chapterId": "start",
+      "title": "Objaśnienie pojęć",
+      "lead": "Kilka słów, które pojawiają się w każdej sprawie o zasiłek.",
+      "body": "<dl class=\"glossary\">\n      <dt>Płatnik składek</dt><dd>Podmiot, który zgłasza do ubezpieczeń i opłaca składki — najczęściej pracodawca albo zleceniodawca. Przedsiębiorca jest płatnikiem składek za siebie.</dd>\n      <dt>Ubezpieczony</dt><dd>Osoba, za którą opłacane są składki — np. pracownica, zleceniobiorca, przedsiębiorca.</dd>\n      <dt>Świadczeniobiorca</dt><dd>Osoba, która pobiera świadczenie z ZUS, np. zasiłek macierzyński.</dd>\n      <dt>Duży i mały płatnik</dt><dd>Płatnik, który na 30 listopada poprzedniego roku zgłaszał do ubezpieczenia chorobowego <b>co najmniej 21 osób</b>, sam ustala i wypłaca zasiłki. Gdy zgłaszał <b>najwyżej 20 osób</b>, zasiłki wypłaca ZUS. Przedsiębiorcy zasiłki zawsze wypłaca ZUS.</dd>\n      <dt>Podstawa wymiaru zasiłku</dt><dd>Przeciętne miesięczne wynagrodzenie (przychód) z 12 miesięcy przed zdarzeniem, pomniejszone o 13,71% składek. Od niej liczy się procent zasiłku.</dd>\n      <dt>Okres zasiłkowy</dt><dd>Najdłuższy czas, przez który możesz dostawać wynagrodzenie chorobowe lub zasiłek chorobowy — 182 dni, a w ciąży 270 dni.</dd>\n    </dl>",
+      "source": "Opis wyzwania ZUS; Poradnik, s. 5 i 23",
+      "links": [
+        {
+          "url": "https://www.zus.pl/-/zus-dla-przysz%C5%82ych-mam-i-rodzic%C3%B3w",
+          "label": "ZUS dla przyszłych mam i rodziców (zus.pl)"
+        }
+      ],
+      "action": null
+    },
+    {
+      "id": "kontakt",
+      "chapterId": "start",
+      "title": "Pozostańmy w kontakcie",
+      "lead": "W razie wątpliwości co do dokumentów, procedur czy terminu wypłaty — ZUS jest dla Was.",
+      "body": "<ul><li>e-mail dla rodziców: <b>mama@zus.pl</b>,</li><li>infolinia: <b>22 560 16 00</b>, e-mail: cot@zus.pl,</li><li><b>e-wizyta</b> — rozmowa wideo z ekspertem ZUS,</li><li>portal eZUS i aplikacja mobilna mZUS,</li><li>każda placówka ZUS.</li></ul>",
+      "source": "Poradnik, s. 6 i 39",
+      "links": [
+        {
+          "url": "https://www.zus.pl/e-wizyta",
+          "label": "Umów e-wizytę (zus.pl)"
+        },
+        {
+          "url": "https://www.zus.pl/-/zus-dla-przysz%C5%82ych-mam-i-rodzic%C3%B3w",
+          "label": "ZUS dla przyszłych mam i rodziców (zus.pl)"
+        }
+      ],
+      "action": {
+        "href": "#/kontakt",
+        "label": "Kontakt z ZUS"
+      }
+    },
+    {
+      "id": "pracownicy",
+      "chapterId": "ubezp",
+      "title": "Pracownicy",
+      "lead": "Pracownik podlega obowiązkowo wszystkim ubezpieczeniom społecznym — także chorobowemu.",
+      "body": "<p>Nie ma znaczenia wymiar czasu pracy, inny tytuł do ubezpieczeń, prawo do emerytury czy status studenta. Ubezpieczenie trwa od dnia nawiązania do dnia ustania stosunku pracy. Składkę chorobową (2,45%) finansuje pracownik.</p>\n      <div class=\"wazne\"><b>WAŻNE!</b> Nie zawierajcie umowy o pracę dla pozoru, żeby uzyskać świadczenia. ZUS bada okoliczności zawarcia umowy i wysokość wynagrodzenia — może wydać decyzję o niepodleganiu ubezpieczeniom albo ustalić niższą podstawę składek.</div>",
+      "source": "Poradnik, s. 6–8",
+      "links": [
+        {
+          "url": "https://www.zus.pl/-/zus-dla-przysz%C5%82ych-mam-i-rodzic%C3%B3w",
+          "label": "ZUS dla przyszłych mam i rodziców (zus.pl)"
+        }
+      ],
+      "action": null
+    },
+    {
+      "id": "zleceniobiorcy",
+      "chapterId": "ubezp",
+      "title": "Zleceniobiorcy",
+      "lead": "Na umowie zlecenia ubezpieczenie chorobowe jest dobrowolne — trzeba się do niego zgłosić.",
+      "body": "<p>Zleceniobiorca podlega obowiązkowo ubezpieczeniom emerytalnemu, rentowym i wypadkowemu. Chorobowe — tylko na swój wniosek.</p>\n      <div class=\"wazne\"><b>WAŻNE!</b> Do dobrowolnego chorobowego nie można zgłosić się wstecz. Ubezpieczenie zaczyna się od dnia wskazanego w zgłoszeniu ZUS ZUA, ale nie wcześniej niż w dniu jego złożenia (wyjątek: zgłoszenie w ciągu 7 dni od powstania obowiązku ubezpieczeń).</div>\n      <ul><li>Masz też umowę o pracę z co najmniej minimalnym wynagrodzeniem? Ze zlecenia nie możesz mieć dobrowolnego chorobowego.</li><li>Student lub uczeń do 26 lat na zleceniu nie podlega ubezpieczeniom społecznym.</li></ul>",
+      "source": "Poradnik, s. 9–11",
+      "links": [
+        {
+          "url": "https://www.zus.pl/-/zus-dla-przysz%C5%82ych-mam-i-rodzic%C3%B3w",
+          "label": "ZUS dla przyszłych mam i rodziców (zus.pl)"
+        }
+      ],
+      "action": null
+    },
+    {
+      "id": "jdg",
+      "chapterId": "ubezp",
+      "title": "Osoby prowadzące działalność",
+      "lead": "Dla przedsiębiorcy ubezpieczenie chorobowe jest dobrowolne. Bez niego nie ma zasiłku chorobowego ani macierzyńskiego.",
+      "body": "<ul><li><b>Ulga na start</b> — przez maks. 6 miesięcy nie podlegasz ubezpieczeniom społecznym, więc nie masz ochrony chorobowej. Możesz z niej zrezygnować wcześniej.</li><li><b>Preferencyjna podstawa</b> — co najmniej 30% minimalnego wynagrodzenia przez 24 miesiące.</li><li><b>Mały ZUS+</b> — przy przychodzie do 120 000 zł w poprzednim roku; niższe składki przez 36 miesięcy w każdych 60.</li><li>Etat z co najmniej minimalnym wynagrodzeniem + firma: ubezpieczenia ze stosunku pracy, z firmy chorobowego mieć nie możesz.</li></ul>\n      <div class=\"wazne\"><b>WAŻNE!</b> Zaległość w składkach ponad 1% minimalnego wynagrodzenia (48,06 zł w 2026) w dniu powstania prawa blokuje wypłatę zasiłku do spłaty całości. Jeśli nie spłacisz jej w 6 miesięcy, prawo do zasiłku przepada.</div>\n      <div class=\"wazne\"><b>WAŻNE!</b> Gdy zaczniesz pobierać zasiłek macierzyński, zostaniesz automatycznie wyrejestrowana z dobrowolnego chorobowego. Po zakończeniu zasiłku zgłoś się ponownie (ZUS ZUA).</div>",
+      "source": "Poradnik, s. 12–18 i 24; opis wyzwania ZUS",
+      "links": [
+        {
+          "url": "https://www.zus.pl/-/zus-dla-przysz%C5%82ych-mam-i-rodzic%C3%B3w",
+          "label": "ZUS dla przyszłych mam i rodziców (zus.pl)"
+        }
+      ],
+      "action": null
+    },
+    {
+      "id": "na-zasilku",
+      "chapterId": "ubezp",
+      "title": "Na zasiłku macierzyńskim i urlopie wychowawczym",
+      "lead": "W czasie zasiłku macierzyńskiego składki emerytalne i rentowe opłaca za Was budżet państwa.",
+      "body": "<ul><li>Podstawą składek jest kwota zasiłku. Okres zasiłku liczy się do emerytury.</li><li>Od zasiłku macierzyńskiego nie opłaca się składki zdrowotnej — prawo do leczenia zapewnia NFZ.</li><li>Na urlopie wychowawczym składki emerytalne, rentowe i zdrowotną finansuje budżet państwa (jeśli nie macie innego tytułu do ubezpieczeń).</li></ul>\n      <div class=\"wazne\"><b>WAŻNE!</b> Za czas urlopu wychowawczego zasiłek macierzyński nie przysługuje.</div>",
+      "source": "Poradnik, s. 19–20 i 35",
+      "links": [
+        {
+          "url": "https://www.zus.pl/-/zus-dla-przysz%C5%82ych-mam-i-rodzic%C3%B3w",
+          "label": "ZUS dla przyszłych mam i rodziców (zus.pl)"
+        }
+      ],
+      "action": null
+    },
+    {
+      "id": "l4-ciaza",
+      "chapterId": "ciaza",
+      "title": "Zwolnienie lekarskie w ciąży (kod B)",
+      "lead": "Zwolnienie z kodem B oznacza niezdolność do pracy w okresie ciąży i daje 100% podstawy.",
+      "body": "<p>Lekarz wystawia e-ZLA z powodu <b>choroby w okresie ciąży</b> — sama ciąża nie jest podstawą do zwolnienia. Zaświadczenie trafia elektronicznie do ZUS i pracodawcy.</p>\n      <ul><li><b>Pracownica:</b> za pierwsze 33 dni w roku (14 dni po ukończeniu 50 lat) pracodawca wypłaca wynagrodzenie chorobowe, od 34. dnia — zasiłek chorobowy.</li><li><b>Duży płatnik</b> (21+ osób) sam wypłaca zasiłek; <b>mały</b> przekazuje dokumenty do ZUS (Z-3, na dalszy okres ZAS-12), a ZUS wypłaca w ciągu 30 dni od wyjaśnienia ostatniej okoliczności.</li><li><b>Zleceniobiorczyni:</b> zasiłek od 1. dnia; płatnik przekazuje Z-3a.</li><li><b>Przedsiębiorczyni:</b> zasiłek od 1. dnia, wypłaca ZUS — wniosek ZAS-53.</li></ul>\n      <div class=\"wazne\"><b>WAŻNE!</b> Prawo do zasiłku chorobowego powstaje po 30 dniach nieprzerwanego ubezpieczenia obowiązkowego albo po 90 dniach dobrowolnego.</div>",
+      "source": "Poradnik, s. 23–24",
+      "links": [
+        {
+          "url": "https://www.zus.pl/-/zus-dla-przysz%C5%82ych-mam-i-rodzic%C3%B3w",
+          "label": "ZUS dla przyszłych mam i rodziców (zus.pl)"
+        }
+      ],
+      "action": null
+    },
+    {
+      "id": "okres-zasilkowy",
+      "chapterId": "ciaza",
+      "title": "Okres zasiłkowy i świadczenie rehabilitacyjne",
+      "lead": "W ciąży okres zasiłkowy trwa do 270 dni zamiast 182.",
+      "body": "<p>Do jednego okresu sumuje się zwolnienia bez przerwy oraz te z przerwą krótszą niż 61 dni. Jeśli przed ciążą chorowałaś (zwolnienia bez kodu B), a potem dostałaś zwolnienie z kodem B, okres zasiłkowy liczy się od nowa — nawet przy przerwie krótszej niż 61 dni.</p>\n      <p>Gdy wyczerpiesz okres zasiłkowy, a leczenie rokuje powrót do pracy, możesz ubiegać się o <b>świadczenie rehabilitacyjne</b> — do 12 miesięcy; w ciąży w wysokości 100% podstawy. Orzeka lekarz orzecznik ZUS.</p>",
+      "source": "Poradnik, s. 24; ustawa zasiłkowa art. 18–19",
+      "links": [
+        {
+          "url": "https://www.zus.pl/-/zus-dla-przysz%C5%82ych-mam-i-rodzic%C3%B3w",
+          "label": "ZUS dla przyszłych mam i rodziców (zus.pl)"
+        }
+      ],
+      "action": null
+    },
+    {
+      "id": "wysokosc-chorobowego",
+      "chapterId": "ciaza",
+      "title": "Wysokość zasiłku chorobowego w ciąży",
+      "lead": "Zasiłek z kodem B wynosi 100% podstawy wymiaru od pierwszego dnia zwolnienia.",
+      "body": "<ul><li><b>Pracownica:</b> podstawa to przeciętne wynagrodzenie brutto z 12 miesięcy przed miesiącem zwolnienia (albo z pełnych miesięcy, gdy pracujesz krócej). Pomija się miesiące, w których z usprawiedliwionych przyczyn przepracowałaś mniej niż połowę czasu pracy.</li><li>Od podstawy odejmuje się 13,71% składek, a od zasiłku — zaliczkę PIT.</li><li>Przy pełnym etacie podstawa nie może być niższa niż minimalne wynagrodzenie minus 13,71% (4147,10 zł w 2026).</li><li><b>Niepracownica:</b> podstawą jest przychód, od którego opłacałaś składkę chorobową przez 12 miesięcy, minus 13,71%.</li></ul>\n      <div class=\"wazne\"><b>WAŻNE!</b> U tego samego pracodawcy podstawy nie liczy się na nowo, jeśli przerwa między zasiłkami była krótsza niż miesiąc kalendarzowy (chyba że zmienił się wymiar czasu pracy).</div>",
+      "source": "Poradnik, s. 24–25",
+      "links": [
+        {
+          "url": "https://www.zus.pl/-/zus-dla-przysz%C5%82ych-mam-i-rodzic%C3%B3w",
+          "label": "ZUS dla przyszłych mam i rodziców (zus.pl)"
+        }
+      ],
+      "action": null
+    },
+    {
+      "id": "kontrola",
+      "chapterId": "ciaza",
+      "title": "Kontrola zwolnień lekarskich",
+      "lead": "Na zwolnieniu nie wolno pracować zarobkowo ani robić niczego, co utrudnia leczenie.",
+      "body": "<p><b>Dozwolone</b> są zwykłe czynności dnia codziennego (zakupy, wizyta w przychodni, krótki spacer, odprowadzenie dziecka do przedszkola) i czynności incydentalne wymagane przez istotne okoliczności (odpowiedź na maila, <b>podpisanie faktury</b>, pilna sprawa urzędowa).</p><p>ZUS lub płatnik może skontrolować zwolnienie od pierwszego dnia — w domu, w pracy albo zdalnie na podstawie dokumentów. Kontrolerzy mają upoważnienia.</p>\n      <div class=\"wazne\"><b>WAŻNE!</b> Jeśli zwolnienie było wykorzystywane niewłaściwie, tracisz prawo do zasiłku za cały okres zwolnienia i musisz go zwrócić z odsetkami.</div>",
+      "source": "Poradnik, s. 26–27",
+      "links": [],
+      "action": null
+    },
+    {
+      "id": "przedawnienie",
+      "chapterId": "ciaza",
+      "title": "Przedawnienie roszczenia o zasiłek",
+      "lead": "Wniosek o zasiłek chorobowy lub macierzyński złóż w ciągu 6 miesięcy.",
+      "body": "<p>Roszczenie przedawnia się po 6 miesiącach od ostatniego dnia okresu, za który zasiłek przysługuje. Jeśli zasiłku nie wypłacono z winy ZUS lub dużego płatnika — po 3 latach. Gdy nie mogłaś zgłosić roszczenia z przyczyn niezależnych od Ciebie, 6 miesięcy liczy się od ustania przeszkody.</p>",
+      "source": "Poradnik, s. 27 i 35",
+      "links": [],
+      "action": null
+    },
+    {
+      "id": "mac-przed-porodem",
+      "chapterId": "ciaza",
+      "title": "Urlop macierzyński przed porodem",
+      "lead": "Zasiłek macierzyński możesz zacząć pobierać do 6 tygodni przed przewidywaną datą porodu.",
+      "body": "<ul><li>Wniosek najpóźniej <b>14 dni</b> przed planowanym rozpoczęciem, z zaświadczeniem o przewidywanej dacie porodu.</li><li>Zasiłek wynosi 100% podstawy. Jeśli w ciąży pobierałaś zasiłek chorobowy, podstawa jest taka sama.</li><li>Pracownica składa wniosek u pracodawcy; przedsiębiorczyni — w ZUS (ZAM).</li></ul>",
+      "source": "Poradnik, s. 27–29",
+      "links": [
+        {
+          "url": "https://www.zus.pl/-/jak-uzyskac-zasilek-macierzynski-z-tytulu-urodzenia-dziecka",
+          "label": "Jak uzyskać zasiłek macierzyński z tytułu urodzenia dziecka (zus.pl)"
+        }
+      ],
+      "action": null
+    },
+    {
+      "id": "utrata-pracy",
+      "chapterId": "ciaza",
+      "title": "Utrata pracy w ciąży i ochrona pracownicy",
+      "lead": "W ciąży i na urlopach rodzicielskich pracodawca co do zasady nie może Cię zwolnić.",
+      "body": "<p>Umowa na czas określony lub na okres próbny ponad miesiąc, która skończyłaby się po 3. miesiącu ciąży, przedłuża się do dnia porodu. Ochrona nie dotyczy osób, które nie są pracownikami (np. przedsiębiorców).</p>\n      <p><b>Zasiłek w wysokości zasiłku macierzyńskiego</b> (100%) przysługuje do porodu, gdy w ciąży rozwiązano z Tobą umowę z powodu upadłości, likwidacji lub śmierci pracodawcy i nie zapewniono innego zatrudnienia, albo z naruszeniem prawa potwierdzonym prawomocnym wyrokiem.</p>",
+      "source": "Opis wyzwania ZUS (pkt I); art. 30 ustawy zasiłkowej; art. 177 KP",
+      "links": [
+        {
+          "url": "https://www.zus.pl/swiadczenia/zasilki/opis-spraw-zasilki/-/publisher/details/1/jak-uzyskac-zasilek-macierzynski-z-tytulu-urodzenia-dziecka-po-ustaniu-tytulu-ubezpieczenia-chorobowego/220471",
+          "label": "Zasiłek macierzyński po ustaniu ubezpieczenia (zus.pl)"
+        },
+        {
+          "url": "https://www.pip.gov.pl/dla-pracodawcow/porady-prawne/rodzicielstwo",
+          "label": "Rodzicielstwo — porady prawne (Państwowa Inspekcja Pracy)"
+        }
+      ],
+      "action": null
+    },
+    {
+      "id": "mac-podstawy",
+      "chapterId": "po",
+      "title": "Zasiłek macierzyński — podstawowe informacje",
+      "lead": "Zasiłek macierzyński to grupa wypłat za różne urlopy związane z rodzicielstwem.",
+      "body": "<p>Prawo powstaje z dniem <b>urodzenia</b> dziecka albo <b>przyjęcia go na wychowanie</b>. Kluczowy warunek: w tym dniu musicie podlegać ubezpieczeniu chorobowemu — obowiązkowo (np. pracownicy) albo dobrowolnie (przedsiębiorcy, zleceniobiorcy).</p><p>Pracownikom przysługuje zasiłek za okres udzielonego urlopu, pozostałym ubezpieczonym — za okres odpowiadający urlopowi, na tych samych zasadach co do wymiaru i wysokości. Zasiłek wypłaca płatnik albo ZUS (jak przy zasiłku chorobowym), przedsiębiorcom zawsze ZUS.</p>",
+      "source": "Poradnik, s. 29",
+      "links": [
+        {
+          "url": "https://www.zus.pl/-/jak-uzyskac-zasilek-macierzynski-z-tytulu-urodzenia-dziecka",
+          "label": "Jak uzyskać zasiłek macierzyński z tytułu urodzenia dziecka (zus.pl)"
+        },
+        {
+          "url": "https://www.zus.pl/swiadczenia/zasilki/zasilek-macierzynski/prawo-do-zasilku-i-okres-przyslugiwania/za-okres-urlopu-macierzynskiego-albo-urlopu-na-warunkach-urlopu-macierzynskiego",
+          "label": "Prawo do zasiłku i okres przysługiwania (zus.pl)"
+        }
+      ],
+      "action": null
+    },
+    {
+      "id": "urlop-mac",
+      "chapterId": "po",
+      "title": "Za okres urlopu macierzyńskiego",
+      "lead": "Urlop macierzyński trwa 20 tygodni przy jednym dziecku.",
+      "body": "<table class=\"simple\"><tr><th>Liczba dzieci przy porodzie</th><th>Wymiar</th></tr><tr><td>1</td><td>20 tygodni</td></tr><tr><td>2</td><td>31 tygodni</td></tr><tr><td>3</td><td>33 tygodnie</td></tr><tr><td>4</td><td>35 tygodni</td></tr><tr><td>5 i więcej</td><td>37 tygodni</td></tr></table>\n      <ul><li>Pierwsze <b>14 tygodni</b> przysługuje wyłącznie mamie.</li><li>Pozostałą część może przejąć tata, jeśli mama wróci do pracy.</li></ul>\n      <div class=\"wazne\"><b>WAŻNE!</b> Rezygnację z części urlopu mama składa najpóźniej 7 dni przed powrotem do pracy, a tata wniosek o tę część — 14 dni przed jej rozpoczęciem. ZUS sprawdza, czy tata ma ubezpieczenie chorobowe.</div>",
+      "source": "Poradnik, s. 29–30",
+      "links": [
+        {
+          "url": "https://www.zus.pl/swiadczenia/zasilki/zasilek-macierzynski/prawo-do-zasilku-i-okres-przyslugiwania/za-okres-urlopu-macierzynskiego-albo-urlopu-na-warunkach-urlopu-macierzynskiego",
+          "label": "Prawo do zasiłku i okres przysługiwania (zus.pl)"
+        }
+      ],
+      "action": null
+    },
+    {
+      "id": "na-warunkach",
+      "chapterId": "po",
+      "title": "Adopcja i rodzina zastępcza",
+      "lead": "Urlop na warunkach urlopu macierzyńskiego przysługuje, gdy przyjmujecie dziecko na wychowanie.",
+      "body": "<ul><li>Przy wniosku do sądu o przysposobienie — dziecko do <b>14 lat</b>.</li><li>Przy rodzinie zastępczej niezawodowej — dziecko do <b>7 lat</b> (10 przy odroczeniu obowiązku szkolnego). Nie dotyczy zawodowej rodziny zastępczej.</li><li>Wymiar jak przy urodzeniu (20–37 tygodni), ale nie krócej niż <b>9 tygodni</b>; potem urlop rodzicielski.</li><li>Wniosek do pracodawcy w ciągu 7 dni od przyjęcia dziecka; urlop zaczyna się najpóźniej 21 dni od przyjęcia.</li></ul>",
+      "source": "Poradnik, s. 30; art. 183 KP",
+      "links": [
+        {
+          "url": "https://www.zus.pl/swiadczenia/zasilki/zasilek-macierzynski/prawo-do-zasilku-i-okres-przyslugiwania/za-okres-urlopu-macierzynskiego-albo-urlopu-na-warunkach-urlopu-macierzynskiego",
+          "label": "Prawo do zasiłku i okres przysługiwania (zus.pl)"
+        }
+      ],
+      "action": null
+    },
+    {
+      "id": "uzupelniajacy",
+      "chapterId": "po",
+      "title": "Uzupełniający urlop macierzyński",
+      "lead": "Dodatkowy urlop dla rodziców wcześniaków i dzieci, które po porodzie leżą w szpitalu — płatny 100%.",
+      "body": "<p>Tydzień urlopu za każdy tydzień pobytu dziecka w szpitalu (niepełny tydzień zaokrągla się w górę):</p><ul><li><b>do 15 tygodni</b> — poród przed 28. tygodniem ciąży lub masa urodzeniowa do 1000 g,</li><li><b>do 8 tygodni</b> — poród po 28. tygodniu,</li><li><b>do 8 tygodni</b> — poród po 37. tygodniu, gdy pobyt w szpitalu trwa co najmniej 2 kolejne dni i zaczyna się między 5. a 28. dniem po porodzie.</li></ul>\n      <div class=\"wazne\"><b>WAŻNE!</b> Wykorzystuje go mama lub tata, bezpośrednio po urlopie macierzyńskim, jednorazowo. Wniosek najpóźniej 21 dni przed końcem urlopu macierzyńskiego — z zaświadczeniem ze szpitala i oświadczeniem drugiego rodzica.</div>",
+      "source": "Poradnik, s. 30–31",
+      "links": [
+        {
+          "url": "https://www.zus.pl/-/d%C5%82u%C5%BCszy-urlop-dla-rodzic%C3%B3w-wcze%C5%9Bniak%C3%B3w-dost%C4%99pny-ju%C5%BC-od-roku",
+          "label": "Dłuższy urlop dla rodziców wcześniaków (zus.pl)"
+        }
+      ],
+      "action": null
+    },
+    {
+      "id": "rodzicielski",
+      "chapterId": "po",
+      "title": "Za okres urlopu rodzicielskiego",
+      "lead": "Urlop rodzicielski trwa 41 tygodni (43 przy więcej niż jednym dziecku).",
+      "body": "<ul><li>Każde z rodziców ma <b>9 tygodni</b> wyłącznie dla siebie — nie można ich przenieść.</li><li>Możecie korzystać jednocześnie lub naprzemiennie.</li><li>Maksymalnie <b>5 części</b>, do końca roku kalendarzowego, w którym dziecko kończy 6 lat.</li><li>Wniosek do pracodawcy najpóźniej 21 dni przed rozpoczęciem części urlopu.</li><li>Urlop można łączyć z pracą do połowy etatu — urlop się wydłuża, zasiłek maleje proporcjonalnie.</li></ul>",
+      "source": "Poradnik, s. 31–32",
+      "links": [
+        {
+          "url": "https://www.zus.pl/-/jak-uzyskac-zasilek-macierzynski-przez-okres-urlopu-rodzicielskiego",
+          "label": "Zasiłek macierzyński za okres urlopu rodzicielskiego (zus.pl)"
+        },
+        {
+          "url": "https://www.gov.pl/web/rodzina/urlop-rodzicielski",
+          "label": "Urlop rodzicielski (Ministerstwo Rodziny, Pracy i Polityki Społecznej)"
+        }
+      ],
+      "action": null
+    },
+    {
+      "id": "za-zyciem",
+      "chapterId": "po",
+      "title": "Dziecko z zaświadczeniem „Za życiem”",
+      "lead": "Rodzice dziecka z zaświadczeniem „Za życiem” mają dłuższy urlop rodzicielski.",
+      "body": "<ul><li>65 tygodni — gdy urodziło się jedno dziecko,</li><li>67 tygodni — gdy urodziło się co najmniej dwoje,</li><li>62 tygodnie — przy przyjęciu dziecka (rodzina zastępcza do 7/10 lat, przysposobienie do 14 lat).</li></ul><p>Każdemu z rodziców nadal przysługuje 9 nieprzenoszalnych tygodni. Przy łączeniu urlopu z pracą zasiłek może trwać do 130 tygodni (134 przy więcej dzieciach).</p>",
+      "source": "Poradnik, s. 32",
+      "links": [
+        {
+          "url": "https://www.zus.pl/-/jak-uzyskac-zasilek-macierzynski-przez-okres-urlopu-rodzicielskiego",
+          "label": "Zasiłek macierzyński za okres urlopu rodzicielskiego (zus.pl)"
+        }
+      ],
+      "action": null
+    },
+    {
+      "id": "ojcowski",
+      "chapterId": "po",
+      "title": "Za okres urlopu ojcowskiego",
+      "lead": "Urlop ojcowski to wyłączne prawo taty — 2 tygodnie, płatne 100%.",
+      "body": "<ul><li>Jednorazowo albo w dwóch częściach po 7 dni.</li><li>Do ukończenia przez dziecko 12 miesięcy (przy adopcji — 12 miesięcy od uprawomocnienia przysposobienia, nie dłużej niż do 14 lat).</li><li>Przysługuje także wtedy, gdy mama nie jest ubezpieczona. Liczba dzieci nie wydłuża urlopu.</li><li>Wniosek do pracodawcy najpóźniej 7 dni przed.</li></ul>\n      <div class=\"wazne\"><b>WAŻNE!</b> Jeśli tata nie zdąży przed pierwszymi urodzinami dziecka, prawo do urlopu wygasa.</div>",
+      "source": "Poradnik, s. 32–33",
+      "links": [
+        {
+          "url": "https://www.zus.pl/-/jak-uzyskac-zasilek-macierzynski-przez-ojca-dziecka-za-okres-urlopu-ojcowskiego",
+          "label": "Zasiłek macierzyński za urlop ojcowski (zus.pl)"
+        },
+        {
+          "url": "https://www.zus.pl/-/tata-na-urlopie-z-dzieckiem-to-ju%C5%BC-nie-rzadko%C5%9B%C4%87",
+          "label": "Tata na urlopie z dzieckiem (zus.pl)"
+        }
+      ],
+      "action": null
+    },
+    {
+      "id": "tata",
+      "chapterId": "po",
+      "title": "Zasiłek macierzyński dla taty",
+      "lead": "Tata może pobierać zasiłek za część urlopu macierzyńskiego i za urlop rodzicielski.",
+      "body": "<ul><li><b>Przejęcie po 14 tygodniach:</b> mama rezygnuje z dalszej części, a tata ją wykorzystuje bezpośrednio po niej.</li><li><b>Wcześniej niż po 14 tygodniach</b> — gdy mama ma orzeczenie o niezdolności do samodzielnej egzystencji, przebywa w szpitalu (po wykorzystaniu 8 tygodni), zmarła albo porzuciła dziecko.</li><li><b>Urlop rodzicielski:</b> tata ma 9 tygodni dla siebie i może korzystać z części mamy. Zasiłek za rodzicielski przysługuje mu także wtedy, gdy mama w dniu porodu nie była ubezpieczona.</li></ul>",
+      "source": "Opis wyzwania ZUS (pkt B); art. 180 KP",
+      "links": [
+        {
+          "url": "https://www.zus.pl/-/tata-na-urlopie-z-dzieckiem-to-ju%C5%BC-nie-rzadko%C5%9B%C4%87",
+          "label": "Tata na urlopie z dzieckiem (zus.pl)"
+        },
+        {
+          "url": "https://www.zus.pl/-/jak-uzyskac-zasilek-macierzynski-przez-ojca-dziecka-za-okres-urlopu-ojcowskiego",
+          "label": "Zasiłek macierzyński za urlop ojcowski (zus.pl)"
+        }
+      ],
+      "action": null
+    },
+    {
+      "id": "wysokosc-mac",
+      "chapterId": "po",
+      "title": "Wysokość zasiłku macierzyńskiego",
+      "lead": "Za urlop macierzyński 100%, za rodzicielski 70% — albo 81,5% przez cały okres.",
+      "body": "<table class=\"simple\"><tr><th>Okres</th><th>Wysokość</th></tr><tr><td>Macierzyński (także przed porodem), na warunkach macierzyńskiego, uzupełniający, ojcowski, martwe urodzenie</td><td>100%</td></tr><tr><td>Rodzicielski</td><td>70%</td></tr><tr><td>Wariant uśredniony: macierzyński + rodzicielski przy wniosku do 21 dni po porodzie</td><td>81,5%</td></tr><tr><td>9 tygodni drugiego rodzica</td><td>zawsze 70%</td></tr></table>\n      <p><b>Wariant uśredniony</b> wymaga złożenia przez mamę w ciągu 21 dni po porodzie wniosku o zasiłek za urlop macierzyński i jej część rodzicielskiego (32 lub 34 tygodnie) albo deklaracji, że z niego skorzysta. Bez wniosku obowiązuje wariant zmienny: 100%, potem 70%.</p>\n      <div class=\"wazne\"><b>WAŻNE!</b> Zasiłek po odjęciu zaliczki PIT nie może być niższy niż świadczenie rodzicielskie (1000 zł). Jeśli w 1. roku życia dziecka nie wykorzystacie ani dnia rodzicielskiego, zasiłek za rodzicielski wyniesie 70%, a za macierzyński należy się wyrównanie do 100% (na wniosek).</div>\n      <div class=\"przyklad\"><b>Przykład</b> Podstawa 6040,30 zł (7000 zł brutto). Wariant zmienny: 6040,30 zł przez 20 tygodni, potem 4228,21 zł. Wariant uśredniony: 4922,84 zł brutto miesięcznie przez cały rok.</div>",
+      "source": "Poradnik, s. 33–34; art. 31 ustawy zasiłkowej",
+      "links": [
+        {
+          "url": "https://www.zus.pl/swiadczenia/zasilki/zasilek-macierzynski/wysokosc",
+          "label": "Wysokość zasiłku macierzyńskiego (zus.pl)"
+        }
+      ],
+      "action": null
+    },
+    {
+      "id": "jak-mac",
+      "chapterId": "po",
+      "title": "Jak otrzymać zasiłek macierzyński",
+      "lead": "Gdzie złożyć dokumenty, zależy od tego, kto wypłaca zasiłek.",
+      "body": "<table class=\"simple\"><tr><th>Sytuacja</th><th>Gdzie i co</th></tr><tr><td>Pracownica, duży płatnik (21+ osób)</td><td>Wniosek o urlop u pracodawcy + odpis aktu urodzenia do wglądu. Pracodawca wypłaca zasiłek.</td></tr><tr><td>Pracownica, mały płatnik (do 20 osób)</td><td>Wniosek u pracodawcy — przekazuje go do ZUS z zaświadczeniem Z-3. Wypłaca ZUS.</td></tr><tr><td>Zleceniobiorczyni</td><td>Wniosek ZAM u zleceniodawcy; mały płatnik przekazuje go do ZUS z Z-3a.</td></tr><tr><td>Przedsiębiorczyni</td><td>Wniosek ZAM bezpośrednio do ZUS (eZUS).</td></tr></table>\n      <div class=\"wazne\"><b>WAŻNE!</b> Od 24.10.2026 formularz ZAM obejmuje też urlop rodzicielski i ojcowski (dawne ZUR i ZAO), a zaświadczenie Z-3b zlikwidowano. ZUS może sam pobrać odpis aktu urodzenia z rejestru stanu cywilnego.</div>",
+      "source": "Poradnik, s. 34–35; opis wyzwania ZUS",
+      "links": [
+        {
+          "url": "https://www.zus.pl/-/jak-uzyskac-zasilek-macierzynski-z-tytulu-urodzenia-dziecka",
+          "label": "Jak uzyskać zasiłek macierzyński z tytułu urodzenia dziecka (zus.pl)"
+        },
+        {
+          "url": "https://www.zus.pl",
+          "label": "Wzory formularzy — zakładka Zasiłki (zus.pl)"
+        },
+        {
+          "url": "https://www.gov.pl/web/cyfryzacja/rejestr-stanu-cywilnego",
+          "label": "Odpis aktu urodzenia — rejestr stanu cywilnego (gov.pl)"
+        }
+      ],
+      "action": null
+    },
+    {
+      "id": "wazne-mac",
+      "chapterId": "po",
+      "title": "Ważne informacje uzupełniające",
+      "lead": "O tym często się zapomina.",
+      "body": "<ul><li>Zasiłek macierzyński nie przysługuje za czas urlopu wychowawczego.</li><li>Osoba z dobrowolnym chorobowym jest z niego automatycznie wyrejestrowana, gdy zaczyna pobierać zasiłek macierzyński — po zasiłku musi zgłosić się ponownie.</li><li>Jeśli z powodu sytuacji zawodowej nie macie prawa do zasiłku macierzyńskiego (np. osoby bezrobotne, studenci, umowa o dzieło), przysługuje <b>świadczenie rodzicielskie</b> — wniosek w gminie.</li><li>Roszczenie o zasiłek przedawnia się po 6 miesiącach.</li></ul>",
+      "source": "Poradnik, s. 35",
+      "links": [
+        {
+          "url": "https://www.zus.pl/-/zus-dla-przysz%C5%82ych-mam-i-rodzic%C3%B3w",
+          "label": "ZUS dla przyszłych mam i rodziców (zus.pl)"
+        }
+      ],
+      "action": null
+    },
+    {
+      "id": "martwe-urodzenie",
+      "chapterId": "trudne",
+      "title": "Gdy dziecko urodzi się martwe lub umrze",
+      "lead": "System przewiduje czas na regenerację fizyczną i psychiczną bez konieczności powrotu do pracy.",
+      "body": "<ul><li>Dziecko urodziło się martwe lub zmarło przed upływem 8 tygodni życia: zasiłek macierzyński przez <b>8 tygodni po porodzie</b>, nie krócej niż 7 dni od śmierci dziecka.</li><li>Dziecko zmarło po 8. tygodniu: zasiłek przez <b>7 dni</b> od dnia śmierci.</li><li>Przy kilkorgu dzieci urlop odpowiada liczbie dzieci, które żyją.</li><li>Zasiłek wynosi 100% — tak samo dla pracownicy, jak i np. przedsiębiorczyni.</li></ul>\n      <p><b>Dokumenty:</b> odpis skrócony aktu urodzenia z adnotacją o martwym urodzeniu, a gdy aktu nie sporządzono — zaświadczenie o martwym urodzeniu od lekarza (specjalisty lub w trakcie specjalizacji z położnictwa i ginekologii) albo położnej.</p>",
+      "source": "Poradnik, s. 33",
+      "links": [
+        {
+          "url": "https://www.zus.pl/-/nowe-zasady-sk%C5%82adania-dokument%C3%B3w-do-zasi%C5%82ku-macierzy%C5%84skiego-i-zasi%C5%82ku-pogrzebowego-w-przypadku-gdy-dziecko-urodzi-si%C4%99-martwe",
+          "label": "Dokumenty, gdy dziecko urodzi się martwe (zus.pl)"
+        }
+      ],
+      "action": null
+    },
+    {
+      "id": "pogrzebowy",
+      "chapterId": "trudne",
+      "title": "Zasiłek pogrzebowy, gdy dziecko urodzi się martwe",
+      "lead": "Przysługuje 7000 zł — bez względu na czas trwania ciąży.",
+      "body": "<ul><li>Otrzymuje go osoba, która zorganizowała pogrzeb i pokryła jego koszty.</li><li>Wniosek Z-12 do ZUS w ciągu 12 miesięcy od pochówku, z rachunkami.</li><li>Gdy nie sporządzono aktu urodzenia z adnotacją: karta zgonu albo zaświadczenie o martwym urodzeniu.</li></ul>\n      <div class=\"wazne\"><b>WAŻNE!</b> Rodzicom przysługuje pełna kwota 7000 zł, nawet jeśli koszty pogrzebu były niższe.</div>",
+      "source": "Poradnik, s. 35–36",
+      "links": [
+        {
+          "url": "https://www.zus.pl/-/zmiana-wysoko%C5%9Bci-zasi%C5%82ku-pogrzebowego-od-1-stycznia-2026-r.",
+          "label": "Zasiłek pogrzebowy od 1.01.2026 (zus.pl)"
+        },
+        {
+          "url": "https://www.zus.pl/-/nowe-zasady-sk%C5%82adania-dokument%C3%B3w-do-zasi%C5%82ku-macierzy%C5%84skiego-i-zasi%C5%82ku-pogrzebowego-w-przypadku-gdy-dziecko-urodzi-si%C4%99-martwe",
+          "label": "Dokumenty, gdy dziecko urodzi się martwe (zus.pl)"
+        }
+      ],
+      "action": null
+    },
+    {
+      "id": "szpital",
+      "chapterId": "trudne",
+      "title": "Mama w szpitalu",
+      "lead": "Gdy mama po porodzie trafia do szpitalu, opiekę może przejąć tata.",
+      "body": "<ul><li><b>Pierwsze 8 tygodni:</b> tata może dostać zasiłek opiekuńczy (pobyt w szpitalu drugiego rodzica, który stale opiekuje się dzieckiem).</li><li><b>Po 8 tygodniach:</b> mama może przerwać urlop macierzyński na czas pobytu w szpitalu, a tata wykorzystuje tę część urlopu (zasiłek 100%). Potrzebne jest zaświadczenie ze szpitala.</li></ul>",
+      "source": "Art. 180 § 10–11 KP; Poradnik, s. 37",
+      "links": [
+        {
+          "url": "https://www.zus.pl/-/tata-na-urlopie-z-dzieckiem-to-ju%C5%BC-nie-rzadko%C5%9B%C4%87",
+          "label": "Tata na urlopie z dzieckiem (zus.pl)"
+        }
+      ],
+      "action": null
+    },
+    {
+      "id": "wsparcie",
+      "chapterId": "trudne",
+      "title": "Organizacje i telefony wsparcia",
+      "lead": "Fundacje i stowarzyszenia, które pomagają rodzicom po stracie dziecka, przy wcześniaku lub ciężkiej chorobie dziecka.",
+      "body": "<p>Pełna lista organizacji działających charytatywnie oraz telefony wsparcia są na osobnym ekranie.</p>",
+      "source": "Opis wyzwania ZUS (wymaganie „i”)",
+      "links": [],
+      "action": {
+        "href": "#/wsparcie",
+        "label": "Zobacz listę organizacji"
+      }
+    },
+    {
+      "id": "opiekunczy",
+      "chapterId": "opieka",
+      "title": "Zasiłek opiekuńczy",
+      "lead": "Przysługuje, gdy musicie zostać w domu z dzieckiem — wynosi 80% podstawy.",
+      "body": "<p><b>Kiedy:</b></p><ul><li>chore dziecko do 14 lat,</li><li>zdrowe dziecko do 8 lat — przy nieprzewidzianym zamknięciu żłobka, przedszkola lub szkoły (zawiadomienie krócej niż 7 dni przed), izolacji, chorobie niani lub dziennego opiekuna, porodzie, chorobie lub pobycie w szpitalu drugiego rodzica, który stale opiekuje się dzieckiem,</li><li>dziecko z niepełnosprawnością do 18 lat (chore albo w szczególnych sytuacjach).</li></ul>\n      <p><b>Ile dni w roku:</b> 60 dni na dzieci do 14 lat, 30 dni na chore dziecko z niepełnosprawnością w wieku 14–18 lat, 14 dni na starsze dziecko lub innego członka rodziny — łącznie nie więcej niż 60 dni, bez względu na liczbę dzieci i opiekunów.</p>\n      <div class=\"wazne\"><b>WAŻNE!</b> Zasiłek nie jest wypłacany automatycznie po wystawieniu zwolnienia — złóż wniosek Z-15A (pracownicy u pracodawcy). Przysługuje od pierwszego dnia ubezpieczenia; nie przysługuje, gdy opiekę może zapewnić inny członek rodziny (chyba że chore dziecko ma mniej niż 2 lata).</div>",
+      "source": "Poradnik, s. 36–39",
+      "links": [
+        {
+          "url": "https://www.zus.pl/-/zus-dla-przysz%C5%82ych-mam-i-rodzic%C3%B3w",
+          "label": "ZUS dla przyszłych mam i rodziców (zus.pl)"
+        }
+      ],
+      "action": null
+    },
+    {
+      "id": "ryzyka",
+      "chapterId": "ryzyka",
+      "title": "Kiedy można stracić albo obniżyć świadczenie",
+      "lead": "Większość odmów wynika z kilku powtarzalnych sytuacji. Sprawdźcie je, zanim zmienicie warunki zatrudnienia w ciąży.",
+      "body": "<ol><li><b>Umowa lub firma dla pozoru</b> — ZUS może wydać decyzję o niepodleganiu ubezpieczeniom.</li><li><b>Podwyższenie podstawy składek w ciąży</b> tylko po to, by dostać wyższy zasiłek — ZUS może ustalić niższą podstawę.</li><li><b>Brak ubezpieczenia chorobowego w dniu porodu</b> — np. rozwiązanie umowy, zamknięcie firmy lub koniec zlecenia przed porodem, niezgłoszenie się do dobrowolnego chorobowego.</li><li><b>Zaległość w składkach</b> przedsiębiorcy ponad 1% minimalnego wynagrodzenia.</li><li><b>Praca zarobkowa na zwolnieniu</b> — utrata zasiłku za cały okres zwolnienia.</li><li><b>Spóźniony wniosek</b> — przedawnienie po 6 miesiącach; brak wniosku o 81,5% w ciągu 21 dni.</li><li><b>Wniosek o 6. część urlopu rodzicielskiego</b> — dozwolone jest maks. 5 części.</li></ol>",
+      "source": "Opis wyzwania ZUS (pkt H); Poradnik, s. 8, 15, 24, 27, 35",
+      "links": [
+        {
+          "url": "https://www.zus.pl/-/zus-dla-przysz%C5%82ych-mam-i-rodzic%C3%B3w",
+          "label": "ZUS dla przyszłych mam i rodziców (zus.pl)"
+        }
+      ],
+      "action": null
+    }
+  ]
+}

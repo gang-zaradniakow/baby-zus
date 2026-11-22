@@ -1,0 +1,331 @@
+{
+  "source": "js/calc.js: holidays()",
+  "cases": [
+    {
+      "name": "holidays 2024",
+      "input": {
+        "year": 2024
+      },
+      "expected": {
+        "holidays": [
+          {
+            "date": "2024-01-01",
+            "name": "Nowy Rok"
+          },
+          {
+            "date": "2024-01-06",
+            "name": "Trzech Króli"
+          },
+          {
+            "date": "2024-03-31",
+            "name": "Wielkanoc"
+          },
+          {
+            "date": "2024-04-01",
+            "name": "Poniedziałek Wielkanocny"
+          },
+          {
+            "date": "2024-05-01",
+            "name": "Święto Pracy"
+          },
+          {
+            "date": "2024-05-03",
+            "name": "Święto Konstytucji 3 Maja"
+          },
+          {
+            "date": "2024-05-19",
+            "name": "Zielone Świątki"
+          },
+          {
+            "date": "2024-05-30",
+            "name": "Boże Ciało"
+          },
+          {
+            "date": "2024-08-15",
+            "name": "Wniebowzięcie NMP"
+          },
+          {
+            "date": "2024-11-01",
+            "name": "Wszystkich Świętych"
+          },
+          {
+            "date": "2024-11-11",
+            "name": "Narodowe Święto Niepodległości"
+          },
+          {
+            "date": "2024-12-25",
+            "name": "Boże Narodzenie (1. dzień)"
+          },
+          {
+            "date": "2024-12-26",
+            "name": "Boże Narodzenie (2. dzień)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "holidays 2025",
+      "input": {
+        "year": 2025
+      },
+      "expected": {
+        "holidays": [
+          {
+            "date": "2025-01-01",
+            "name": "Nowy Rok"
+          },
+          {
+            "date": "2025-01-06",
+            "name": "Trzech Króli"
+          },
+          {
+            "date": "2025-04-20",
+            "name": "Wielkanoc"
+          },
+          {
+            "date": "2025-04-21",
+            "name": "Poniedziałek Wielkanocny"
+          },
+          {
+            "date": "2025-05-01",
+            "name": "Święto Pracy"
+          },
+          {
+            "date": "2025-05-03",
+            "name": "Święto Konstytucji 3 Maja"
+          },
+          {
+            "date": "2025-06-08",
+            "name": "Zielone Świątki"
+          },
+          {
+            "date": "2025-06-19",
+            "name": "Boże Ciało"
+          },
+          {
+            "date": "2025-08-15",
+            "name": "Wniebowzięcie NMP"
+          },
+          {
+            "date": "2025-11-01",
+            "name": "Wszystkich Świętych"
+          },
+          {
+            "date": "2025-11-11",
+            "name": "Narodowe Święto Niepodległości"
+          },
+          {
+            "date": "2025-12-24",
+            "name": "Wigilia (od 2025 r.)"
+          },
+          {
+            "date": "2025-12-25",
+            "name": "Boże Narodzenie (1. dzień)"
+          },
+          {
+            "date": "2025-12-26",
+            "name": "Boże Narodzenie (2. dzień)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "holidays 2026",
+      "input": {
+        "year": 2026
+      },
+      "expected": {
+        "holidays": [
+          {
+            "date": "2026-01-01",
+            "name": "Nowy Rok"
+          },
+          {
+            "date": "2026-01-06",
+            "name": "Trzech Króli"
+          },
+          {
+            "date": "2026-04-05",
+            "name": "Wielkanoc"
+          },
+          {
+            "date": "2026-04-06",
+            "name": "Poniedziałek Wielkanocny"
+          },
+          {
+            "date": "2026-05-01",
+            "name": "Święto Pracy"
+          },
+          {
+            "date": "2026-05-03",
+            "name": "Święto Konstytucji 3 Maja"
+          },
+          {
+            "date": "2026-05-24",
+            "name": "Zielone Świątki"
+          },
+          {
+            "date": "2026-06-04",
+            "name": "Boże Ciało"
+          },
+          {
+            "date": "2026-08-15",
+            "name": "Wniebowzięcie NMP"
+          },
+          {
+            "date": "2026-11-01",
+            "name": "Wszystkich Świętych"
+          },
+          {
+            "date": "2026-11-11",
+            "name": "Narodowe Święto Niepodległości"
+          },
+          {
+            "date": "2026-12-24",
+            "name": "Wigilia (od 2025 r.)"
+          },
+          {
+            "date": "2026-12-25",
+            "name": "Boże Narodzenie (1. dzień)"
+          },
+          {
+            "date": "2026-12-26",
+            "name": "Boże Narodzenie (2. dzień)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "holidays 2027",
+      "input": {
+        "year": 2027
+      },
+      "expected": {
+        "holidays": [
+          {
+            "date": "2027-01-01",
+            "name": "Nowy Rok"
+          },
+          {
+            "date": "2027-01-06",
+            "name": "Trzech Króli"
+          },
+          {
+            "date": "2027-03-28",
+            "name": "Wielkanoc"
+          },
+          {
+            "date": "2027-03-29",
+            "name": "Poniedziałek Wielkanocny"
+          },
+          {
+            "date": "2027-05-01",
+            "name": "Święto Pracy"
+          },
+          {
+            "date": "2027-05-03",
+            "name": "Święto Konstytucji 3 Maja"
+          },
+          {
+            "date": "2027-05-16",
+            "name": "Zielone Świątki"
+          },
+          {
+            "date": "2027-05-27",
+            "name": "Boże Ciało"
+          },
+          {
+            "date": "2027-08-15",
+            "name": "Wniebowzięcie NMP"
+          },
+          {
+            "date": "2027-11-01",
+            "name": "Wszystkich Świętych"
+          },
+          {
+            "date": "2027-11-11",
+            "name": "Narodowe Święto Niepodległości"
+          },
+          {
+            "date": "2027-12-24",
+            "name": "Wigilia (od 2025 r.)"
+          },
+          {
+            "date": "2027-12-25",
+            "name": "Boże Narodzenie (1. dzień)"
+          },
+          {
+            "date": "2027-12-26",
+            "name": "Boże Narodzenie (2. dzień)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "holidays 2028",
+      "input": {
+        "year": 2028
+      },
+      "expected": {
+        "holidays": [
+          {
+            "date": "2028-01-01",
+            "name": "Nowy Rok"
+          },
+          {
+            "date": "2028-01-06",
+            "name": "Trzech Króli"
+          },
+          {
+            "date": "2028-04-16",
+            "name": "Wielkanoc"
+          },
+          {
+            "date": "2028-04-17",
+            "name": "Poniedziałek Wielkanocny"
+          },
+          {
+            "date": "2028-05-01",
+            "name": "Święto Pracy"
+          },
+          {
+            "date": "2028-05-03",
+            "name": "Święto Konstytucji 3 Maja"
+          },
+          {
+            "date": "2028-06-04",
+            "name": "Zielone Świątki"
+          },
+          {
+            "date": "2028-06-15",
+            "name": "Boże Ciało"
+          },
+          {
+            "date": "2028-08-15",
+            "name": "Wniebowzięcie NMP"
+          },
+          {
+            "date": "2028-11-01",
+            "name": "Wszystkich Świętych"
+          },
+          {
+            "date": "2028-11-11",
+            "name": "Narodowe Święto Niepodległości"
+          },
+          {
+            "date": "2028-12-24",
+            "name": "Wigilia (od 2025 r.)"
+          },
+          {
+            "date": "2028-12-25",
+            "name": "Boże Narodzenie (1. dzień)"
+          },
+          {
+            "date": "2028-12-26",
+            "name": "Boże Narodzenie (2. dzień)"
+          }
+        ]
+      }
+    }
+  ]
+}

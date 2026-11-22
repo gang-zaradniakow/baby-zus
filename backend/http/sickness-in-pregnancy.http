@@ -1,0 +1,14 @@
+### Sick leave in pregnancy: part-time employment + own firm, 60 days
+POST {{baseUrl}}/api/v1/calculations/sickness-in-pregnancy
+Content-Type: application/json
+
+{
+  "titles": {
+    "employment": {"base": "2000.00", "atLeastMinimumWage": false},
+    "selfEmployment": {"base": "4877.11", "voluntarySickness": true}
+  },
+  "days": 60,
+  "usedSickPayDays": 0,
+  "aged50OrMore": false,
+  "insuredDays": 365
+}

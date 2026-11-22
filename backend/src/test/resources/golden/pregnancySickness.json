@@ -1,0 +1,656 @@
+{
+  "source": "js/calc.js: resolvePerson() + chorobowyMulti(), netto()",
+  "cases": [
+    {
+      "name": "employment, 30 days: sick pay only",
+      "input": {
+        "titles": {
+          "employment": {
+            "base": 5177.4,
+            "atLeastMinimumWage": true
+          },
+          "mandateContract": null,
+          "selfEmployment": null,
+          "agriculturalInsurance": false
+        },
+        "leave": {
+          "days": 30,
+          "usedSickPayDays": 0,
+          "aged50OrMore": false,
+          "insuredDays": 365
+        }
+      },
+      "expected": {
+        "checks": [],
+        "parts": [
+          {
+            "label": "Wynagrodzenie chorobowe (płaci pracodawca)",
+            "days": 30,
+            "rate": 1,
+            "amount": 5177.4
+          }
+        ],
+        "total": 5177.4,
+        "netTotal": 4556.4
+      }
+    },
+    {
+      "name": "employment, 60 days: sick pay then benefit",
+      "input": {
+        "titles": {
+          "employment": {
+            "base": 5177.4,
+            "atLeastMinimumWage": true
+          },
+          "mandateContract": null,
+          "selfEmployment": null,
+          "agriculturalInsurance": false
+        },
+        "leave": {
+          "days": 60,
+          "usedSickPayDays": 0,
+          "aged50OrMore": false,
+          "insuredDays": 365
+        }
+      },
+      "expected": {
+        "checks": [],
+        "parts": [
+          {
+            "label": "Wynagrodzenie chorobowe (płaci pracodawca)",
+            "days": 33,
+            "rate": 1,
+            "amount": 5695.139999999999
+          },
+          {
+            "label": "Zasiłek chorobowy (płatnik lub ZUS)",
+            "days": 27,
+            "rate": 1,
+            "amount": 4659.66
+          }
+        ],
+        "total": 10354.8,
+        "netTotal": 9111.8
+      }
+    },
+    {
+      "name": "employment, 20 sick-pay days already used",
+      "input": {
+        "titles": {
+          "employment": {
+            "base": 5177.4,
+            "atLeastMinimumWage": true
+          },
+          "mandateContract": null,
+          "selfEmployment": null,
+          "agriculturalInsurance": false
+        },
+        "leave": {
+          "days": 60,
+          "usedSickPayDays": 20,
+          "aged50OrMore": false,
+          "insuredDays": 365
+        }
+      },
+      "expected": {
+        "checks": [],
+        "parts": [
+          {
+            "label": "Wynagrodzenie chorobowe (płaci pracodawca)",
+            "days": 13,
+            "rate": 1,
+            "amount": 2243.54
+          },
+          {
+            "label": "Zasiłek chorobowy (płatnik lub ZUS)",
+            "days": 47,
+            "rate": 1,
+            "amount": 8111.259999999999
+          }
+        ],
+        "total": 10354.8,
+        "netTotal": 9111.8
+      }
+    },
+    {
+      "name": "employment, aged 50: 14 days of sick pay",
+      "input": {
+        "titles": {
+          "employment": {
+            "base": 5177.4,
+            "atLeastMinimumWage": true
+          },
+          "mandateContract": null,
+          "selfEmployment": null,
+          "agriculturalInsurance": false
+        },
+        "leave": {
+          "days": 30,
+          "usedSickPayDays": 0,
+          "aged50OrMore": true,
+          "insuredDays": 365
+        }
+      },
+      "expected": {
+        "checks": [],
+        "parts": [
+          {
+            "label": "Wynagrodzenie chorobowe (płaci pracodawca)",
+            "days": 14,
+            "rate": 1,
+            "amount": 2416.12
+          },
+          {
+            "label": "Zasiłek chorobowy (płatnik lub ZUS)",
+            "days": 16,
+            "rate": 1,
+            "amount": 2761.2799999999997
+          }
+        ],
+        "total": 5177.4,
+        "netTotal": 4556.4
+      }
+    },
+    {
+      "name": "employment, all sick-pay days used",
+      "input": {
+        "titles": {
+          "employment": {
+            "base": 5177.4,
+            "atLeastMinimumWage": true
+          },
+          "mandateContract": null,
+          "selfEmployment": null,
+          "agriculturalInsurance": false
+        },
+        "leave": {
+          "days": 40,
+          "usedSickPayDays": 400,
+          "aged50OrMore": false,
+          "insuredDays": 365
+        }
+      },
+      "expected": {
+        "checks": [],
+        "parts": [
+          {
+            "label": "Zasiłek chorobowy (płatnik lub ZUS)",
+            "days": 40,
+            "rate": 1,
+            "amount": 6903.199999999999
+          }
+        ],
+        "total": 6903.199999999999,
+        "netTotal": 6075.199999999999
+      }
+    },
+    {
+      "name": "employment, 300 days: rehabilitation benefit after 270",
+      "input": {
+        "titles": {
+          "employment": {
+            "base": 5177.4,
+            "atLeastMinimumWage": true
+          },
+          "mandateContract": null,
+          "selfEmployment": null,
+          "agriculturalInsurance": false
+        },
+        "leave": {
+          "days": 300,
+          "usedSickPayDays": 0,
+          "aged50OrMore": false,
+          "insuredDays": 365
+        }
+      },
+      "expected": {
+        "checks": [],
+        "parts": [
+          {
+            "label": "Wynagrodzenie chorobowe (płaci pracodawca)",
+            "days": 33,
+            "rate": 1,
+            "amount": 5695.139999999999
+          },
+          {
+            "label": "Zasiłek chorobowy (płatnik lub ZUS)",
+            "days": 237,
+            "rate": 1,
+            "amount": 40901.46
+          },
+          {
+            "label": "Świadczenie rehabilitacyjne (po 270 dniach, decyzja lekarza orzecznika)",
+            "days": 30,
+            "rate": 1,
+            "amount": 5177.4
+          }
+        ],
+        "total": 51774,
+        "netTotal": 45561
+      }
+    },
+    {
+      "name": "employment, 700 days: rehabilitation capped at 12 months",
+      "input": {
+        "titles": {
+          "employment": {
+            "base": 5177.4,
+            "atLeastMinimumWage": true
+          },
+          "mandateContract": null,
+          "selfEmployment": null,
+          "agriculturalInsurance": false
+        },
+        "leave": {
+          "days": 700,
+          "usedSickPayDays": 0,
+          "aged50OrMore": false,
+          "insuredDays": 365
+        }
+      },
+      "expected": {
+        "checks": [],
+        "parts": [
+          {
+            "label": "Wynagrodzenie chorobowe (płaci pracodawca)",
+            "days": 33,
+            "rate": 1,
+            "amount": 5695.139999999999
+          },
+          {
+            "label": "Zasiłek chorobowy (płatnik lub ZUS)",
+            "days": 237,
+            "rate": 1,
+            "amount": 40901.46
+          },
+          {
+            "label": "Świadczenie rehabilitacyjne (po 270 dniach, decyzja lekarza orzecznika)",
+            "days": 360,
+            "rate": 1,
+            "amount": 62128.799999999996
+          }
+        ],
+        "total": 108725.4,
+        "netTotal": 95678.4
+      }
+    },
+    {
+      "name": "employment, waiting period not met",
+      "input": {
+        "titles": {
+          "employment": {
+            "base": 5177.4,
+            "atLeastMinimumWage": true
+          },
+          "mandateContract": null,
+          "selfEmployment": null,
+          "agriculturalInsurance": false
+        },
+        "leave": {
+          "days": 30,
+          "usedSickPayDays": 0,
+          "aged50OrMore": false,
+          "insuredDays": 20
+        }
+      },
+      "expected": {
+        "checks": [
+          {
+            "level": "NO",
+            "message": "Okres wyczekiwania: prawo do zasiłku po 30 dniach obowiązkowego ubezpieczenia (masz 20 dni). Pierwsze dni L4 mogą być bez zasiłku."
+          }
+        ],
+        "parts": [
+          {
+            "label": "Wynagrodzenie chorobowe (płaci pracodawca)",
+            "days": 30,
+            "rate": 1,
+            "amount": 5177.4
+          }
+        ],
+        "total": 5177.4,
+        "netTotal": 4556.4
+      }
+    },
+    {
+      "name": "own firm, 90 days: benefit from the first day",
+      "input": {
+        "titles": {
+          "employment": null,
+          "mandateContract": null,
+          "selfEmployment": {
+            "base": 4877.11,
+            "voluntarySickness": true,
+            "startupRelief": false,
+            "debt": 0
+          },
+          "agriculturalInsurance": false
+        },
+        "leave": {
+          "days": 90,
+          "usedSickPayDays": 0,
+          "aged50OrMore": false,
+          "insuredDays": 365
+        }
+      },
+      "expected": {
+        "checks": [],
+        "parts": [
+          {
+            "label": "Zasiłek chorobowy (od 1. dnia — ZUS lub płatnik)",
+            "days": 90,
+            "rate": 1,
+            "amount": 14631.329999999998
+          }
+        ],
+        "total": 14631.329999999998,
+        "netTotal": 12875.329999999998
+      }
+    },
+    {
+      "name": "own firm, waiting period of 90 days not met",
+      "input": {
+        "titles": {
+          "employment": null,
+          "mandateContract": null,
+          "selfEmployment": {
+            "base": 4877.11,
+            "voluntarySickness": true,
+            "startupRelief": false,
+            "debt": 0
+          },
+          "agriculturalInsurance": false
+        },
+        "leave": {
+          "days": 30,
+          "usedSickPayDays": 0,
+          "aged50OrMore": false,
+          "insuredDays": 60
+        }
+      },
+      "expected": {
+        "checks": [
+          {
+            "level": "NO",
+            "message": "Okres wyczekiwania: prawo do zasiłku po 90 dniach dobrowolnego ubezpieczenia (masz 60 dni). Pierwsze dni L4 mogą być bez zasiłku."
+          }
+        ],
+        "parts": [
+          {
+            "label": "Zasiłek chorobowy (od 1. dnia — ZUS lub płatnik)",
+            "days": 30,
+            "rate": 1,
+            "amount": 4877.11
+          }
+        ],
+        "total": 4877.11,
+        "netTotal": 4292.11
+      }
+    },
+    {
+      "name": "mandate contract, 45 days",
+      "input": {
+        "titles": {
+          "employment": null,
+          "mandateContract": {
+            "base": 3883.05,
+            "voluntarySickness": true,
+            "student": false
+          },
+          "selfEmployment": null,
+          "agriculturalInsurance": false
+        },
+        "leave": {
+          "days": 45,
+          "usedSickPayDays": 0,
+          "aged50OrMore": false,
+          "insuredDays": 100
+        }
+      },
+      "expected": {
+        "checks": [],
+        "parts": [
+          {
+            "label": "Zasiłek chorobowy (od 1. dnia — ZUS lub płatnik)",
+            "days": 45,
+            "rate": 1,
+            "amount": 5824.575
+          }
+        ],
+        "total": 5824.575,
+        "netTotal": 5125.575
+      }
+    },
+    {
+      "name": "part-time employment and own firm, 60 days",
+      "input": {
+        "titles": {
+          "employment": {
+            "base": 2000,
+            "atLeastMinimumWage": false
+          },
+          "mandateContract": null,
+          "selfEmployment": {
+            "base": 4877.11,
+            "voluntarySickness": true,
+            "startupRelief": false,
+            "debt": 0
+          },
+          "agriculturalInsurance": false
+        },
+        "leave": {
+          "days": 60,
+          "usedSickPayDays": 0,
+          "aged50OrMore": false,
+          "insuredDays": 365
+        }
+      },
+      "expected": {
+        "checks": [
+          {
+            "level": "OK",
+            "message": "Zasiłek z 2 tytułów — każdy liczony osobno: etat 2000,00 zł + firma 4877,11 zł."
+          }
+        ],
+        "parts": [
+          {
+            "label": "etat — Wynagrodzenie chorobowe (płaci pracodawca)",
+            "days": 33,
+            "rate": 1,
+            "amount": 2200
+          },
+          {
+            "label": "etat — Zasiłek chorobowy (płatnik lub ZUS)",
+            "days": 27,
+            "rate": 1,
+            "amount": 1800.0000000000002
+          },
+          {
+            "label": "firma — Zasiłek chorobowy (od 1. dnia — ZUS lub płatnik)",
+            "days": 60,
+            "rate": 1,
+            "amount": 9754.22
+          }
+        ],
+        "total": 13754.22,
+        "netTotal": 12103.22
+      }
+    },
+    {
+      "name": "full-time employment and own firm: only employment",
+      "input": {
+        "titles": {
+          "employment": {
+            "base": 5177.4,
+            "atLeastMinimumWage": true
+          },
+          "mandateContract": null,
+          "selfEmployment": {
+            "base": 4877.11,
+            "voluntarySickness": true,
+            "startupRelief": false,
+            "debt": 0
+          },
+          "agriculturalInsurance": false
+        },
+        "leave": {
+          "days": 60,
+          "usedSickPayDays": 0,
+          "aged50OrMore": false,
+          "insuredDays": 365
+        }
+      },
+      "expected": {
+        "checks": [
+          {
+            "level": "INFO",
+            "message": "Etat z co najmniej płacą minimalną + firma: z tytułu „firma” nie ma ubezpieczenia chorobowego — zasiłek tylko z etatu."
+          }
+        ],
+        "parts": [
+          {
+            "label": "Wynagrodzenie chorobowe (płaci pracodawca)",
+            "days": 33,
+            "rate": 1,
+            "amount": 5695.139999999999
+          },
+          {
+            "label": "Zasiłek chorobowy (płatnik lub ZUS)",
+            "days": 27,
+            "rate": 1,
+            "amount": 4659.66
+          }
+        ],
+        "total": 10354.8,
+        "netTotal": 9111.8
+      }
+    },
+    {
+      "name": "no insurance title",
+      "input": {
+        "titles": {
+          "employment": null,
+          "mandateContract": null,
+          "selfEmployment": null,
+          "agriculturalInsurance": false
+        },
+        "leave": {
+          "days": 30,
+          "usedSickPayDays": 0,
+          "aged50OrMore": false,
+          "insuredDays": 365
+        }
+      },
+      "expected": {
+        "checks": [
+          {
+            "level": "NO",
+            "message": "Brak ubezpieczenia chorobowego — zasiłek chorobowy nie przysługuje."
+          }
+        ],
+        "parts": [],
+        "total": 0,
+        "netTotal": 0
+      }
+    },
+    {
+      "name": "own firm with blocking debt",
+      "input": {
+        "titles": {
+          "employment": null,
+          "mandateContract": null,
+          "selfEmployment": {
+            "base": 4877.11,
+            "voluntarySickness": true,
+            "startupRelief": false,
+            "debt": 62.4
+          },
+          "agriculturalInsurance": false
+        },
+        "leave": {
+          "days": 30,
+          "usedSickPayDays": 0,
+          "aged50OrMore": false,
+          "insuredDays": 365
+        }
+      },
+      "expected": {
+        "checks": [
+          {
+            "level": "NO",
+            "message": "Brak ubezpieczenia chorobowego — zasiłek chorobowy nie przysługuje."
+          }
+        ],
+        "parts": [],
+        "total": 0,
+        "netTotal": 0
+      }
+    },
+    {
+      "name": "farmer in KRUS",
+      "input": {
+        "titles": {
+          "employment": null,
+          "mandateContract": null,
+          "selfEmployment": null,
+          "agriculturalInsurance": true
+        },
+        "leave": {
+          "days": 30,
+          "usedSickPayDays": 0,
+          "aged50OrMore": false,
+          "insuredDays": 365
+        }
+      },
+      "expected": {
+        "checks": [
+          {
+            "level": "NO",
+            "message": "Rolnik w KRUS: zasiłki wypłaca KRUS, nie ZUS — kwota poniżej jest orientacyjna."
+          }
+        ],
+        "parts": [],
+        "total": 0,
+        "netTotal": 0
+      }
+    },
+    {
+      "name": "employment without a base",
+      "input": {
+        "titles": {
+          "employment": {
+            "base": 0,
+            "atLeastMinimumWage": true
+          },
+          "mandateContract": null,
+          "selfEmployment": null,
+          "agriculturalInsurance": false
+        },
+        "leave": {
+          "days": 30,
+          "usedSickPayDays": 0,
+          "aged50OrMore": false,
+          "insuredDays": 365
+        }
+      },
+      "expected": {
+        "checks": [
+          {
+            "level": "NO",
+            "message": "Wpisz podstawę zasiłku — bez niej nie policzymy kwoty."
+          }
+        ],
+        "parts": [
+          {
+            "label": "Wynagrodzenie chorobowe (płaci pracodawca)",
+            "days": 30,
+            "rate": 1,
+            "amount": 0
+          }
+        ],
+        "total": 0,
+        "netTotal": 0
+      }
+    }
+  ]
+}

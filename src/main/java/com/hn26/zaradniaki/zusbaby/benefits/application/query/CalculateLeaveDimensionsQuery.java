@@ -1,9 +1,9 @@
 package com.hn26.zaradniaki.zusbaby.benefits.application.query;
 
 import an.awesome.pipelinr.Command;
+import com.hn26.zaradniaki.zusbaby.benefits.api.model.PretermBirth;
+import com.hn26.zaradniaki.zusbaby.benefits.api.model.TakenInChild;
 import com.hn26.zaradniaki.zusbaby.benefits.application.dto.LeaveDimensionsDto;
-import com.hn26.zaradniaki.zusbaby.benefits.domain.leave.PretermBirth;
-import com.hn26.zaradniaki.zusbaby.benefits.domain.leave.TakenInChild;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Min;
 

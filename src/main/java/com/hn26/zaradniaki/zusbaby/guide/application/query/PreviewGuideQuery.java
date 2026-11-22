@@ -17,16 +17,21 @@ import java.util.Set;
 
 /** Guide of a guest from the survey answers; nothing is stored. */
 public record PreviewGuideQuery(@NotNull ParentRole role, @NotNull CareStage stage, @NotNull LocalDate date,
-        LocalDate childBirthDate, @Min(1) @Max(5) int children, PretermDetails preterm, @NotEmpty Set<WorkForm> work,
-        @NotNull PartnerTracking partner) implements Command<GuestGuideDto> {
+        LocalDate childBirthDate, @Min(1) @Max(5) int children, PretermDetails preterm, boolean zaZyciem,
+        @NotEmpty Set<WorkForm> work, @NotNull PartnerTracking partner) implements Command<GuestGuideDto> {
 
     @AssertTrue(message = "przy przyjęciu dziecka podaj jego datę urodzenia (i tylko wtedy)")
     boolean isChildBirthDateGivenOnlyForAdoption() {
         return stage == null || (stage == CareStage.ADOPTION) == (childBirthDate != null);
     }
 
-    @AssertTrue(message = "wcześniaka zaznacz po narodzinach dziecka")
-    boolean isPretermOnlyAfterBirth() {
-        return stage != CareStage.PREGNANCY || preterm == null;
+    @AssertTrue(message = "wcześniaka zaznacz po narodzinach dziecka (nie przy przyjęciu)")
+    boolean isPretermOnlyForBornChild() {
+        return stage == null || stage == CareStage.CHILD || preterm == null;
+    }
+
+    @AssertTrue(message = "zaświadczenie „Za życiem” zaznacz po narodzinach lub przyjęciu dziecka")
+    boolean isZaZyciemNotInPregnancy() {
+        return stage != CareStage.PREGNANCY || !zaZyciem;
     }
 }

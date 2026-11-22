@@ -3,6 +3,8 @@ package com.hn26.zaradniaki.zusbaby.benefits.domain.maternity;
 import static com.hn26.zaradniaki.zusbaby.benefits.GoldenMoney.assertMoney;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.hn26.zaradniaki.zusbaby.benefits.api.model.PretermBirth;
+import com.hn26.zaradniaki.zusbaby.benefits.api.model.TakenInChild;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.BenefitParametersFixtures;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.LeaveParametersFixtures;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.MaternityParametersFixtures;
@@ -11,9 +13,7 @@ import com.hn26.zaradniaki.zusbaby.benefits.domain.insurance.InsuranceTitlesInpu
 import com.hn26.zaradniaki.zusbaby.benefits.domain.insurance.ResolvedInsurance;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.leave.AdoptionLeavePolicy;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.leave.LeaveDimensionsPolicy;
-import com.hn26.zaradniaki.zusbaby.benefits.domain.leave.PretermBirth;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.leave.SupplementaryLeavePolicy;
-import com.hn26.zaradniaki.zusbaby.benefits.domain.leave.TakenInChild;
 import com.hn26.zaradniaki.zusbaby.golden.GoldenCase;
 import com.hn26.zaradniaki.zusbaby.golden.GoldenCases;
 import com.hn26.zaradniaki.zusbaby.shared.domain.Check;

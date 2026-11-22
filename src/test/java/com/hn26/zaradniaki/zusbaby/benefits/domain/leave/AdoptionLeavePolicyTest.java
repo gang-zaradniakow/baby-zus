@@ -2,6 +2,8 @@ package com.hn26.zaradniaki.zusbaby.benefits.domain.leave;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.hn26.zaradniaki.zusbaby.benefits.api.model.AdoptionType;
+import com.hn26.zaradniaki.zusbaby.benefits.api.model.TakenInChild;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.LeaveParametersFixtures;
 import com.hn26.zaradniaki.zusbaby.golden.GoldenCase;
 import com.hn26.zaradniaki.zusbaby.golden.GoldenCases;

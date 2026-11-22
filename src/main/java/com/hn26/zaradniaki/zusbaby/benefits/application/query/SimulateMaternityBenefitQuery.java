@@ -1,10 +1,10 @@
 package com.hn26.zaradniaki.zusbaby.benefits.application.query;
 
 import an.awesome.pipelinr.Command;
+import com.hn26.zaradniaki.zusbaby.benefits.api.model.PretermBirth;
+import com.hn26.zaradniaki.zusbaby.benefits.api.model.TakenInChild;
 import com.hn26.zaradniaki.zusbaby.benefits.application.dto.MaternitySimulationDto;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.insurance.InsuranceTitles;
-import com.hn26.zaradniaki.zusbaby.benefits.domain.leave.PretermBirth;
-import com.hn26.zaradniaki.zusbaby.benefits.domain.leave.TakenInChild;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.maternity.BenefitVariant;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.maternity.CareSituation;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.maternity.FatherLeaveChoices;

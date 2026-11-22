@@ -1,5 +1,5 @@
 {
-  "source": "js/app.js finishOnboarding(), ctx(), buildTimeline(), alerts() with today = 2026-11-22",
+  "source": "js/app.js finishOnboarding(), ctx(), buildTimeline(), alerts(), planHtml(), BENEFITS eligible() and the week card of vStart() with today = 2026-11-22",
   "cases": [
     {
       "name": "Anna: 28th week of pregnancy, employment and a firm without sickness insurance",
@@ -10,6 +10,7 @@
         "childBirthDate": null,
         "children": 1,
         "preterm": null,
+        "zaZyciem": false,
         "work": [
           "EMPLOYMENT",
           "SELF_EMPLOYMENT_WITHOUT_SICKNESS"
@@ -23,6 +24,156 @@
           "childAgeLabel": null
         },
         "alerts": [],
+        "plan": [
+          {
+            "kind": "BENEFIT",
+            "icon": "heart",
+            "title": "Teraz, w ciąży",
+            "text": "Zwolnienie z kodem B — 100% podstawy",
+            "articleId": "l4-ciaza",
+            "totalWeeks": null,
+            "segments": []
+          },
+          {
+            "kind": "LEAVES",
+            "icon": null,
+            "title": "Po porodzie: 61 tygodni zasiłku",
+            "text": "Urlopy idą <b>po kolei</b>: najpierw macierzyński, potem rodzicielski. Możesz też wybrać <b>81,5% przez cały czas</b> — wniosek do 21 dni po porodzie.",
+            "articleId": "wysokosc-mac",
+            "totalWeeks": 61,
+            "segments": [
+              {
+                "kind": "MATERNITY",
+                "label": "Macierzyński",
+                "weeks": 20,
+                "rate": 1
+              },
+              {
+                "kind": "PARENTAL",
+                "label": "Rodzicielski",
+                "weeks": 41,
+                "rate": 0.7
+              }
+            ]
+          },
+          {
+            "kind": "BENEFIT",
+            "icon": "users",
+            "title": "Dla taty",
+            "text": "Ojcowski 2 tyg. (100%) + 9 tyg. rodzicielskiego tylko dla niego",
+            "articleId": "ojcowski",
+            "totalWeeks": null,
+            "segments": []
+          }
+        ],
+        "benefits": [
+          {
+            "key": "l4-ciaza",
+            "name": "Zasiłek chorobowy w ciąży (L4 z kodem B)",
+            "summary": "L4 w ciąży — 100%",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "l4-ciaza",
+            "wizardId": null,
+            "calculator": null
+          },
+          {
+            "key": "mac-przed",
+            "name": "Urlop macierzyński przed porodem",
+            "summary": "Do 6 tygodni przed terminem",
+            "institution": "EMPLOYER",
+            "eligibility": "YES",
+            "articleId": "mac-przed-porodem",
+            "wizardId": null,
+            "calculator": null
+          },
+          {
+            "key": "rehab",
+            "name": "Świadczenie rehabilitacyjne",
+            "summary": "Po 270 dniach L4 — w ciąży 100%",
+            "institution": "ZUS",
+            "eligibility": "MAYBE",
+            "articleId": "okres-zasilkowy",
+            "wizardId": null,
+            "calculator": null
+          },
+          {
+            "key": "zwzm",
+            "name": "Zasiłek w wysokości zasiłku macierzyńskiego",
+            "summary": "Utrata pracy w ciąży — 100% do porodu",
+            "institution": "ZUS",
+            "eligibility": "MAYBE",
+            "articleId": "utrata-pracy",
+            "wizardId": null,
+            "calculator": null
+          },
+          {
+            "key": "mac",
+            "name": "Zasiłek macierzyński — urlop macierzyński",
+            "summary": "20–37 tygodni, 100%",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "urlop-mac",
+            "wizardId": null,
+            "calculator": "macierzynski"
+          },
+          {
+            "key": "rodz",
+            "name": "Zasiłek macierzyński — urlop rodzicielski",
+            "summary": "41/43 tyg., 70% lub 81,5%",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "rodzicielski",
+            "wizardId": "w-rodzicielski",
+            "calculator": "macierzynski"
+          },
+          {
+            "key": "wariant",
+            "name": "Decyzja: 81,5% czy 100% + 70%?",
+            "summary": "Masz 21 dni po porodzie",
+            "institution": "EMPLOYER",
+            "eligibility": "YES",
+            "articleId": "wysokosc-mac",
+            "wizardId": "w-81",
+            "calculator": "macierzynski"
+          },
+          {
+            "key": "ojcowski",
+            "name": "Urlop ojcowski",
+            "summary": "2 tygodnie, 100%",
+            "institution": "EMPLOYER",
+            "eligibility": "MAYBE",
+            "articleId": "ojcowski",
+            "wizardId": "w-ojcowski",
+            "calculator": null
+          },
+          {
+            "key": "ryzyka",
+            "name": "Ryzyka: kiedy można stracić albo obniżyć zasiłek",
+            "summary": "Sprawdź, zanim zmienisz pracę w ciąży",
+            "institution": "INFO",
+            "eligibility": "YES",
+            "articleId": "ryzyka",
+            "wizardId": null,
+            "calculator": null
+          },
+          {
+            "key": "ochrona",
+            "name": "Twoje prawa w pracy",
+            "summary": "Ochrona przed zwolnieniem i więcej",
+            "institution": "EMPLOYER",
+            "eligibility": "YES",
+            "articleId": "utrata-pracy",
+            "wizardId": null,
+            "calculator": null
+          }
+        ],
+        "weekCard": {
+          "period": "WEEK",
+          "articleId": "utrata-pracy",
+          "title": "Jesteś pod ochroną",
+          "text": "W ciąży pracodawca co do zasady nie może Cię zwolnić. Umowa na czas określony kończąca się po 3. miesiącu ciąży przedłuża się do porodu."
+        },
         "timeline": [
           {
             "key": "mac-przed",
@@ -86,6 +237,7 @@
         "childBirthDate": null,
         "children": 1,
         "preterm": null,
+        "zaZyciem": false,
         "work": [
           "SELF_EMPLOYMENT"
         ],
@@ -98,6 +250,116 @@
           "childAgeLabel": "2 tyg. 2 dni"
         },
         "alerts": [],
+        "plan": [
+          {
+            "kind": "LEAVES",
+            "icon": null,
+            "title": "Zasiłek macierzyński: 61 tygodni zasiłku",
+            "text": "Urlopy idą <b>po kolei</b>: najpierw macierzyński, potem rodzicielski. Możesz też wybrać <b>81,5% przez cały czas</b> — wniosek do 21 dni po porodzie.",
+            "articleId": "wysokosc-mac",
+            "totalWeeks": 61,
+            "segments": [
+              {
+                "kind": "MATERNITY",
+                "label": "Macierzyński",
+                "weeks": 20,
+                "rate": 1
+              },
+              {
+                "kind": "PARENTAL",
+                "label": "Rodzicielski",
+                "weeks": 41,
+                "rate": 0.7
+              }
+            ]
+          },
+          {
+            "kind": "BENEFIT",
+            "icon": "users",
+            "title": "Dla taty",
+            "text": "Ojcowski 2 tyg. (100%) + 9 tyg. rodzicielskiego tylko dla niego",
+            "articleId": "ojcowski",
+            "totalWeeks": null,
+            "segments": []
+          },
+          {
+            "kind": "BENEFIT",
+            "icon": "hospital",
+            "title": "Gdy dziecko zachoruje",
+            "text": "Zasiłek opiekuńczy 80%, do 60 dni w roku",
+            "articleId": "opiekunczy",
+            "totalWeeks": null,
+            "segments": []
+          }
+        ],
+        "benefits": [
+          {
+            "key": "mac",
+            "name": "Zasiłek macierzyński — urlop macierzyński",
+            "summary": "20–37 tygodni, 100%",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "urlop-mac",
+            "wizardId": null,
+            "calculator": "macierzynski"
+          },
+          {
+            "key": "rodz",
+            "name": "Zasiłek macierzyński — urlop rodzicielski",
+            "summary": "41/43 tyg., 70% lub 81,5%",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "rodzicielski",
+            "wizardId": "w-rodzicielski",
+            "calculator": "macierzynski"
+          },
+          {
+            "key": "wariant",
+            "name": "Decyzja: 81,5% czy 100% + 70%?",
+            "summary": "Masz 21 dni po porodzie",
+            "institution": "EMPLOYER",
+            "eligibility": "YES",
+            "articleId": "wysokosc-mac",
+            "wizardId": "w-81",
+            "calculator": "macierzynski"
+          },
+          {
+            "key": "ojcowski",
+            "name": "Urlop ojcowski",
+            "summary": "2 tygodnie, 100%",
+            "institution": "EMPLOYER",
+            "eligibility": "MAYBE",
+            "articleId": "ojcowski",
+            "wizardId": "w-ojcowski",
+            "calculator": null
+          },
+          {
+            "key": "opiekunczy",
+            "name": "Zasiłek opiekuńczy",
+            "summary": "80%, do 60 dni w roku",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "opiekunczy",
+            "wizardId": "w-opiekunczy",
+            "calculator": null
+          },
+          {
+            "key": "ryzyka",
+            "name": "Ryzyka: kiedy można stracić albo obniżyć zasiłek",
+            "summary": "Sprawdź, zanim zmienisz pracę w ciąży",
+            "institution": "INFO",
+            "eligibility": "YES",
+            "articleId": "ryzyka",
+            "wizardId": null,
+            "calculator": null
+          }
+        ],
+        "weekCard": {
+          "period": "MONTH",
+          "articleId": "wysokosc-mac",
+          "title": "Pierwsze 21 dni",
+          "text": "Jeśli chcesz 81,5% przez cały okres, złóż wniosek o pełny wymiar urlopu do 21 dni po porodzie."
+        },
         "timeline": [
           {
             "key": "w81",
@@ -291,6 +553,7 @@
           "birthWeightGrams": 950,
           "hospitalDays": 49
         },
+        "zaZyciem": false,
         "work": [
           "EMPLOYMENT"
         ],
@@ -303,6 +566,113 @@
           "childAgeLabel": "6 tyg. 0 dni"
         },
         "alerts": [],
+        "plan": [
+          {
+            "kind": "LEAVES",
+            "icon": null,
+            "title": "Zasiłek macierzyński: 68 tygodni zasiłku",
+            "text": "Urlopy idą <b>po kolei</b>: najpierw macierzyński, potem rodzicielski. Możesz też wybrać <b>81,5% przez cały czas</b> — wniosek do 21 dni po porodzie.",
+            "articleId": "wysokosc-mac",
+            "totalWeeks": 68,
+            "segments": [
+              {
+                "kind": "MATERNITY",
+                "label": "Macierzyński",
+                "weeks": 20,
+                "rate": 1
+              },
+              {
+                "kind": "SUPPLEMENTARY",
+                "label": "Uzupełniający",
+                "weeks": 7,
+                "rate": 1
+              },
+              {
+                "kind": "PARENTAL",
+                "label": "Rodzicielski",
+                "weeks": 41,
+                "rate": 0.7
+              }
+            ]
+          },
+          {
+            "kind": "BENEFIT",
+            "icon": "hospital",
+            "title": "Gdy dziecko zachoruje",
+            "text": "Zasiłek opiekuńczy 80%, do 60 dni w roku",
+            "articleId": "opiekunczy",
+            "totalWeeks": null,
+            "segments": []
+          }
+        ],
+        "benefits": [
+          {
+            "key": "mac",
+            "name": "Zasiłek macierzyński — urlop macierzyński",
+            "summary": "20–37 tygodni, 100%",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "urlop-mac",
+            "wizardId": null,
+            "calculator": "macierzynski"
+          },
+          {
+            "key": "rodz",
+            "name": "Zasiłek macierzyński — urlop rodzicielski",
+            "summary": "41/43 tyg., 70% lub 81,5%",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "rodzicielski",
+            "wizardId": "w-rodzicielski",
+            "calculator": "macierzynski"
+          },
+          {
+            "key": "uzup",
+            "name": "Uzupełniający urlop macierzyński (wcześniaki i hospitalizacja)",
+            "summary": "Do 8 lub 15 tyg., 100%",
+            "institution": "EMPLOYER",
+            "eligibility": "YES",
+            "articleId": "uzupelniajacy",
+            "wizardId": "w-uzupelniajacy",
+            "calculator": "uzupelniajacy"
+          },
+          {
+            "key": "opiekunczy",
+            "name": "Zasiłek opiekuńczy",
+            "summary": "80%, do 60 dni w roku",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "opiekunczy",
+            "wizardId": "w-opiekunczy",
+            "calculator": null
+          },
+          {
+            "key": "ryzyka",
+            "name": "Ryzyka: kiedy można stracić albo obniżyć zasiłek",
+            "summary": "Sprawdź, zanim zmienisz pracę w ciąży",
+            "institution": "INFO",
+            "eligibility": "YES",
+            "articleId": "ryzyka",
+            "wizardId": null,
+            "calculator": null
+          },
+          {
+            "key": "ochrona",
+            "name": "Twoje prawa w pracy",
+            "summary": "Ochrona przed zwolnieniem i więcej",
+            "institution": "EMPLOYER",
+            "eligibility": "YES",
+            "articleId": "utrata-pracy",
+            "wizardId": null,
+            "calculator": null
+          }
+        ],
+        "weekCard": {
+          "period": "MONTH",
+          "articleId": "urlop-mac",
+          "title": "Tata może przejąć część urlopu",
+          "text": "Po 14 tygodniach mama może zrezygnować z dalszej części macierzyńskiego na rzecz taty."
+        },
         "timeline": [
           {
             "key": "w81",
@@ -481,6 +851,7 @@
         "childBirthDate": null,
         "children": 1,
         "preterm": null,
+        "zaZyciem": false,
         "work": [
           "EMPLOYMENT"
         ],
@@ -493,6 +864,116 @@
           "childAgeLabel": "10 mies."
         },
         "alerts": [],
+        "plan": [
+          {
+            "kind": "LEAVES",
+            "icon": null,
+            "title": "Zasiłek macierzyński: 61 tygodni zasiłku",
+            "text": "Urlopy idą <b>po kolei</b>: najpierw macierzyński, potem rodzicielski. Możesz też wybrać <b>81,5% przez cały czas</b> — wniosek do 21 dni po porodzie.",
+            "articleId": "wysokosc-mac",
+            "totalWeeks": 61,
+            "segments": [
+              {
+                "kind": "MATERNITY",
+                "label": "Macierzyński",
+                "weeks": 20,
+                "rate": 1
+              },
+              {
+                "kind": "PARENTAL",
+                "label": "Rodzicielski",
+                "weeks": 41,
+                "rate": 0.7
+              }
+            ]
+          },
+          {
+            "kind": "BENEFIT",
+            "icon": "users",
+            "title": "Dla Ciebie",
+            "text": "Ojcowski 2 tyg. (100%) + 9 tyg. rodzicielskiego tylko dla niego",
+            "articleId": "ojcowski",
+            "totalWeeks": null,
+            "segments": []
+          },
+          {
+            "kind": "BENEFIT",
+            "icon": "hospital",
+            "title": "Gdy dziecko zachoruje",
+            "text": "Zasiłek opiekuńczy 80%, do 60 dni w roku",
+            "articleId": "opiekunczy",
+            "totalWeeks": null,
+            "segments": []
+          }
+        ],
+        "benefits": [
+          {
+            "key": "mac",
+            "name": "Zasiłek macierzyński — urlop macierzyński",
+            "summary": "20–37 tygodni, 100%",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "urlop-mac",
+            "wizardId": null,
+            "calculator": "macierzynski"
+          },
+          {
+            "key": "rodz",
+            "name": "Zasiłek macierzyński — urlop rodzicielski",
+            "summary": "41/43 tyg., 70% lub 81,5%",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "rodzicielski",
+            "wizardId": "w-rodzicielski",
+            "calculator": "macierzynski"
+          },
+          {
+            "key": "ojcowski",
+            "name": "Urlop ojcowski",
+            "summary": "2 tygodnie, 100%",
+            "institution": "EMPLOYER",
+            "eligibility": "YES",
+            "articleId": "ojcowski",
+            "wizardId": "w-ojcowski",
+            "calculator": null
+          },
+          {
+            "key": "opiekunczy",
+            "name": "Zasiłek opiekuńczy",
+            "summary": "80%, do 60 dni w roku",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "opiekunczy",
+            "wizardId": "w-opiekunczy",
+            "calculator": null
+          },
+          {
+            "key": "ryzyka",
+            "name": "Ryzyka: kiedy można stracić albo obniżyć zasiłek",
+            "summary": "Sprawdź, zanim zmienisz pracę w ciąży",
+            "institution": "INFO",
+            "eligibility": "YES",
+            "articleId": "ryzyka",
+            "wizardId": null,
+            "calculator": null
+          },
+          {
+            "key": "ochrona",
+            "name": "Twoje prawa w pracy",
+            "summary": "Ochrona przed zwolnieniem i więcej",
+            "institution": "EMPLOYER",
+            "eligibility": "YES",
+            "articleId": "utrata-pracy",
+            "wizardId": null,
+            "calculator": null
+          }
+        ],
+        "weekCard": {
+          "period": "MONTH",
+          "articleId": "ojcowski",
+          "title": "Urlop ojcowski do 1. urodzin",
+          "text": "Tata ma 2 tygodnie (100%) do ukończenia przez dziecko 12 miesięcy."
+        },
         "timeline": [
           {
             "key": "tata9",
@@ -628,6 +1109,7 @@
         "childBirthDate": "2024-10-23",
         "children": 1,
         "preterm": null,
+        "zaZyciem": false,
         "work": [
           "EMPLOYMENT"
         ],
@@ -640,6 +1122,97 @@
           "childAgeLabel": "2 lata"
         },
         "alerts": [],
+        "plan": [
+          {
+            "kind": "LEAVES",
+            "icon": null,
+            "title": "Po przyjęciu dziecka: 61 tygodni zasiłku",
+            "text": "Urlopy idą <b>po kolei</b>: najpierw urlop na warunkach macierzyńskiego, potem rodzicielski. Możesz też wybrać <b>81,5% przez cały czas</b> — wniosek do 21 dni od przyjęcia.",
+            "articleId": "wysokosc-mac",
+            "totalWeeks": 61,
+            "segments": [
+              {
+                "kind": "MATERNITY",
+                "label": "Na warunkach macierzyńskiego",
+                "weeks": 20,
+                "rate": 1
+              },
+              {
+                "kind": "PARENTAL",
+                "label": "Rodzicielski",
+                "weeks": 41,
+                "rate": 0.7
+              }
+            ]
+          },
+          {
+            "kind": "BENEFIT",
+            "icon": "hospital",
+            "title": "Gdy dziecko zachoruje",
+            "text": "Zasiłek opiekuńczy 80%, do 60 dni w roku",
+            "articleId": "opiekunczy",
+            "totalWeeks": null,
+            "segments": []
+          }
+        ],
+        "benefits": [
+          {
+            "key": "rodz",
+            "name": "Zasiłek macierzyński — urlop rodzicielski",
+            "summary": "41/43 tyg., 70% lub 81,5%",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "rodzicielski",
+            "wizardId": "w-rodzicielski",
+            "calculator": "macierzynski"
+          },
+          {
+            "key": "adopcja",
+            "name": "Urlop na warunkach urlopu macierzyńskiego (adopcja, rodzina zastępcza)",
+            "summary": "Jak macierzyński, min. 9 tyg.",
+            "institution": "EMPLOYER",
+            "eligibility": "YES",
+            "articleId": "na-warunkach",
+            "wizardId": "w-adopcja",
+            "calculator": null
+          },
+          {
+            "key": "opiekunczy",
+            "name": "Zasiłek opiekuńczy",
+            "summary": "80%, do 60 dni w roku",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "opiekunczy",
+            "wizardId": "w-opiekunczy",
+            "calculator": null
+          },
+          {
+            "key": "ryzyka",
+            "name": "Ryzyka: kiedy można stracić albo obniżyć zasiłek",
+            "summary": "Sprawdź, zanim zmienisz pracę w ciąży",
+            "institution": "INFO",
+            "eligibility": "YES",
+            "articleId": "ryzyka",
+            "wizardId": null,
+            "calculator": null
+          },
+          {
+            "key": "ochrona",
+            "name": "Twoje prawa w pracy",
+            "summary": "Ochrona przed zwolnieniem i więcej",
+            "institution": "EMPLOYER",
+            "eligibility": "YES",
+            "articleId": "utrata-pracy",
+            "wizardId": null,
+            "calculator": null
+          }
+        ],
+        "weekCard": {
+          "period": "MONTH",
+          "articleId": "opiekunczy",
+          "title": "Gdy maluch zachoruje",
+          "text": "Zasiłek opiekuńczy: 80% podstawy, do 60 dni w roku. Wniosek Z-15A."
+        },
         "timeline": [
           {
             "key": "adop",
@@ -782,6 +1355,7 @@
         "childBirthDate": null,
         "children": 1,
         "preterm": null,
+        "zaZyciem": false,
         "work": [
           "EMPLOYMENT"
         ],
@@ -794,6 +1368,96 @@
           "childAgeLabel": "13 mies."
         },
         "alerts": [],
+        "plan": [
+          {
+            "kind": "LEAVES",
+            "icon": null,
+            "title": "Zasiłek macierzyński: 61 tygodni zasiłku",
+            "text": "Urlopy idą <b>po kolei</b>: najpierw macierzyński, potem rodzicielski. Możesz też wybrać <b>81,5% przez cały czas</b> — wniosek do 21 dni po porodzie.",
+            "articleId": "wysokosc-mac",
+            "totalWeeks": 61,
+            "segments": [
+              {
+                "kind": "MATERNITY",
+                "label": "Macierzyński",
+                "weeks": 20,
+                "rate": 1
+              },
+              {
+                "kind": "PARENTAL",
+                "label": "Rodzicielski",
+                "weeks": 41,
+                "rate": 0.7
+              }
+            ]
+          },
+          {
+            "kind": "BENEFIT",
+            "icon": "users",
+            "title": "Dla taty",
+            "text": "Ojcowski 2 tyg. (100%) + 9 tyg. rodzicielskiego tylko dla niego",
+            "articleId": "ojcowski",
+            "totalWeeks": null,
+            "segments": []
+          },
+          {
+            "kind": "BENEFIT",
+            "icon": "hospital",
+            "title": "Gdy dziecko zachoruje",
+            "text": "Zasiłek opiekuńczy 80%, do 60 dni w roku",
+            "articleId": "opiekunczy",
+            "totalWeeks": null,
+            "segments": []
+          }
+        ],
+        "benefits": [
+          {
+            "key": "rodz",
+            "name": "Zasiłek macierzyński — urlop rodzicielski",
+            "summary": "41/43 tyg., 70% lub 81,5%",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "rodzicielski",
+            "wizardId": "w-rodzicielski",
+            "calculator": "macierzynski"
+          },
+          {
+            "key": "opiekunczy",
+            "name": "Zasiłek opiekuńczy",
+            "summary": "80%, do 60 dni w roku",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "opiekunczy",
+            "wizardId": "w-opiekunczy",
+            "calculator": null
+          },
+          {
+            "key": "ryzyka",
+            "name": "Ryzyka: kiedy można stracić albo obniżyć zasiłek",
+            "summary": "Sprawdź, zanim zmienisz pracę w ciąży",
+            "institution": "INFO",
+            "eligibility": "YES",
+            "articleId": "ryzyka",
+            "wizardId": null,
+            "calculator": null
+          },
+          {
+            "key": "ochrona",
+            "name": "Twoje prawa w pracy",
+            "summary": "Ochrona przed zwolnieniem i więcej",
+            "institution": "EMPLOYER",
+            "eligibility": "YES",
+            "articleId": "utrata-pracy",
+            "wizardId": null,
+            "calculator": null
+          }
+        ],
+        "weekCard": {
+          "period": "MONTH",
+          "articleId": "opiekunczy",
+          "title": "Gdy maluch zachoruje",
+          "text": "Zasiłek opiekuńczy: 80% podstawy, do 60 dni w roku. Wniosek Z-15A."
+        },
         "timeline": [
           {
             "key": "w81",
@@ -990,6 +1654,7 @@
         "childBirthDate": null,
         "children": 1,
         "preterm": null,
+        "zaZyciem": false,
         "work": [
           "EMPLOYMENT"
         ],
@@ -1002,6 +1667,156 @@
           "childAgeLabel": null
         },
         "alerts": [],
+        "plan": [
+          {
+            "kind": "BENEFIT",
+            "icon": "heart",
+            "title": "Teraz, w ciąży",
+            "text": "Zwolnienie z kodem B — 100% podstawy",
+            "articleId": "l4-ciaza",
+            "totalWeeks": null,
+            "segments": []
+          },
+          {
+            "kind": "LEAVES",
+            "icon": null,
+            "title": "Po porodzie: 61 tygodni zasiłku",
+            "text": "Urlopy idą <b>po kolei</b>: najpierw macierzyński, potem rodzicielski. Możesz też wybrać <b>81,5% przez cały czas</b> — wniosek do 21 dni po porodzie.",
+            "articleId": "wysokosc-mac",
+            "totalWeeks": 61,
+            "segments": [
+              {
+                "kind": "MATERNITY",
+                "label": "Macierzyński",
+                "weeks": 20,
+                "rate": 1
+              },
+              {
+                "kind": "PARENTAL",
+                "label": "Rodzicielski",
+                "weeks": 41,
+                "rate": 0.7
+              }
+            ]
+          },
+          {
+            "kind": "BENEFIT",
+            "icon": "users",
+            "title": "Dla taty",
+            "text": "Ojcowski 2 tyg. (100%) + 9 tyg. rodzicielskiego tylko dla niego",
+            "articleId": "ojcowski",
+            "totalWeeks": null,
+            "segments": []
+          }
+        ],
+        "benefits": [
+          {
+            "key": "l4-ciaza",
+            "name": "Zasiłek chorobowy w ciąży (L4 z kodem B)",
+            "summary": "L4 w ciąży — 100%",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "l4-ciaza",
+            "wizardId": null,
+            "calculator": null
+          },
+          {
+            "key": "mac-przed",
+            "name": "Urlop macierzyński przed porodem",
+            "summary": "Do 6 tygodni przed terminem",
+            "institution": "EMPLOYER",
+            "eligibility": "YES",
+            "articleId": "mac-przed-porodem",
+            "wizardId": null,
+            "calculator": null
+          },
+          {
+            "key": "rehab",
+            "name": "Świadczenie rehabilitacyjne",
+            "summary": "Po 270 dniach L4 — w ciąży 100%",
+            "institution": "ZUS",
+            "eligibility": "MAYBE",
+            "articleId": "okres-zasilkowy",
+            "wizardId": null,
+            "calculator": null
+          },
+          {
+            "key": "zwzm",
+            "name": "Zasiłek w wysokości zasiłku macierzyńskiego",
+            "summary": "Utrata pracy w ciąży — 100% do porodu",
+            "institution": "ZUS",
+            "eligibility": "MAYBE",
+            "articleId": "utrata-pracy",
+            "wizardId": null,
+            "calculator": null
+          },
+          {
+            "key": "mac",
+            "name": "Zasiłek macierzyński — urlop macierzyński",
+            "summary": "20–37 tygodni, 100%",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "urlop-mac",
+            "wizardId": null,
+            "calculator": "macierzynski"
+          },
+          {
+            "key": "rodz",
+            "name": "Zasiłek macierzyński — urlop rodzicielski",
+            "summary": "41/43 tyg., 70% lub 81,5%",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "rodzicielski",
+            "wizardId": "w-rodzicielski",
+            "calculator": "macierzynski"
+          },
+          {
+            "key": "wariant",
+            "name": "Decyzja: 81,5% czy 100% + 70%?",
+            "summary": "Masz 21 dni po porodzie",
+            "institution": "EMPLOYER",
+            "eligibility": "YES",
+            "articleId": "wysokosc-mac",
+            "wizardId": "w-81",
+            "calculator": "macierzynski"
+          },
+          {
+            "key": "ojcowski",
+            "name": "Urlop ojcowski",
+            "summary": "2 tygodnie, 100%",
+            "institution": "EMPLOYER",
+            "eligibility": "MAYBE",
+            "articleId": "ojcowski",
+            "wizardId": "w-ojcowski",
+            "calculator": null
+          },
+          {
+            "key": "ryzyka",
+            "name": "Ryzyka: kiedy można stracić albo obniżyć zasiłek",
+            "summary": "Sprawdź, zanim zmienisz pracę w ciąży",
+            "institution": "INFO",
+            "eligibility": "YES",
+            "articleId": "ryzyka",
+            "wizardId": null,
+            "calculator": null
+          },
+          {
+            "key": "ochrona",
+            "name": "Twoje prawa w pracy",
+            "summary": "Ochrona przed zwolnieniem i więcej",
+            "institution": "EMPLOYER",
+            "eligibility": "YES",
+            "articleId": "utrata-pracy",
+            "wizardId": null,
+            "calculator": null
+          }
+        ],
+        "weekCard": {
+          "period": "WEEK",
+          "articleId": "l4-ciaza",
+          "title": "Zwolnienie z kodem B = 100%",
+          "text": "Sama ciąża nie jest podstawą do L4, ale choroba w ciąży — tak. Zasiłek z kodem B wynosi 100% podstawy."
+        },
         "timeline": [
           {
             "key": "mac-przed",
@@ -1065,6 +1880,7 @@
         "childBirthDate": null,
         "children": 1,
         "preterm": null,
+        "zaZyciem": false,
         "work": [
           "SELF_EMPLOYMENT"
         ],
@@ -1077,6 +1893,136 @@
           "childAgeLabel": null
         },
         "alerts": [],
+        "plan": [
+          {
+            "kind": "BENEFIT",
+            "icon": "heart",
+            "title": "Teraz, w ciąży",
+            "text": "Zwolnienie z kodem B — 100% podstawy",
+            "articleId": "l4-ciaza",
+            "totalWeeks": null,
+            "segments": []
+          },
+          {
+            "kind": "LEAVES",
+            "icon": null,
+            "title": "Po porodzie: 61 tygodni zasiłku",
+            "text": "Urlopy idą <b>po kolei</b>: najpierw macierzyński, potem rodzicielski. Możesz też wybrać <b>81,5% przez cały czas</b> — wniosek do 21 dni po porodzie.",
+            "articleId": "wysokosc-mac",
+            "totalWeeks": 61,
+            "segments": [
+              {
+                "kind": "MATERNITY",
+                "label": "Macierzyński",
+                "weeks": 20,
+                "rate": 1
+              },
+              {
+                "kind": "PARENTAL",
+                "label": "Rodzicielski",
+                "weeks": 41,
+                "rate": 0.7
+              }
+            ]
+          },
+          {
+            "kind": "BENEFIT",
+            "icon": "users",
+            "title": "Dla taty",
+            "text": "Ojcowski 2 tyg. (100%) + 9 tyg. rodzicielskiego tylko dla niego",
+            "articleId": "ojcowski",
+            "totalWeeks": null,
+            "segments": []
+          }
+        ],
+        "benefits": [
+          {
+            "key": "l4-ciaza",
+            "name": "Zasiłek chorobowy w ciąży (L4 z kodem B)",
+            "summary": "L4 w ciąży — 100%",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "l4-ciaza",
+            "wizardId": null,
+            "calculator": null
+          },
+          {
+            "key": "mac-przed",
+            "name": "Urlop macierzyński przed porodem",
+            "summary": "Do 6 tygodni przed terminem",
+            "institution": "EMPLOYER",
+            "eligibility": "YES",
+            "articleId": "mac-przed-porodem",
+            "wizardId": null,
+            "calculator": null
+          },
+          {
+            "key": "rehab",
+            "name": "Świadczenie rehabilitacyjne",
+            "summary": "Po 270 dniach L4 — w ciąży 100%",
+            "institution": "ZUS",
+            "eligibility": "MAYBE",
+            "articleId": "okres-zasilkowy",
+            "wizardId": null,
+            "calculator": null
+          },
+          {
+            "key": "mac",
+            "name": "Zasiłek macierzyński — urlop macierzyński",
+            "summary": "20–37 tygodni, 100%",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "urlop-mac",
+            "wizardId": null,
+            "calculator": "macierzynski"
+          },
+          {
+            "key": "rodz",
+            "name": "Zasiłek macierzyński — urlop rodzicielski",
+            "summary": "41/43 tyg., 70% lub 81,5%",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "rodzicielski",
+            "wizardId": "w-rodzicielski",
+            "calculator": "macierzynski"
+          },
+          {
+            "key": "wariant",
+            "name": "Decyzja: 81,5% czy 100% + 70%?",
+            "summary": "Masz 21 dni po porodzie",
+            "institution": "EMPLOYER",
+            "eligibility": "YES",
+            "articleId": "wysokosc-mac",
+            "wizardId": "w-81",
+            "calculator": "macierzynski"
+          },
+          {
+            "key": "ojcowski",
+            "name": "Urlop ojcowski",
+            "summary": "2 tygodnie, 100%",
+            "institution": "EMPLOYER",
+            "eligibility": "MAYBE",
+            "articleId": "ojcowski",
+            "wizardId": "w-ojcowski",
+            "calculator": null
+          },
+          {
+            "key": "ryzyka",
+            "name": "Ryzyka: kiedy można stracić albo obniżyć zasiłek",
+            "summary": "Sprawdź, zanim zmienisz pracę w ciąży",
+            "institution": "INFO",
+            "eligibility": "YES",
+            "articleId": "ryzyka",
+            "wizardId": null,
+            "calculator": null
+          }
+        ],
+        "weekCard": {
+          "period": "WEEK",
+          "articleId": "utrata-pracy",
+          "title": "Jesteś pod ochroną",
+          "text": "W ciąży pracodawca co do zasady nie może Cię zwolnić. Umowa na czas określony kończąca się po 3. miesiącu ciąży przedłuża się do porodu."
+        },
         "timeline": [
           {
             "key": "mac-przed",
@@ -1140,6 +2086,7 @@
         "childBirthDate": null,
         "children": 1,
         "preterm": null,
+        "zaZyciem": false,
         "work": [
           "MANDATE_CONTRACT"
         ],
@@ -1152,6 +2099,136 @@
           "childAgeLabel": null
         },
         "alerts": [],
+        "plan": [
+          {
+            "kind": "BENEFIT",
+            "icon": "heart",
+            "title": "Teraz, w ciąży",
+            "text": "Zwolnienie z kodem B — 100% podstawy",
+            "articleId": "l4-ciaza",
+            "totalWeeks": null,
+            "segments": []
+          },
+          {
+            "kind": "LEAVES",
+            "icon": null,
+            "title": "Po porodzie: 61 tygodni zasiłku",
+            "text": "Urlopy idą <b>po kolei</b>: najpierw macierzyński, potem rodzicielski. Możesz też wybrać <b>81,5% przez cały czas</b> — wniosek do 21 dni po porodzie.",
+            "articleId": "wysokosc-mac",
+            "totalWeeks": 61,
+            "segments": [
+              {
+                "kind": "MATERNITY",
+                "label": "Macierzyński",
+                "weeks": 20,
+                "rate": 1
+              },
+              {
+                "kind": "PARENTAL",
+                "label": "Rodzicielski",
+                "weeks": 41,
+                "rate": 0.7
+              }
+            ]
+          },
+          {
+            "kind": "BENEFIT",
+            "icon": "users",
+            "title": "Dla taty",
+            "text": "Ojcowski 2 tyg. (100%) + 9 tyg. rodzicielskiego tylko dla niego",
+            "articleId": "ojcowski",
+            "totalWeeks": null,
+            "segments": []
+          }
+        ],
+        "benefits": [
+          {
+            "key": "l4-ciaza",
+            "name": "Zasiłek chorobowy w ciąży (L4 z kodem B)",
+            "summary": "L4 w ciąży — 100%",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "l4-ciaza",
+            "wizardId": null,
+            "calculator": null
+          },
+          {
+            "key": "mac-przed",
+            "name": "Urlop macierzyński przed porodem",
+            "summary": "Do 6 tygodni przed terminem",
+            "institution": "EMPLOYER",
+            "eligibility": "YES",
+            "articleId": "mac-przed-porodem",
+            "wizardId": null,
+            "calculator": null
+          },
+          {
+            "key": "rehab",
+            "name": "Świadczenie rehabilitacyjne",
+            "summary": "Po 270 dniach L4 — w ciąży 100%",
+            "institution": "ZUS",
+            "eligibility": "MAYBE",
+            "articleId": "okres-zasilkowy",
+            "wizardId": null,
+            "calculator": null
+          },
+          {
+            "key": "mac",
+            "name": "Zasiłek macierzyński — urlop macierzyński",
+            "summary": "20–37 tygodni, 100%",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "urlop-mac",
+            "wizardId": null,
+            "calculator": "macierzynski"
+          },
+          {
+            "key": "rodz",
+            "name": "Zasiłek macierzyński — urlop rodzicielski",
+            "summary": "41/43 tyg., 70% lub 81,5%",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "rodzicielski",
+            "wizardId": "w-rodzicielski",
+            "calculator": "macierzynski"
+          },
+          {
+            "key": "wariant",
+            "name": "Decyzja: 81,5% czy 100% + 70%?",
+            "summary": "Masz 21 dni po porodzie",
+            "institution": "EMPLOYER",
+            "eligibility": "YES",
+            "articleId": "wysokosc-mac",
+            "wizardId": "w-81",
+            "calculator": "macierzynski"
+          },
+          {
+            "key": "ojcowski",
+            "name": "Urlop ojcowski",
+            "summary": "2 tygodnie, 100%",
+            "institution": "EMPLOYER",
+            "eligibility": "MAYBE",
+            "articleId": "ojcowski",
+            "wizardId": "w-ojcowski",
+            "calculator": null
+          },
+          {
+            "key": "ryzyka",
+            "name": "Ryzyka: kiedy można stracić albo obniżyć zasiłek",
+            "summary": "Sprawdź, zanim zmienisz pracę w ciąży",
+            "institution": "INFO",
+            "eligibility": "YES",
+            "articleId": "ryzyka",
+            "wizardId": null,
+            "calculator": null
+          }
+        ],
+        "weekCard": {
+          "period": "WEEK",
+          "articleId": "wysokosc-mac",
+          "title": "81,5% czy 100% + 70%?",
+          "text": "Na decyzję masz 21 dni po porodzie. Sprawdź w kalkulatorze, który wariant pasuje do Twoich planów."
+        },
         "timeline": [
           {
             "key": "mac-przed",
@@ -1215,6 +2292,7 @@
         "childBirthDate": null,
         "children": 1,
         "preterm": null,
+        "zaZyciem": false,
         "work": [
           "NOT_WORKING"
         ],
@@ -1235,6 +2313,45 @@
             "href": "#/wiedza/a/wazne-mac"
           }
         ],
+        "plan": [
+          {
+            "kind": "NOTICE",
+            "icon": null,
+            "title": "Bez ubezpieczenia chorobowego nie ma zasiłków z ZUS",
+            "text": "Zobacz, jak się zgłosić →",
+            "articleId": "zleceniobiorcy",
+            "totalWeeks": null,
+            "segments": []
+          }
+        ],
+        "benefits": [
+          {
+            "key": "ojcowski",
+            "name": "Urlop ojcowski",
+            "summary": "2 tygodnie, 100%",
+            "institution": "EMPLOYER",
+            "eligibility": "MAYBE",
+            "articleId": "ojcowski",
+            "wizardId": "w-ojcowski",
+            "calculator": null
+          },
+          {
+            "key": "ryzyka",
+            "name": "Ryzyka: kiedy można stracić albo obniżyć zasiłek",
+            "summary": "Sprawdź, zanim zmienisz pracę w ciąży",
+            "institution": "INFO",
+            "eligibility": "YES",
+            "articleId": "ryzyka",
+            "wizardId": null,
+            "calculator": null
+          }
+        ],
+        "weekCard": {
+          "period": "WEEK",
+          "articleId": "utrata-pracy",
+          "title": "Jesteś pod ochroną",
+          "text": "W ciąży pracodawca co do zasady nie może Cię zwolnić. Umowa na czas określony kończąca się po 3. miesiącu ciąży przedłuża się do porodu."
+        },
         "timeline": [
           {
             "key": "chor-brak",
@@ -1266,6 +2383,7 @@
         "childBirthDate": null,
         "children": 1,
         "preterm": null,
+        "zaZyciem": false,
         "work": [
           "STARTUP_RELIEF"
         ],
@@ -1293,6 +2411,45 @@
             "href": "#/wiedza/a/jdg"
           }
         ],
+        "plan": [
+          {
+            "kind": "NOTICE",
+            "icon": null,
+            "title": "Bez ubezpieczenia chorobowego nie ma zasiłków z ZUS",
+            "text": "Zobacz, jak się zgłosić →",
+            "articleId": "zleceniobiorcy",
+            "totalWeeks": null,
+            "segments": []
+          }
+        ],
+        "benefits": [
+          {
+            "key": "ojcowski",
+            "name": "Urlop ojcowski",
+            "summary": "2 tygodnie, 100%",
+            "institution": "EMPLOYER",
+            "eligibility": "MAYBE",
+            "articleId": "ojcowski",
+            "wizardId": "w-ojcowski",
+            "calculator": null
+          },
+          {
+            "key": "ryzyka",
+            "name": "Ryzyka: kiedy można stracić albo obniżyć zasiłek",
+            "summary": "Sprawdź, zanim zmienisz pracę w ciąży",
+            "institution": "INFO",
+            "eligibility": "YES",
+            "articleId": "ryzyka",
+            "wizardId": null,
+            "calculator": null
+          }
+        ],
+        "weekCard": {
+          "period": "WEEK",
+          "articleId": "utrata-pracy",
+          "title": "Jesteś pod ochroną",
+          "text": "W ciąży pracodawca co do zasady nie może Cię zwolnić. Umowa na czas określony kończąca się po 3. miesiącu ciąży przedłuża się do porodu."
+        },
         "timeline": [
           {
             "key": "chor-brak",
@@ -1324,6 +2481,7 @@
         "childBirthDate": null,
         "children": 1,
         "preterm": null,
+        "zaZyciem": false,
         "work": [
           "FARMER"
         ],
@@ -1344,6 +2502,45 @@
             "href": "#/wiedza"
           }
         ],
+        "plan": [
+          {
+            "kind": "NOTICE",
+            "icon": null,
+            "title": "Bez ubezpieczenia chorobowego nie ma zasiłków z ZUS",
+            "text": "Zobacz, jak się zgłosić →",
+            "articleId": "zleceniobiorcy",
+            "totalWeeks": null,
+            "segments": []
+          }
+        ],
+        "benefits": [
+          {
+            "key": "ojcowski",
+            "name": "Urlop ojcowski",
+            "summary": "2 tygodnie, 100%",
+            "institution": "EMPLOYER",
+            "eligibility": "MAYBE",
+            "articleId": "ojcowski",
+            "wizardId": "w-ojcowski",
+            "calculator": null
+          },
+          {
+            "key": "ryzyka",
+            "name": "Ryzyka: kiedy można stracić albo obniżyć zasiłek",
+            "summary": "Sprawdź, zanim zmienisz pracę w ciąży",
+            "institution": "INFO",
+            "eligibility": "YES",
+            "articleId": "ryzyka",
+            "wizardId": null,
+            "calculator": null
+          }
+        ],
+        "weekCard": {
+          "period": "MONTH",
+          "articleId": "wysokosc-mac",
+          "title": "Pierwsze 21 dni",
+          "text": "Jeśli chcesz 81,5% przez cały okres, złóż wniosek o pełny wymiar urlopu do 21 dni po porodzie."
+        },
         "timeline": [
           {
             "key": "tata9",
@@ -1400,6 +2597,7 @@
         "childBirthDate": null,
         "children": 1,
         "preterm": null,
+        "zaZyciem": false,
         "work": [
           "MANDATE_CONTRACT_WITHOUT_SICKNESS"
         ],
@@ -1420,6 +2618,45 @@
             "href": "#/wiedza/a/wazne-mac"
           }
         ],
+        "plan": [
+          {
+            "kind": "NOTICE",
+            "icon": null,
+            "title": "Bez ubezpieczenia chorobowego nie ma zasiłków z ZUS",
+            "text": "Zobacz, jak się zgłosić →",
+            "articleId": "zleceniobiorcy",
+            "totalWeeks": null,
+            "segments": []
+          }
+        ],
+        "benefits": [
+          {
+            "key": "ojcowski",
+            "name": "Urlop ojcowski",
+            "summary": "2 tygodnie, 100%",
+            "institution": "EMPLOYER",
+            "eligibility": "MAYBE",
+            "articleId": "ojcowski",
+            "wizardId": "w-ojcowski",
+            "calculator": null
+          },
+          {
+            "key": "ryzyka",
+            "name": "Ryzyka: kiedy można stracić albo obniżyć zasiłek",
+            "summary": "Sprawdź, zanim zmienisz pracę w ciąży",
+            "institution": "INFO",
+            "eligibility": "YES",
+            "articleId": "ryzyka",
+            "wizardId": null,
+            "calculator": null
+          }
+        ],
+        "weekCard": {
+          "period": "MONTH",
+          "articleId": "wysokosc-mac",
+          "title": "Pierwsze 21 dni",
+          "text": "Jeśli chcesz 81,5% przez cały okres, złóż wniosek o pełny wymiar urlopu do 21 dni po porodzie."
+        },
         "timeline": [
           {
             "key": "tata9",
@@ -1476,6 +2713,7 @@
         "childBirthDate": null,
         "children": 1,
         "preterm": null,
+        "zaZyciem": false,
         "work": [
           "EMPLOYMENT"
         ],
@@ -1488,6 +2726,117 @@
           "childAgeLabel": null
         },
         "alerts": [],
+        "plan": [
+          {
+            "kind": "LEAVES",
+            "icon": null,
+            "title": "Po porodzie: 61 tygodni zasiłku",
+            "text": "Urlopy idą <b>po kolei</b>: najpierw macierzyński, potem rodzicielski. Możesz też wybrać <b>81,5% przez cały czas</b> — wniosek do 21 dni po porodzie.",
+            "articleId": "wysokosc-mac",
+            "totalWeeks": 61,
+            "segments": [
+              {
+                "kind": "MATERNITY",
+                "label": "Macierzyński",
+                "weeks": 20,
+                "rate": 1
+              },
+              {
+                "kind": "PARENTAL",
+                "label": "Rodzicielski",
+                "weeks": 41,
+                "rate": 0.7
+              }
+            ]
+          },
+          {
+            "kind": "BENEFIT",
+            "icon": "users",
+            "title": "Dla Ciebie",
+            "text": "Ojcowski 2 tyg. (100%) + 9 tyg. rodzicielskiego tylko dla niego",
+            "articleId": "ojcowski",
+            "totalWeeks": null,
+            "segments": []
+          }
+        ],
+        "benefits": [
+          {
+            "key": "rehab",
+            "name": "Świadczenie rehabilitacyjne",
+            "summary": "Po 270 dniach L4 — w ciąży 100%",
+            "institution": "ZUS",
+            "eligibility": "MAYBE",
+            "articleId": "okres-zasilkowy",
+            "wizardId": null,
+            "calculator": null
+          },
+          {
+            "key": "zwzm",
+            "name": "Zasiłek w wysokości zasiłku macierzyńskiego",
+            "summary": "Utrata pracy w ciąży — 100% do porodu",
+            "institution": "ZUS",
+            "eligibility": "MAYBE",
+            "articleId": "utrata-pracy",
+            "wizardId": null,
+            "calculator": null
+          },
+          {
+            "key": "mac",
+            "name": "Zasiłek macierzyński — urlop macierzyński",
+            "summary": "20–37 tygodni, 100%",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "urlop-mac",
+            "wizardId": null,
+            "calculator": "macierzynski"
+          },
+          {
+            "key": "rodz",
+            "name": "Zasiłek macierzyński — urlop rodzicielski",
+            "summary": "41/43 tyg., 70% lub 81,5%",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "rodzicielski",
+            "wizardId": "w-rodzicielski",
+            "calculator": "macierzynski"
+          },
+          {
+            "key": "ojcowski",
+            "name": "Urlop ojcowski",
+            "summary": "2 tygodnie, 100%",
+            "institution": "EMPLOYER",
+            "eligibility": "YES",
+            "articleId": "ojcowski",
+            "wizardId": "w-ojcowski",
+            "calculator": null
+          },
+          {
+            "key": "ryzyka",
+            "name": "Ryzyka: kiedy można stracić albo obniżyć zasiłek",
+            "summary": "Sprawdź, zanim zmienisz pracę w ciąży",
+            "institution": "INFO",
+            "eligibility": "YES",
+            "articleId": "ryzyka",
+            "wizardId": null,
+            "calculator": null
+          },
+          {
+            "key": "ochrona",
+            "name": "Twoje prawa w pracy",
+            "summary": "Ochrona przed zwolnieniem i więcej",
+            "institution": "EMPLOYER",
+            "eligibility": "YES",
+            "articleId": "utrata-pracy",
+            "wizardId": null,
+            "calculator": null
+          }
+        ],
+        "weekCard": {
+          "period": "WEEK",
+          "articleId": "utrata-pracy",
+          "title": "Jesteś pod ochroną",
+          "text": "W ciąży pracodawca co do zasady nie może Cię zwolnić. Umowa na czas określony kończąca się po 3. miesiącu ciąży przedłuża się do porodu."
+        },
         "timeline": []
       }
     },
@@ -1500,6 +2849,7 @@
         "childBirthDate": null,
         "children": 2,
         "preterm": null,
+        "zaZyciem": false,
         "work": [
           "EMPLOYMENT"
         ],
@@ -1512,6 +2862,116 @@
           "childAgeLabel": "5 tyg. 5 dni"
         },
         "alerts": [],
+        "plan": [
+          {
+            "kind": "LEAVES",
+            "icon": null,
+            "title": "Zasiłek macierzyński: 74 tygodni zasiłku",
+            "text": "Urlopy idą <b>po kolei</b>: najpierw macierzyński, potem rodzicielski. Możesz też wybrać <b>81,5% przez cały czas</b> — wniosek do 21 dni po porodzie.",
+            "articleId": "wysokosc-mac",
+            "totalWeeks": 74,
+            "segments": [
+              {
+                "kind": "MATERNITY",
+                "label": "Macierzyński",
+                "weeks": 31,
+                "rate": 1
+              },
+              {
+                "kind": "PARENTAL",
+                "label": "Rodzicielski",
+                "weeks": 43,
+                "rate": 0.7
+              }
+            ]
+          },
+          {
+            "kind": "BENEFIT",
+            "icon": "users",
+            "title": "Dla taty",
+            "text": "Ojcowski 2 tyg. (100%) + 9 tyg. rodzicielskiego tylko dla niego",
+            "articleId": "ojcowski",
+            "totalWeeks": null,
+            "segments": []
+          },
+          {
+            "kind": "BENEFIT",
+            "icon": "hospital",
+            "title": "Gdy dziecko zachoruje",
+            "text": "Zasiłek opiekuńczy 80%, do 60 dni w roku",
+            "articleId": "opiekunczy",
+            "totalWeeks": null,
+            "segments": []
+          }
+        ],
+        "benefits": [
+          {
+            "key": "mac",
+            "name": "Zasiłek macierzyński — urlop macierzyński",
+            "summary": "20–37 tygodni, 100%",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "urlop-mac",
+            "wizardId": null,
+            "calculator": "macierzynski"
+          },
+          {
+            "key": "rodz",
+            "name": "Zasiłek macierzyński — urlop rodzicielski",
+            "summary": "41/43 tyg., 70% lub 81,5%",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "rodzicielski",
+            "wizardId": "w-rodzicielski",
+            "calculator": "macierzynski"
+          },
+          {
+            "key": "ojcowski",
+            "name": "Urlop ojcowski",
+            "summary": "2 tygodnie, 100%",
+            "institution": "EMPLOYER",
+            "eligibility": "MAYBE",
+            "articleId": "ojcowski",
+            "wizardId": "w-ojcowski",
+            "calculator": null
+          },
+          {
+            "key": "opiekunczy",
+            "name": "Zasiłek opiekuńczy",
+            "summary": "80%, do 60 dni w roku",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "opiekunczy",
+            "wizardId": "w-opiekunczy",
+            "calculator": null
+          },
+          {
+            "key": "ryzyka",
+            "name": "Ryzyka: kiedy można stracić albo obniżyć zasiłek",
+            "summary": "Sprawdź, zanim zmienisz pracę w ciąży",
+            "institution": "INFO",
+            "eligibility": "YES",
+            "articleId": "ryzyka",
+            "wizardId": null,
+            "calculator": null
+          },
+          {
+            "key": "ochrona",
+            "name": "Twoje prawa w pracy",
+            "summary": "Ochrona przed zwolnieniem i więcej",
+            "institution": "EMPLOYER",
+            "eligibility": "YES",
+            "articleId": "utrata-pracy",
+            "wizardId": null,
+            "calculator": null
+          }
+        ],
+        "weekCard": {
+          "period": "MONTH",
+          "articleId": "urlop-mac",
+          "title": "Tata może przejąć część urlopu",
+          "text": "Po 14 tygodniach mama może zrezygnować z dalszej części macierzyńskiego na rzecz taty."
+        },
         "timeline": [
           {
             "key": "w81",
@@ -1708,6 +3168,7 @@
         "childBirthDate": null,
         "children": 3,
         "preterm": null,
+        "zaZyciem": false,
         "work": [
           "EMPLOYMENT"
         ],
@@ -1720,6 +3181,116 @@
           "childAgeLabel": "0 tyg. 0 dni"
         },
         "alerts": [],
+        "plan": [
+          {
+            "kind": "LEAVES",
+            "icon": null,
+            "title": "Zasiłek macierzyński: 76 tygodni zasiłku",
+            "text": "Urlopy idą <b>po kolei</b>: najpierw macierzyński, potem rodzicielski. Możesz też wybrać <b>81,5% przez cały czas</b> — wniosek do 21 dni po porodzie.",
+            "articleId": "wysokosc-mac",
+            "totalWeeks": 76,
+            "segments": [
+              {
+                "kind": "MATERNITY",
+                "label": "Macierzyński",
+                "weeks": 33,
+                "rate": 1
+              },
+              {
+                "kind": "PARENTAL",
+                "label": "Rodzicielski",
+                "weeks": 43,
+                "rate": 0.7
+              }
+            ]
+          },
+          {
+            "kind": "BENEFIT",
+            "icon": "users",
+            "title": "Dla taty",
+            "text": "Ojcowski 2 tyg. (100%) + 9 tyg. rodzicielskiego tylko dla niego",
+            "articleId": "ojcowski",
+            "totalWeeks": null,
+            "segments": []
+          },
+          {
+            "kind": "BENEFIT",
+            "icon": "hospital",
+            "title": "Gdy dziecko zachoruje",
+            "text": "Zasiłek opiekuńczy 80%, do 60 dni w roku",
+            "articleId": "opiekunczy",
+            "totalWeeks": null,
+            "segments": []
+          }
+        ],
+        "benefits": [
+          {
+            "key": "mac",
+            "name": "Zasiłek macierzyński — urlop macierzyński",
+            "summary": "20–37 tygodni, 100%",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "urlop-mac",
+            "wizardId": null,
+            "calculator": "macierzynski"
+          },
+          {
+            "key": "rodz",
+            "name": "Zasiłek macierzyński — urlop rodzicielski",
+            "summary": "41/43 tyg., 70% lub 81,5%",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "rodzicielski",
+            "wizardId": "w-rodzicielski",
+            "calculator": "macierzynski"
+          },
+          {
+            "key": "wariant",
+            "name": "Decyzja: 81,5% czy 100% + 70%?",
+            "summary": "Masz 21 dni po porodzie",
+            "institution": "EMPLOYER",
+            "eligibility": "YES",
+            "articleId": "wysokosc-mac",
+            "wizardId": "w-81",
+            "calculator": "macierzynski"
+          },
+          {
+            "key": "opiekunczy",
+            "name": "Zasiłek opiekuńczy",
+            "summary": "80%, do 60 dni w roku",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "opiekunczy",
+            "wizardId": "w-opiekunczy",
+            "calculator": null
+          },
+          {
+            "key": "ryzyka",
+            "name": "Ryzyka: kiedy można stracić albo obniżyć zasiłek",
+            "summary": "Sprawdź, zanim zmienisz pracę w ciąży",
+            "institution": "INFO",
+            "eligibility": "YES",
+            "articleId": "ryzyka",
+            "wizardId": null,
+            "calculator": null
+          },
+          {
+            "key": "ochrona",
+            "name": "Twoje prawa w pracy",
+            "summary": "Ochrona przed zwolnieniem i więcej",
+            "institution": "EMPLOYER",
+            "eligibility": "YES",
+            "articleId": "utrata-pracy",
+            "wizardId": null,
+            "calculator": null
+          }
+        ],
+        "weekCard": {
+          "period": "MONTH",
+          "articleId": "wysokosc-mac",
+          "title": "Pierwsze 21 dni",
+          "text": "Jeśli chcesz 81,5% przez cały okres, złóż wniosek o pełny wymiar urlopu do 21 dni po porodzie."
+        },
         "timeline": [
           {
             "key": "w81",
@@ -1873,6 +3444,7 @@
         "childBirthDate": null,
         "children": 1,
         "preterm": null,
+        "zaZyciem": false,
         "work": [
           "SELF_EMPLOYMENT"
         ],
@@ -1885,6 +3457,96 @@
           "childAgeLabel": "12 mies."
         },
         "alerts": [],
+        "plan": [
+          {
+            "kind": "LEAVES",
+            "icon": null,
+            "title": "Zasiłek macierzyński: 61 tygodni zasiłku",
+            "text": "Urlopy idą <b>po kolei</b>: najpierw macierzyński, potem rodzicielski. Możesz też wybrać <b>81,5% przez cały czas</b> — wniosek do 21 dni po porodzie.",
+            "articleId": "wysokosc-mac",
+            "totalWeeks": 61,
+            "segments": [
+              {
+                "kind": "MATERNITY",
+                "label": "Macierzyński",
+                "weeks": 20,
+                "rate": 1
+              },
+              {
+                "kind": "PARENTAL",
+                "label": "Rodzicielski",
+                "weeks": 41,
+                "rate": 0.7
+              }
+            ]
+          },
+          {
+            "kind": "BENEFIT",
+            "icon": "users",
+            "title": "Dla taty",
+            "text": "Ojcowski 2 tyg. (100%) + 9 tyg. rodzicielskiego tylko dla niego",
+            "articleId": "ojcowski",
+            "totalWeeks": null,
+            "segments": []
+          },
+          {
+            "kind": "BENEFIT",
+            "icon": "hospital",
+            "title": "Gdy dziecko zachoruje",
+            "text": "Zasiłek opiekuńczy 80%, do 60 dni w roku",
+            "articleId": "opiekunczy",
+            "totalWeeks": null,
+            "segments": []
+          }
+        ],
+        "benefits": [
+          {
+            "key": "mac",
+            "name": "Zasiłek macierzyński — urlop macierzyński",
+            "summary": "20–37 tygodni, 100%",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "urlop-mac",
+            "wizardId": null,
+            "calculator": "macierzynski"
+          },
+          {
+            "key": "rodz",
+            "name": "Zasiłek macierzyński — urlop rodzicielski",
+            "summary": "41/43 tyg., 70% lub 81,5%",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "rodzicielski",
+            "wizardId": "w-rodzicielski",
+            "calculator": "macierzynski"
+          },
+          {
+            "key": "opiekunczy",
+            "name": "Zasiłek opiekuńczy",
+            "summary": "80%, do 60 dni w roku",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "opiekunczy",
+            "wizardId": "w-opiekunczy",
+            "calculator": null
+          },
+          {
+            "key": "ryzyka",
+            "name": "Ryzyka: kiedy można stracić albo obniżyć zasiłek",
+            "summary": "Sprawdź, zanim zmienisz pracę w ciąży",
+            "institution": "INFO",
+            "eligibility": "YES",
+            "articleId": "ryzyka",
+            "wizardId": null,
+            "calculator": null
+          }
+        ],
+        "weekCard": {
+          "period": "MONTH",
+          "articleId": "opiekunczy",
+          "title": "Gdy maluch zachoruje",
+          "text": "Zasiłek opiekuńczy: 80% podstawy, do 60 dni w roku. Wniosek Z-15A."
+        },
         "timeline": [
           {
             "key": "w81",
@@ -2074,6 +3736,7 @@
         "childBirthDate": null,
         "children": 1,
         "preterm": null,
+        "zaZyciem": false,
         "work": [
           "EMPLOYMENT",
           "SELF_EMPLOYMENT"
@@ -2087,6 +3750,126 @@
           "childAgeLabel": "2 tyg. 5 dni"
         },
         "alerts": [],
+        "plan": [
+          {
+            "kind": "LEAVES",
+            "icon": null,
+            "title": "Zasiłek macierzyński: 61 tygodni zasiłku",
+            "text": "Urlopy idą <b>po kolei</b>: najpierw macierzyński, potem rodzicielski. Możesz też wybrać <b>81,5% przez cały czas</b> — wniosek do 21 dni po porodzie.",
+            "articleId": "wysokosc-mac",
+            "totalWeeks": 61,
+            "segments": [
+              {
+                "kind": "MATERNITY",
+                "label": "Macierzyński",
+                "weeks": 20,
+                "rate": 1
+              },
+              {
+                "kind": "PARENTAL",
+                "label": "Rodzicielski",
+                "weeks": 41,
+                "rate": 0.7
+              }
+            ]
+          },
+          {
+            "kind": "BENEFIT",
+            "icon": "users",
+            "title": "Dla taty",
+            "text": "Ojcowski 2 tyg. (100%) + 9 tyg. rodzicielskiego tylko dla niego",
+            "articleId": "ojcowski",
+            "totalWeeks": null,
+            "segments": []
+          },
+          {
+            "kind": "BENEFIT",
+            "icon": "hospital",
+            "title": "Gdy dziecko zachoruje",
+            "text": "Zasiłek opiekuńczy 80%, do 60 dni w roku",
+            "articleId": "opiekunczy",
+            "totalWeeks": null,
+            "segments": []
+          }
+        ],
+        "benefits": [
+          {
+            "key": "mac",
+            "name": "Zasiłek macierzyński — urlop macierzyński",
+            "summary": "20–37 tygodni, 100%",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "urlop-mac",
+            "wizardId": null,
+            "calculator": "macierzynski"
+          },
+          {
+            "key": "rodz",
+            "name": "Zasiłek macierzyński — urlop rodzicielski",
+            "summary": "41/43 tyg., 70% lub 81,5%",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "rodzicielski",
+            "wizardId": "w-rodzicielski",
+            "calculator": "macierzynski"
+          },
+          {
+            "key": "wariant",
+            "name": "Decyzja: 81,5% czy 100% + 70%?",
+            "summary": "Masz 21 dni po porodzie",
+            "institution": "EMPLOYER",
+            "eligibility": "YES",
+            "articleId": "wysokosc-mac",
+            "wizardId": "w-81",
+            "calculator": "macierzynski"
+          },
+          {
+            "key": "ojcowski",
+            "name": "Urlop ojcowski",
+            "summary": "2 tygodnie, 100%",
+            "institution": "EMPLOYER",
+            "eligibility": "MAYBE",
+            "articleId": "ojcowski",
+            "wizardId": "w-ojcowski",
+            "calculator": null
+          },
+          {
+            "key": "opiekunczy",
+            "name": "Zasiłek opiekuńczy",
+            "summary": "80%, do 60 dni w roku",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "opiekunczy",
+            "wizardId": "w-opiekunczy",
+            "calculator": null
+          },
+          {
+            "key": "ryzyka",
+            "name": "Ryzyka: kiedy można stracić albo obniżyć zasiłek",
+            "summary": "Sprawdź, zanim zmienisz pracę w ciąży",
+            "institution": "INFO",
+            "eligibility": "YES",
+            "articleId": "ryzyka",
+            "wizardId": null,
+            "calculator": null
+          },
+          {
+            "key": "ochrona",
+            "name": "Twoje prawa w pracy",
+            "summary": "Ochrona przed zwolnieniem i więcej",
+            "institution": "EMPLOYER",
+            "eligibility": "YES",
+            "articleId": "utrata-pracy",
+            "wizardId": null,
+            "calculator": null
+          }
+        ],
+        "weekCard": {
+          "period": "MONTH",
+          "articleId": "wysokosc-mac",
+          "title": "Pierwsze 21 dni",
+          "text": "Jeśli chcesz 81,5% przez cały okres, złóż wniosek o pełny wymiar urlopu do 21 dni po porodzie."
+        },
         "timeline": [
           {
             "key": "w81",
@@ -2301,6 +4084,7 @@
         "childBirthDate": null,
         "children": 1,
         "preterm": null,
+        "zaZyciem": false,
         "work": [
           "EMPLOYMENT"
         ],
@@ -2313,6 +4097,96 @@
           "childAgeLabel": "3 lata"
         },
         "alerts": [],
+        "plan": [
+          {
+            "kind": "LEAVES",
+            "icon": null,
+            "title": "Zasiłek macierzyński: 61 tygodni zasiłku",
+            "text": "Urlopy idą <b>po kolei</b>: najpierw macierzyński, potem rodzicielski. Możesz też wybrać <b>81,5% przez cały czas</b> — wniosek do 21 dni po porodzie.",
+            "articleId": "wysokosc-mac",
+            "totalWeeks": 61,
+            "segments": [
+              {
+                "kind": "MATERNITY",
+                "label": "Macierzyński",
+                "weeks": 20,
+                "rate": 1
+              },
+              {
+                "kind": "PARENTAL",
+                "label": "Rodzicielski",
+                "weeks": 41,
+                "rate": 0.7
+              }
+            ]
+          },
+          {
+            "kind": "BENEFIT",
+            "icon": "users",
+            "title": "Dla taty",
+            "text": "Ojcowski 2 tyg. (100%) + 9 tyg. rodzicielskiego tylko dla niego",
+            "articleId": "ojcowski",
+            "totalWeeks": null,
+            "segments": []
+          },
+          {
+            "kind": "BENEFIT",
+            "icon": "hospital",
+            "title": "Gdy dziecko zachoruje",
+            "text": "Zasiłek opiekuńczy 80%, do 60 dni w roku",
+            "articleId": "opiekunczy",
+            "totalWeeks": null,
+            "segments": []
+          }
+        ],
+        "benefits": [
+          {
+            "key": "rodz",
+            "name": "Zasiłek macierzyński — urlop rodzicielski",
+            "summary": "41/43 tyg., 70% lub 81,5%",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "rodzicielski",
+            "wizardId": "w-rodzicielski",
+            "calculator": "macierzynski"
+          },
+          {
+            "key": "opiekunczy",
+            "name": "Zasiłek opiekuńczy",
+            "summary": "80%, do 60 dni w roku",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "opiekunczy",
+            "wizardId": "w-opiekunczy",
+            "calculator": null
+          },
+          {
+            "key": "ryzyka",
+            "name": "Ryzyka: kiedy można stracić albo obniżyć zasiłek",
+            "summary": "Sprawdź, zanim zmienisz pracę w ciąży",
+            "institution": "INFO",
+            "eligibility": "YES",
+            "articleId": "ryzyka",
+            "wizardId": null,
+            "calculator": null
+          },
+          {
+            "key": "ochrona",
+            "name": "Twoje prawa w pracy",
+            "summary": "Ochrona przed zwolnieniem i więcej",
+            "institution": "EMPLOYER",
+            "eligibility": "YES",
+            "articleId": "utrata-pracy",
+            "wizardId": null,
+            "calculator": null
+          }
+        ],
+        "weekCard": {
+          "period": "MONTH",
+          "articleId": "opiekunczy",
+          "title": "Gdy maluch zachoruje",
+          "text": "Zasiłek opiekuńczy: 80% podstawy, do 60 dni w roku. Wniosek Z-15A."
+        },
         "timeline": [
           {
             "key": "w81",
@@ -2509,6 +4383,7 @@
         "childBirthDate": "2025-10-18",
         "children": 1,
         "preterm": null,
+        "zaZyciem": false,
         "work": [
           "NOT_WORKING"
         ],
@@ -2529,6 +4404,35 @@
             "href": "#/wiedza/a/wazne-mac"
           }
         ],
+        "plan": [
+          {
+            "kind": "NOTICE",
+            "icon": null,
+            "title": "Bez ubezpieczenia chorobowego nie ma zasiłków z ZUS",
+            "text": "Zobacz, jak się zgłosić →",
+            "articleId": "zleceniobiorcy",
+            "totalWeeks": null,
+            "segments": []
+          }
+        ],
+        "benefits": [
+          {
+            "key": "ryzyka",
+            "name": "Ryzyka: kiedy można stracić albo obniżyć zasiłek",
+            "summary": "Sprawdź, zanim zmienisz pracę w ciąży",
+            "institution": "INFO",
+            "eligibility": "YES",
+            "articleId": "ryzyka",
+            "wizardId": null,
+            "calculator": null
+          }
+        ],
+        "weekCard": {
+          "period": "MONTH",
+          "articleId": "opiekunczy",
+          "title": "Gdy maluch zachoruje",
+          "text": "Zasiłek opiekuńczy: 80% podstawy, do 60 dni w roku. Wniosek Z-15A."
+        },
         "timeline": [
           {
             "key": "adop",
@@ -2585,6 +4489,7 @@
         "childBirthDate": null,
         "children": 1,
         "preterm": null,
+        "zaZyciem": false,
         "work": [
           "NOT_WORKING"
         ],
@@ -2605,6 +4510,35 @@
             "href": "#/wiedza/a/wazne-mac"
           }
         ],
+        "plan": [
+          {
+            "kind": "NOTICE",
+            "icon": null,
+            "title": "Bez ubezpieczenia chorobowego nie ma zasiłków z ZUS",
+            "text": "Zobacz, jak się zgłosić →",
+            "articleId": "zleceniobiorcy",
+            "totalWeeks": null,
+            "segments": []
+          }
+        ],
+        "benefits": [
+          {
+            "key": "ryzyka",
+            "name": "Ryzyka: kiedy można stracić albo obniżyć zasiłek",
+            "summary": "Sprawdź, zanim zmienisz pracę w ciąży",
+            "institution": "INFO",
+            "eligibility": "YES",
+            "articleId": "ryzyka",
+            "wizardId": null,
+            "calculator": null
+          }
+        ],
+        "weekCard": {
+          "period": "MONTH",
+          "articleId": "urlop-mac",
+          "title": "Tata może przejąć część urlopu",
+          "text": "Po 14 tygodniach mama może zrezygnować z dalszej części macierzyńskiego na rzecz taty."
+        },
         "timeline": [
           {
             "key": "tata9",
@@ -2665,6 +4599,7 @@
           "birthWeightGrams": 1900,
           "hospitalDays": 12
         },
+        "zaZyciem": false,
         "work": [
           "MANDATE_CONTRACT"
         ],
@@ -2677,6 +4612,132 @@
           "childAgeLabel": "1 tyg. 3 dni"
         },
         "alerts": [],
+        "plan": [
+          {
+            "kind": "LEAVES",
+            "icon": null,
+            "title": "Zasiłek macierzyński: 63 tygodni zasiłku",
+            "text": "Urlopy idą <b>po kolei</b>: najpierw macierzyński, potem rodzicielski. Możesz też wybrać <b>81,5% przez cały czas</b> — wniosek do 21 dni po porodzie.",
+            "articleId": "wysokosc-mac",
+            "totalWeeks": 63,
+            "segments": [
+              {
+                "kind": "MATERNITY",
+                "label": "Macierzyński",
+                "weeks": 20,
+                "rate": 1
+              },
+              {
+                "kind": "SUPPLEMENTARY",
+                "label": "Uzupełniający",
+                "weeks": 2,
+                "rate": 1
+              },
+              {
+                "kind": "PARENTAL",
+                "label": "Rodzicielski",
+                "weeks": 41,
+                "rate": 0.7
+              }
+            ]
+          },
+          {
+            "kind": "BENEFIT",
+            "icon": "users",
+            "title": "Dla taty",
+            "text": "Ojcowski 2 tyg. (100%) + 9 tyg. rodzicielskiego tylko dla niego",
+            "articleId": "ojcowski",
+            "totalWeeks": null,
+            "segments": []
+          },
+          {
+            "kind": "BENEFIT",
+            "icon": "hospital",
+            "title": "Gdy dziecko zachoruje",
+            "text": "Zasiłek opiekuńczy 80%, do 60 dni w roku",
+            "articleId": "opiekunczy",
+            "totalWeeks": null,
+            "segments": []
+          }
+        ],
+        "benefits": [
+          {
+            "key": "mac",
+            "name": "Zasiłek macierzyński — urlop macierzyński",
+            "summary": "20–37 tygodni, 100%",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "urlop-mac",
+            "wizardId": null,
+            "calculator": "macierzynski"
+          },
+          {
+            "key": "rodz",
+            "name": "Zasiłek macierzyński — urlop rodzicielski",
+            "summary": "41/43 tyg., 70% lub 81,5%",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "rodzicielski",
+            "wizardId": "w-rodzicielski",
+            "calculator": "macierzynski"
+          },
+          {
+            "key": "wariant",
+            "name": "Decyzja: 81,5% czy 100% + 70%?",
+            "summary": "Masz 21 dni po porodzie",
+            "institution": "EMPLOYER",
+            "eligibility": "YES",
+            "articleId": "wysokosc-mac",
+            "wizardId": "w-81",
+            "calculator": "macierzynski"
+          },
+          {
+            "key": "uzup",
+            "name": "Uzupełniający urlop macierzyński (wcześniaki i hospitalizacja)",
+            "summary": "Do 8 lub 15 tyg., 100%",
+            "institution": "EMPLOYER",
+            "eligibility": "YES",
+            "articleId": "uzupelniajacy",
+            "wizardId": "w-uzupelniajacy",
+            "calculator": "uzupelniajacy"
+          },
+          {
+            "key": "ojcowski",
+            "name": "Urlop ojcowski",
+            "summary": "2 tygodnie, 100%",
+            "institution": "EMPLOYER",
+            "eligibility": "MAYBE",
+            "articleId": "ojcowski",
+            "wizardId": "w-ojcowski",
+            "calculator": null
+          },
+          {
+            "key": "opiekunczy",
+            "name": "Zasiłek opiekuńczy",
+            "summary": "80%, do 60 dni w roku",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "opiekunczy",
+            "wizardId": "w-opiekunczy",
+            "calculator": null
+          },
+          {
+            "key": "ryzyka",
+            "name": "Ryzyka: kiedy można stracić albo obniżyć zasiłek",
+            "summary": "Sprawdź, zanim zmienisz pracę w ciąży",
+            "institution": "INFO",
+            "eligibility": "YES",
+            "articleId": "ryzyka",
+            "wizardId": null,
+            "calculator": null
+          }
+        ],
+        "weekCard": {
+          "period": "MONTH",
+          "articleId": "wysokosc-mac",
+          "title": "Pierwsze 21 dni",
+          "text": "Jeśli chcesz 81,5% przez cały okres, złóż wniosek o pełny wymiar urlopu do 21 dni po porodzie."
+        },
         "timeline": [
           {
             "key": "w81",
@@ -2860,6 +4921,1304 @@
             "due": "2040-11-12",
             "daysLeft": 5104,
             "status": "FUTURE"
+          }
+        ]
+      }
+    },
+    {
+      "name": "\"Za zyciem\" twins, father",
+      "input": {
+        "role": "FATHER",
+        "stage": "CHILD",
+        "date": "2026-08-14",
+        "childBirthDate": null,
+        "children": 2,
+        "preterm": null,
+        "zaZyciem": true,
+        "work": [
+          "EMPLOYMENT"
+        ],
+        "partner": "SHOW_PARTNER"
+      },
+      "expected": {
+        "stage": {
+          "pregnancyWeek": null,
+          "childAgeMonths": 3,
+          "childAgeLabel": "3 mies."
+        },
+        "alerts": [],
+        "plan": [
+          {
+            "kind": "LEAVES",
+            "icon": null,
+            "title": "Zasiłek macierzyński: 98 tygodni zasiłku",
+            "text": "Urlopy idą <b>po kolei</b>: najpierw macierzyński, potem rodzicielski. Możesz też wybrać <b>81,5% przez cały czas</b> — wniosek do 21 dni po porodzie.",
+            "articleId": "wysokosc-mac",
+            "totalWeeks": 98,
+            "segments": [
+              {
+                "kind": "MATERNITY",
+                "label": "Macierzyński",
+                "weeks": 31,
+                "rate": 1
+              },
+              {
+                "kind": "PARENTAL",
+                "label": "Rodzicielski",
+                "weeks": 67,
+                "rate": 0.7
+              }
+            ]
+          },
+          {
+            "kind": "BENEFIT",
+            "icon": "users",
+            "title": "Dla Ciebie",
+            "text": "Ojcowski 2 tyg. (100%) + 9 tyg. rodzicielskiego tylko dla niego",
+            "articleId": "ojcowski",
+            "totalWeeks": null,
+            "segments": []
+          },
+          {
+            "kind": "BENEFIT",
+            "icon": "hospital",
+            "title": "Gdy dziecko zachoruje",
+            "text": "Zasiłek opiekuńczy 80%, do 60 dni w roku",
+            "articleId": "opiekunczy",
+            "totalWeeks": null,
+            "segments": []
+          }
+        ],
+        "benefits": [
+          {
+            "key": "mac",
+            "name": "Zasiłek macierzyński — urlop macierzyński",
+            "summary": "20–37 tygodni, 100%",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "urlop-mac",
+            "wizardId": null,
+            "calculator": "macierzynski"
+          },
+          {
+            "key": "rodz",
+            "name": "Zasiłek macierzyński — urlop rodzicielski",
+            "summary": "41/43 tyg., 70% lub 81,5%",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "rodzicielski",
+            "wizardId": "w-rodzicielski",
+            "calculator": "macierzynski"
+          },
+          {
+            "key": "ojcowski",
+            "name": "Urlop ojcowski",
+            "summary": "2 tygodnie, 100%",
+            "institution": "EMPLOYER",
+            "eligibility": "YES",
+            "articleId": "ojcowski",
+            "wizardId": "w-ojcowski",
+            "calculator": null
+          },
+          {
+            "key": "zazyciem",
+            "name": "Wydłużony rodzicielski „Za życiem”",
+            "summary": "65/67 tygodni",
+            "institution": "EMPLOYER",
+            "eligibility": "YES",
+            "articleId": "za-zyciem",
+            "wizardId": null,
+            "calculator": null
+          },
+          {
+            "key": "opiekunczy",
+            "name": "Zasiłek opiekuńczy",
+            "summary": "80%, do 60 dni w roku",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "opiekunczy",
+            "wizardId": "w-opiekunczy",
+            "calculator": null
+          },
+          {
+            "key": "ryzyka",
+            "name": "Ryzyka: kiedy można stracić albo obniżyć zasiłek",
+            "summary": "Sprawdź, zanim zmienisz pracę w ciąży",
+            "institution": "INFO",
+            "eligibility": "YES",
+            "articleId": "ryzyka",
+            "wizardId": null,
+            "calculator": null
+          },
+          {
+            "key": "ochrona",
+            "name": "Twoje prawa w pracy",
+            "summary": "Ochrona przed zwolnieniem i więcej",
+            "institution": "EMPLOYER",
+            "eligibility": "YES",
+            "articleId": "utrata-pracy",
+            "wizardId": null,
+            "calculator": null
+          }
+        ],
+        "weekCard": {
+          "period": "MONTH",
+          "articleId": "urlop-mac",
+          "title": "Tata może przejąć część urlopu",
+          "text": "Po 14 tygodniach mama może zrezygnować z dalszej części macierzyńskiego na rzecz taty."
+        },
+        "timeline": [
+          {
+            "key": "przedawn",
+            "title": "Wniosek o zasiłek — najpóźniej 6 miesięcy",
+            "description": "Roszczenie o zasiłek przedawnia się po 6 miesiącach od ostatniego dnia okresu, za który przysługuje.",
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2027-02-14",
+            "deadline": null,
+            "articleId": "przedawnienie",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2027-02-14",
+            "daysLeft": 84,
+            "status": "FUTURE"
+          },
+          {
+            "key": "tata9",
+            "title": "Twoje 9 tygodni rodzicielskiego (70%)",
+            "description": "Nieprzenoszalne — przepadną, jeśli nie zostaną wykorzystane. Do końca roku, w którym dziecko kończy 6 lat.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2027-04-16",
+            "deadline": null,
+            "articleId": "rodzicielski",
+            "wizardId": "w-rodzicielski",
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2027-04-16",
+            "daysLeft": 145,
+            "status": "FUTURE"
+          },
+          {
+            "key": "ojcowski",
+            "title": "Twój urlop ojcowski — do 1. urodzin dziecka",
+            "description": "2 tygodnie, 100%. Wniosek 7 dni przed.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2027-07-31",
+            "deadline": {
+              "type": "BEFORE",
+              "raw": "2027-07-24",
+              "legal": "2027-07-24",
+              "shifted": false,
+              "reason": "sobota",
+              "safe": "2027-07-23"
+            },
+            "articleId": "ojcowski",
+            "wizardId": "w-ojcowski",
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2027-07-24",
+            "daysLeft": 244,
+            "status": "FUTURE"
+          },
+          {
+            "key": "urlopy-6",
+            "title": "Ostatni dzień na urlop rodzicielski",
+            "description": "Niewykorzystana część przepada z końcem roku, w którym dziecko kończy 6 lat.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2032-12-31",
+            "deadline": {
+              "type": "AFTER",
+              "raw": "2032-12-31",
+              "legal": "2032-12-31",
+              "shifted": false,
+              "reason": null,
+              "safe": "2032-12-10"
+            },
+            "articleId": "rodzicielski",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2032-12-31",
+            "daysLeft": 2231,
+            "status": "FUTURE"
+          },
+          {
+            "key": "wiek-8",
+            "title": "8. urodziny: koniec zasiłku opiekuńczego na zdrowe dziecko",
+            "description": "Np. przy nagłym zamknięciu żłobka, przedszkola lub szkoły.",
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2034-08-14",
+            "deadline": null,
+            "articleId": "opiekunczy",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2034-08-14",
+            "daysLeft": 2822,
+            "status": "FUTURE"
+          },
+          {
+            "key": "wiek-14",
+            "title": "14. urodziny: koniec zasiłku opiekuńczego na chore dziecko (60 dni w roku)",
+            "description": null,
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2040-08-14",
+            "deadline": null,
+            "articleId": "opiekunczy",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2040-08-14",
+            "daysLeft": 5014,
+            "status": "FUTURE"
+          }
+        ]
+      }
+    },
+    {
+      "name": "child taken in at 13.9 years",
+      "input": {
+        "role": "GUARDIAN",
+        "stage": "ADOPTION",
+        "date": "2026-11-20",
+        "childBirthDate": "2012-12-26",
+        "children": 1,
+        "preterm": null,
+        "zaZyciem": false,
+        "work": [
+          "EMPLOYMENT"
+        ],
+        "partner": "SHOW_PARTNER"
+      },
+      "expected": {
+        "stage": {
+          "pregnancyWeek": null,
+          "childAgeMonths": 166,
+          "childAgeLabel": "13 lat 10 mies."
+        },
+        "alerts": [],
+        "plan": [
+          {
+            "kind": "LEAVES",
+            "icon": null,
+            "title": "Po przyjęciu dziecka: 47 tygodni zasiłku",
+            "text": "Urlopy idą <b>po kolei</b>: najpierw urlop na warunkach macierzyńskiego, potem rodzicielski. Możesz też wybrać <b>81,5% przez cały czas</b> — wniosek do 21 dni od przyjęcia.",
+            "articleId": "wysokosc-mac",
+            "totalWeeks": 47,
+            "segments": [
+              {
+                "kind": "MATERNITY",
+                "label": "Na warunkach macierzyńskiego",
+                "weeks": 9,
+                "rate": 1
+              },
+              {
+                "kind": "PARENTAL",
+                "label": "Rodzicielski",
+                "weeks": 38,
+                "rate": 0.7
+              }
+            ]
+          },
+          {
+            "kind": "BENEFIT",
+            "icon": "hospital",
+            "title": "Gdy dziecko zachoruje",
+            "text": "Zasiłek opiekuńczy 80%, do 60 dni w roku",
+            "articleId": "opiekunczy",
+            "totalWeeks": null,
+            "segments": []
+          }
+        ],
+        "benefits": [
+          {
+            "key": "adopcja",
+            "name": "Urlop na warunkach urlopu macierzyńskiego (adopcja, rodzina zastępcza)",
+            "summary": "Jak macierzyński, min. 9 tyg.",
+            "institution": "EMPLOYER",
+            "eligibility": "YES",
+            "articleId": "na-warunkach",
+            "wizardId": "w-adopcja",
+            "calculator": null
+          },
+          {
+            "key": "opiekunczy",
+            "name": "Zasiłek opiekuńczy",
+            "summary": "80%, do 60 dni w roku",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "opiekunczy",
+            "wizardId": "w-opiekunczy",
+            "calculator": null
+          },
+          {
+            "key": "ryzyka",
+            "name": "Ryzyka: kiedy można stracić albo obniżyć zasiłek",
+            "summary": "Sprawdź, zanim zmienisz pracę w ciąży",
+            "institution": "INFO",
+            "eligibility": "YES",
+            "articleId": "ryzyka",
+            "wizardId": null,
+            "calculator": null
+          },
+          {
+            "key": "ochrona",
+            "name": "Twoje prawa w pracy",
+            "summary": "Ochrona przed zwolnieniem i więcej",
+            "institution": "EMPLOYER",
+            "eligibility": "YES",
+            "articleId": "utrata-pracy",
+            "wizardId": null,
+            "calculator": null
+          }
+        ],
+        "weekCard": {
+          "period": "MONTH",
+          "articleId": "opiekunczy",
+          "title": "Gdy maluch zachoruje",
+          "text": "Zasiłek opiekuńczy: 80% podstawy, do 60 dni w roku. Wniosek Z-15A."
+        },
+        "timeline": [
+          {
+            "key": "urlopy-6",
+            "title": "Ostatni dzień na urlop rodzicielski",
+            "description": "Niewykorzystana część przepada z końcem roku, w którym dziecko kończy 6 lat.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2018-12-31",
+            "deadline": {
+              "type": "AFTER",
+              "raw": "2018-12-31",
+              "legal": "2018-12-31",
+              "shifted": false,
+              "reason": null,
+              "safe": "2018-12-10"
+            },
+            "articleId": "rodzicielski",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2018-12-31",
+            "daysLeft": -2883,
+            "status": "LATE"
+          },
+          {
+            "key": "wiek-8",
+            "title": "8. urodziny: koniec zasiłku opiekuńczego na zdrowe dziecko",
+            "description": "Np. przy nagłym zamknięciu żłobka, przedszkola lub szkoły.",
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2020-12-26",
+            "deadline": null,
+            "articleId": "opiekunczy",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2020-12-26",
+            "daysLeft": -2157,
+            "status": "PAST"
+          },
+          {
+            "key": "adop",
+            "title": "Wniosek o urlop na warunkach urlopu macierzyńskiego",
+            "description": "W ciągu 7 dni od przyjęcia dziecka.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2026-11-27",
+            "deadline": {
+              "type": "AFTER",
+              "raw": "2026-11-27",
+              "legal": "2026-11-27",
+              "shifted": false,
+              "reason": null,
+              "safe": "2026-11-26"
+            },
+            "articleId": null,
+            "wizardId": "w-adopcja",
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2026-11-27",
+            "daysLeft": 5,
+            "status": "NOW"
+          },
+          {
+            "key": "adop-start",
+            "title": "Najpóźniejszy początek urlopu (21 dni od przyjęcia)",
+            "description": null,
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2026-12-11",
+            "deadline": null,
+            "articleId": null,
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2026-12-11",
+            "daysLeft": 19,
+            "status": "NOW"
+          },
+          {
+            "key": "w81a",
+            "title": "Opcjonalnie: wariant 81,5% (21 dni od przyjęcia)",
+            "description": null,
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2026-12-11",
+            "deadline": {
+              "type": "AFTER",
+              "raw": "2026-12-11",
+              "legal": "2026-12-11",
+              "shifted": false,
+              "reason": null,
+              "safe": "2026-12-10"
+            },
+            "articleId": "wysokosc-mac",
+            "wizardId": null,
+            "calculator": "zasilek",
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2026-12-11",
+            "daysLeft": 19,
+            "status": "NOW"
+          },
+          {
+            "key": "wiek-14",
+            "title": "14. urodziny: koniec zasiłku opiekuńczego na chore dziecko (60 dni w roku)",
+            "description": null,
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2026-12-26",
+            "deadline": null,
+            "articleId": "opiekunczy",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2026-12-26",
+            "daysLeft": 34,
+            "status": "FUTURE"
+          }
+        ]
+      }
+    },
+    {
+      "name": "child taken in over the age limit",
+      "input": {
+        "role": "GUARDIAN",
+        "stage": "ADOPTION",
+        "date": "2026-11-20",
+        "childBirthDate": "2011-11-01",
+        "children": 1,
+        "preterm": null,
+        "zaZyciem": false,
+        "work": [
+          "EMPLOYMENT"
+        ],
+        "partner": "SHOW_PARTNER"
+      },
+      "expected": {
+        "stage": {
+          "pregnancyWeek": null,
+          "childAgeMonths": 180,
+          "childAgeLabel": "15 lat"
+        },
+        "alerts": [],
+        "plan": [
+          {
+            "kind": "LEAVES",
+            "icon": null,
+            "title": "Po przyjęciu dziecka: 0 tygodni zasiłku",
+            "text": "Urlopy idą <b>po kolei</b>: najpierw urlop na warunkach macierzyńskiego, potem rodzicielski. Możesz też wybrać <b>81,5% przez cały czas</b> — wniosek do 21 dni od przyjęcia.",
+            "articleId": "wysokosc-mac",
+            "totalWeeks": 0,
+            "segments": [
+              {
+                "kind": "MATERNITY",
+                "label": "Na warunkach macierzyńskiego",
+                "weeks": 0,
+                "rate": 1
+              },
+              {
+                "kind": "PARENTAL",
+                "label": "Rodzicielski",
+                "weeks": 0,
+                "rate": 0.7
+              }
+            ]
+          },
+          {
+            "kind": "BENEFIT",
+            "icon": "hospital",
+            "title": "Gdy dziecko zachoruje",
+            "text": "Zasiłek opiekuńczy 80%, do 60 dni w roku",
+            "articleId": "opiekunczy",
+            "totalWeeks": null,
+            "segments": []
+          }
+        ],
+        "benefits": [
+          {
+            "key": "adopcja",
+            "name": "Urlop na warunkach urlopu macierzyńskiego (adopcja, rodzina zastępcza)",
+            "summary": "Jak macierzyński, min. 9 tyg.",
+            "institution": "EMPLOYER",
+            "eligibility": "YES",
+            "articleId": "na-warunkach",
+            "wizardId": "w-adopcja",
+            "calculator": null
+          },
+          {
+            "key": "ryzyka",
+            "name": "Ryzyka: kiedy można stracić albo obniżyć zasiłek",
+            "summary": "Sprawdź, zanim zmienisz pracę w ciąży",
+            "institution": "INFO",
+            "eligibility": "YES",
+            "articleId": "ryzyka",
+            "wizardId": null,
+            "calculator": null
+          },
+          {
+            "key": "ochrona",
+            "name": "Twoje prawa w pracy",
+            "summary": "Ochrona przed zwolnieniem i więcej",
+            "institution": "EMPLOYER",
+            "eligibility": "YES",
+            "articleId": "utrata-pracy",
+            "wizardId": null,
+            "calculator": null
+          }
+        ],
+        "weekCard": {
+          "period": "MONTH",
+          "articleId": "opiekunczy",
+          "title": "Gdy maluch zachoruje",
+          "text": "Zasiłek opiekuńczy: 80% podstawy, do 60 dni w roku. Wniosek Z-15A."
+        },
+        "timeline": [
+          {
+            "key": "urlopy-6",
+            "title": "Ostatni dzień na urlop rodzicielski",
+            "description": "Niewykorzystana część przepada z końcem roku, w którym dziecko kończy 6 lat.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2017-12-31",
+            "deadline": {
+              "type": "AFTER",
+              "raw": "2017-12-31",
+              "legal": "2017-12-31",
+              "shifted": false,
+              "reason": null,
+              "safe": "2017-12-08"
+            },
+            "articleId": "rodzicielski",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2017-12-31",
+            "daysLeft": -3248,
+            "status": "LATE"
+          },
+          {
+            "key": "wiek-8",
+            "title": "8. urodziny: koniec zasiłku opiekuńczego na zdrowe dziecko",
+            "description": "Np. przy nagłym zamknięciu żłobka, przedszkola lub szkoły.",
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2019-11-01",
+            "deadline": null,
+            "articleId": "opiekunczy",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2019-11-01",
+            "daysLeft": -2578,
+            "status": "PAST"
+          },
+          {
+            "key": "wiek-14",
+            "title": "14. urodziny: koniec zasiłku opiekuńczego na chore dziecko (60 dni w roku)",
+            "description": null,
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2025-11-01",
+            "deadline": null,
+            "articleId": "opiekunczy",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2025-11-01",
+            "daysLeft": -386,
+            "status": "PAST"
+          },
+          {
+            "key": "adop",
+            "title": "Wniosek o urlop na warunkach urlopu macierzyńskiego",
+            "description": "W ciągu 7 dni od przyjęcia dziecka.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2026-11-27",
+            "deadline": {
+              "type": "AFTER",
+              "raw": "2026-11-27",
+              "legal": "2026-11-27",
+              "shifted": false,
+              "reason": null,
+              "safe": "2026-11-26"
+            },
+            "articleId": null,
+            "wizardId": "w-adopcja",
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2026-11-27",
+            "daysLeft": 5,
+            "status": "NOW"
+          },
+          {
+            "key": "adop-start",
+            "title": "Najpóźniejszy początek urlopu (21 dni od przyjęcia)",
+            "description": null,
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2026-12-11",
+            "deadline": null,
+            "articleId": null,
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2026-12-11",
+            "daysLeft": 19,
+            "status": "NOW"
+          },
+          {
+            "key": "w81a",
+            "title": "Opcjonalnie: wariant 81,5% (21 dni od przyjęcia)",
+            "description": null,
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2026-12-11",
+            "deadline": {
+              "type": "AFTER",
+              "raw": "2026-12-11",
+              "legal": "2026-12-11",
+              "shifted": false,
+              "reason": null,
+              "safe": "2026-12-10"
+            },
+            "articleId": "wysokosc-mac",
+            "wizardId": null,
+            "calculator": "zasilek",
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2026-12-11",
+            "daysLeft": 19,
+            "status": "NOW"
+          }
+        ]
+      }
+    },
+    {
+      "name": "child 7 years old",
+      "input": {
+        "role": "MOTHER",
+        "stage": "CHILD",
+        "date": "2019-10-10",
+        "childBirthDate": null,
+        "children": 1,
+        "preterm": null,
+        "zaZyciem": false,
+        "work": [
+          "EMPLOYMENT"
+        ],
+        "partner": "SHOW_PARTNER"
+      },
+      "expected": {
+        "stage": {
+          "pregnancyWeek": null,
+          "childAgeMonths": 85,
+          "childAgeLabel": "7 lat 1 mies."
+        },
+        "alerts": [],
+        "plan": [
+          {
+            "kind": "LEAVES",
+            "icon": null,
+            "title": "Zasiłek macierzyński: 61 tygodni zasiłku",
+            "text": "Urlopy idą <b>po kolei</b>: najpierw macierzyński, potem rodzicielski. Możesz też wybrać <b>81,5% przez cały czas</b> — wniosek do 21 dni po porodzie.",
+            "articleId": "wysokosc-mac",
+            "totalWeeks": 61,
+            "segments": [
+              {
+                "kind": "MATERNITY",
+                "label": "Macierzyński",
+                "weeks": 20,
+                "rate": 1
+              },
+              {
+                "kind": "PARENTAL",
+                "label": "Rodzicielski",
+                "weeks": 41,
+                "rate": 0.7
+              }
+            ]
+          },
+          {
+            "kind": "BENEFIT",
+            "icon": "users",
+            "title": "Dla taty",
+            "text": "Ojcowski 2 tyg. (100%) + 9 tyg. rodzicielskiego tylko dla niego",
+            "articleId": "ojcowski",
+            "totalWeeks": null,
+            "segments": []
+          },
+          {
+            "kind": "BENEFIT",
+            "icon": "hospital",
+            "title": "Gdy dziecko zachoruje",
+            "text": "Zasiłek opiekuńczy 80%, do 60 dni w roku",
+            "articleId": "opiekunczy",
+            "totalWeeks": null,
+            "segments": []
+          }
+        ],
+        "benefits": [
+          {
+            "key": "opiekunczy",
+            "name": "Zasiłek opiekuńczy",
+            "summary": "80%, do 60 dni w roku",
+            "institution": "ZUS",
+            "eligibility": "YES",
+            "articleId": "opiekunczy",
+            "wizardId": "w-opiekunczy",
+            "calculator": null
+          },
+          {
+            "key": "ryzyka",
+            "name": "Ryzyka: kiedy można stracić albo obniżyć zasiłek",
+            "summary": "Sprawdź, zanim zmienisz pracę w ciąży",
+            "institution": "INFO",
+            "eligibility": "YES",
+            "articleId": "ryzyka",
+            "wizardId": null,
+            "calculator": null
+          },
+          {
+            "key": "ochrona",
+            "name": "Twoje prawa w pracy",
+            "summary": "Ochrona przed zwolnieniem i więcej",
+            "institution": "EMPLOYER",
+            "eligibility": "YES",
+            "articleId": "utrata-pracy",
+            "wizardId": null,
+            "calculator": null
+          }
+        ],
+        "weekCard": {
+          "period": "MONTH",
+          "articleId": "opiekunczy",
+          "title": "Gdy maluch zachoruje",
+          "text": "Zasiłek opiekuńczy: 80% podstawy, do 60 dni w roku. Wniosek Z-15A."
+        },
+        "timeline": [
+          {
+            "key": "w81",
+            "title": "Wniosek o 81,5% (pełny wymiar urlopu)",
+            "description": "Bez wniosku: 100% za macierzyński i 70% za rodzicielski.",
+            "lateNote": "Termin minął — zasiłek będzie wypłacany w wariancie 100% + 70%. To nie jest strata, tylko inny rozkład kwot.",
+            "institution": "EMPLOYER",
+            "date": "2019-10-31",
+            "deadline": {
+              "type": "AFTER",
+              "raw": "2019-10-31",
+              "legal": "2019-10-31",
+              "shifted": false,
+              "reason": null,
+              "safe": "2019-10-30"
+            },
+            "articleId": "wysokosc-mac",
+            "wizardId": "w-81",
+            "calculator": "zasilek",
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2019-10-31",
+            "daysLeft": -2579,
+            "status": "LATE"
+          },
+          {
+            "key": "mac-end",
+            "title": "Koniec urlopu macierzyńskiego",
+            "description": null,
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2020-02-27",
+            "deadline": null,
+            "articleId": null,
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2020-02-27",
+            "daysLeft": -2460,
+            "status": "PAST"
+          },
+          {
+            "key": "tata9",
+            "title": "9 tygodni rodzicielskiego dla taty (70%)",
+            "description": "Nieprzenoszalne — przepadną, jeśli nie zostaną wykorzystane. Do końca roku, w którym dziecko kończy 6 lat.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2020-03-26",
+            "deadline": null,
+            "articleId": "rodzicielski",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2020-03-26",
+            "daysLeft": -2432,
+            "status": "PAST"
+          },
+          {
+            "key": "przedawn",
+            "title": "Wniosek o zasiłek — najpóźniej 6 miesięcy",
+            "description": "Roszczenie o zasiłek przedawnia się po 6 miesiącach od ostatniego dnia okresu, za który przysługuje.",
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2020-04-10",
+            "deadline": null,
+            "articleId": "przedawnienie",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2020-04-10",
+            "daysLeft": -2417,
+            "status": "PAST"
+          },
+          {
+            "key": "ojcowski",
+            "title": "Urlop ojcowski taty — do 1. urodzin dziecka",
+            "description": "2 tygodnie, 100%. Wniosek 7 dni przed.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2020-09-26",
+            "deadline": {
+              "type": "BEFORE",
+              "raw": "2020-09-19",
+              "legal": "2020-09-19",
+              "shifted": false,
+              "reason": "sobota",
+              "safe": "2020-09-18"
+            },
+            "articleId": "ojcowski",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2020-09-19",
+            "daysLeft": -2255,
+            "status": "LATE"
+          },
+          {
+            "key": "rodz-1y",
+            "title": "Min. 1 dzień rodzicielskiego przed 1. urodzinami",
+            "description": "Warunek zachowania 81,5% (art. 31 ust. 3g).",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2020-10-09",
+            "deadline": null,
+            "articleId": null,
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2020-10-09",
+            "daysLeft": -2235,
+            "status": "PAST"
+          },
+          {
+            "key": "urlopy-6",
+            "title": "Ostatni dzień na urlop rodzicielski",
+            "description": "Niewykorzystana część przepada z końcem roku, w którym dziecko kończy 6 lat.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2025-12-31",
+            "deadline": {
+              "type": "AFTER",
+              "raw": "2025-12-31",
+              "legal": "2025-12-31",
+              "shifted": false,
+              "reason": null,
+              "safe": "2025-12-10"
+            },
+            "articleId": "rodzicielski",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2025-12-31",
+            "daysLeft": -326,
+            "status": "LATE"
+          },
+          {
+            "key": "wiek-8",
+            "title": "8. urodziny: koniec zasiłku opiekuńczego na zdrowe dziecko",
+            "description": "Np. przy nagłym zamknięciu żłobka, przedszkola lub szkoły.",
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2027-10-10",
+            "deadline": null,
+            "articleId": "opiekunczy",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2027-10-10",
+            "daysLeft": 322,
+            "status": "FUTURE"
+          },
+          {
+            "key": "wiek-14",
+            "title": "14. urodziny: koniec zasiłku opiekuńczego na chore dziecko (60 dni w roku)",
+            "description": null,
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2033-10-10",
+            "deadline": null,
+            "articleId": "opiekunczy",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2033-10-10",
+            "daysLeft": 2514,
+            "status": "FUTURE"
+          }
+        ]
+      }
+    },
+    {
+      "name": "child 15 years old",
+      "input": {
+        "role": "MOTHER",
+        "stage": "CHILD",
+        "date": "2011-11-01",
+        "childBirthDate": null,
+        "children": 1,
+        "preterm": null,
+        "zaZyciem": false,
+        "work": [
+          "EMPLOYMENT"
+        ],
+        "partner": "SHOW_PARTNER"
+      },
+      "expected": {
+        "stage": {
+          "pregnancyWeek": null,
+          "childAgeMonths": 180,
+          "childAgeLabel": "15 lat"
+        },
+        "alerts": [],
+        "plan": [
+          {
+            "kind": "LEAVES",
+            "icon": null,
+            "title": "Zasiłek macierzyński: 61 tygodni zasiłku",
+            "text": "Urlopy idą <b>po kolei</b>: najpierw macierzyński, potem rodzicielski. Możesz też wybrać <b>81,5% przez cały czas</b> — wniosek do 21 dni po porodzie.",
+            "articleId": "wysokosc-mac",
+            "totalWeeks": 61,
+            "segments": [
+              {
+                "kind": "MATERNITY",
+                "label": "Macierzyński",
+                "weeks": 20,
+                "rate": 1
+              },
+              {
+                "kind": "PARENTAL",
+                "label": "Rodzicielski",
+                "weeks": 41,
+                "rate": 0.7
+              }
+            ]
+          },
+          {
+            "kind": "BENEFIT",
+            "icon": "users",
+            "title": "Dla taty",
+            "text": "Ojcowski 2 tyg. (100%) + 9 tyg. rodzicielskiego tylko dla niego",
+            "articleId": "ojcowski",
+            "totalWeeks": null,
+            "segments": []
+          },
+          {
+            "kind": "BENEFIT",
+            "icon": "hospital",
+            "title": "Gdy dziecko zachoruje",
+            "text": "Zasiłek opiekuńczy 80%, do 60 dni w roku",
+            "articleId": "opiekunczy",
+            "totalWeeks": null,
+            "segments": []
+          }
+        ],
+        "benefits": [
+          {
+            "key": "ryzyka",
+            "name": "Ryzyka: kiedy można stracić albo obniżyć zasiłek",
+            "summary": "Sprawdź, zanim zmienisz pracę w ciąży",
+            "institution": "INFO",
+            "eligibility": "YES",
+            "articleId": "ryzyka",
+            "wizardId": null,
+            "calculator": null
+          },
+          {
+            "key": "ochrona",
+            "name": "Twoje prawa w pracy",
+            "summary": "Ochrona przed zwolnieniem i więcej",
+            "institution": "EMPLOYER",
+            "eligibility": "YES",
+            "articleId": "utrata-pracy",
+            "wizardId": null,
+            "calculator": null
+          }
+        ],
+        "weekCard": {
+          "period": "MONTH",
+          "articleId": "opiekunczy",
+          "title": "Gdy maluch zachoruje",
+          "text": "Zasiłek opiekuńczy: 80% podstawy, do 60 dni w roku. Wniosek Z-15A."
+        },
+        "timeline": [
+          {
+            "key": "w81",
+            "title": "Wniosek o 81,5% (pełny wymiar urlopu)",
+            "description": "Bez wniosku: 100% za macierzyński i 70% za rodzicielski.",
+            "lateNote": "Termin minął — zasiłek będzie wypłacany w wariancie 100% + 70%. To nie jest strata, tylko inny rozkład kwot.",
+            "institution": "EMPLOYER",
+            "date": "2011-11-22",
+            "deadline": {
+              "type": "AFTER",
+              "raw": "2011-11-22",
+              "legal": "2011-11-22",
+              "shifted": false,
+              "reason": null,
+              "safe": "2011-11-21"
+            },
+            "articleId": "wysokosc-mac",
+            "wizardId": "w-81",
+            "calculator": "zasilek",
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2011-11-22",
+            "daysLeft": -5479,
+            "status": "LATE"
+          },
+          {
+            "key": "mac-end",
+            "title": "Koniec urlopu macierzyńskiego",
+            "description": null,
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2012-03-20",
+            "deadline": null,
+            "articleId": null,
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2012-03-20",
+            "daysLeft": -5360,
+            "status": "PAST"
+          },
+          {
+            "key": "tata9",
+            "title": "9 tygodni rodzicielskiego dla taty (70%)",
+            "description": "Nieprzenoszalne — przepadną, jeśli nie zostaną wykorzystane. Do końca roku, w którym dziecko kończy 6 lat.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2012-04-17",
+            "deadline": null,
+            "articleId": "rodzicielski",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2012-04-17",
+            "daysLeft": -5332,
+            "status": "PAST"
+          },
+          {
+            "key": "przedawn",
+            "title": "Wniosek o zasiłek — najpóźniej 6 miesięcy",
+            "description": "Roszczenie o zasiłek przedawnia się po 6 miesiącach od ostatniego dnia okresu, za który przysługuje.",
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2012-05-01",
+            "deadline": null,
+            "articleId": "przedawnienie",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2012-05-01",
+            "daysLeft": -5318,
+            "status": "PAST"
+          },
+          {
+            "key": "ojcowski",
+            "title": "Urlop ojcowski taty — do 1. urodzin dziecka",
+            "description": "2 tygodnie, 100%. Wniosek 7 dni przed.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2012-10-18",
+            "deadline": {
+              "type": "BEFORE",
+              "raw": "2012-10-11",
+              "legal": "2012-10-11",
+              "shifted": false,
+              "reason": null,
+              "safe": "2012-10-11"
+            },
+            "articleId": "ojcowski",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2012-10-11",
+            "daysLeft": -5155,
+            "status": "LATE"
+          },
+          {
+            "key": "rodz-1y",
+            "title": "Min. 1 dzień rodzicielskiego przed 1. urodzinami",
+            "description": "Warunek zachowania 81,5% (art. 31 ust. 3g).",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2012-10-31",
+            "deadline": null,
+            "articleId": null,
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2012-10-31",
+            "daysLeft": -5135,
+            "status": "PAST"
+          },
+          {
+            "key": "urlopy-6",
+            "title": "Ostatni dzień na urlop rodzicielski",
+            "description": "Niewykorzystana część przepada z końcem roku, w którym dziecko kończy 6 lat.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2017-12-31",
+            "deadline": {
+              "type": "AFTER",
+              "raw": "2017-12-31",
+              "legal": "2017-12-31",
+              "shifted": false,
+              "reason": null,
+              "safe": "2017-12-08"
+            },
+            "articleId": "rodzicielski",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2017-12-31",
+            "daysLeft": -3248,
+            "status": "LATE"
+          },
+          {
+            "key": "wiek-8",
+            "title": "8. urodziny: koniec zasiłku opiekuńczego na zdrowe dziecko",
+            "description": "Np. przy nagłym zamknięciu żłobka, przedszkola lub szkoły.",
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2019-11-01",
+            "deadline": null,
+            "articleId": "opiekunczy",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2019-11-01",
+            "daysLeft": -2578,
+            "status": "PAST"
+          },
+          {
+            "key": "wiek-14",
+            "title": "14. urodziny: koniec zasiłku opiekuńczego na chore dziecko (60 dni w roku)",
+            "description": null,
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2025-11-01",
+            "deadline": null,
+            "articleId": "opiekunczy",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2025-11-01",
+            "daysLeft": -386,
+            "status": "PAST"
           }
         ]
       }

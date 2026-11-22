@@ -1,4 +1,4 @@
-package com.hn26.zaradniaki.zusbaby.benefits.domain.leave;
+package com.hn26.zaradniaki.zusbaby.benefits.api.model;
 
 /**
  * Premature birth or hospital stay of a newborn.

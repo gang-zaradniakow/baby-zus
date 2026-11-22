@@ -3,6 +3,8 @@ package com.hn26.zaradniaki.zusbaby.guide.domain.survey;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.time.LocalDate;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
@@ -51,10 +53,34 @@ class SurveyTest {
     void rejectsPrematureBabyInPregnancy() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new Survey(ParentRole.MOTHER, CareStage.PREGNANCY, DATE, null, 1,
-                        new PretermDetails(30, 1500, 20), Set.of(WorkForm.EMPLOYMENT), PartnerTracking.SHOW_PARTNER));
+                        new PretermDetails(30, 1500, 20), false, Set.of(WorkForm.EMPLOYMENT),
+                        PartnerTracking.SHOW_PARTNER));
+    }
+
+    @Test
+    void rejectsPrematureBabyForAChildTakenIn() {
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new Survey(ParentRole.GUARDIAN, CareStage.ADOPTION, DATE, DATE.minusYears(1), 1,
+                        new PretermDetails(30, 1500, 20), false, Set.of(WorkForm.EMPLOYMENT),
+                        PartnerTracking.SHOW_PARTNER));
+    }
+
+    @Test
+    void rejectsZaZyciemInPregnancy() {
+        assertThatIllegalArgumentException().isThrownBy(() -> new Survey(ParentRole.MOTHER, CareStage.PREGNANCY,
+                DATE, null, 1, null, true, Set.of(WorkForm.EMPLOYMENT), PartnerTracking.SHOW_PARTNER));
+    }
+
+    @Test
+    void ageOfAChildTakenInIsCountedInYearsOf365AndAQuarterDays() {
+        assertThat(new Survey(ParentRole.GUARDIAN, CareStage.ADOPTION, LocalDate.of(2026, 11, 17),
+                LocalDate.of(2024, 10, 23), 1, null, false, Set.of(WorkForm.EMPLOYMENT), PartnerTracking.SHOW_PARTNER)
+                .childAgeWhenTakenIn()).isEqualByComparingTo(new BigDecimal(755).divide(new BigDecimal("365.25"),
+                        MathContext.DECIMAL64));
     }
 
     private static Survey survey(CareStage stage, LocalDate childBirthDate, Set<WorkForm> work) {
-        return new Survey(ParentRole.MOTHER, stage, DATE, childBirthDate, 1, null, work, PartnerTracking.SHOW_PARTNER);
+        return new Survey(ParentRole.MOTHER, stage, DATE, childBirthDate, 1, null, false, work,
+                PartnerTracking.SHOW_PARTNER);
     }
 }

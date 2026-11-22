@@ -1,8 +1,8 @@
 package com.hn26.zaradniaki.zusbaby.benefits.domain.maternity;
 
+import com.hn26.zaradniaki.zusbaby.benefits.api.model.PretermBirth;
+import com.hn26.zaradniaki.zusbaby.benefits.api.model.TakenInChild;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.insurance.ResolvedInsurance;
-import com.hn26.zaradniaki.zusbaby.benefits.domain.leave.PretermBirth;
-import com.hn26.zaradniaki.zusbaby.benefits.domain.leave.TakenInChild;
 import java.time.LocalDate;
 import java.util.Objects;
 

@@ -48,7 +48,15 @@ class GuideIT {
                 .andExpect(jsonPath("$.timeline[0].deadline.legal").value("2026-11-27"))
                 .andExpect(jsonPath("$.timeline[0].status").value("NOW"))
                 .andExpect(jsonPath("$.timeline[0].daysLeft").value(5))
-                .andExpect(jsonPath("$.timeline[4].deadline.reason").value("sobota"));
+                .andExpect(jsonPath("$.timeline[4].deadline.reason").value("sobota"))
+                .andExpect(jsonPath("$.plan[*].kind", contains("LEAVES", "BENEFIT", "BENEFIT")))
+                .andExpect(jsonPath("$.plan[0].totalWeeks").value(61))
+                .andExpect(jsonPath("$.plan[0].leaves[1].rate").value(0.7))
+                .andExpect(jsonPath("$.benefits[*].key", contains("mac", "rodz", "wariant", "ojcowski", "opiekunczy",
+                        "ryzyka")))
+                .andExpect(jsonPath("$.benefits[3].eligibility").value("MAYBE"))
+                .andExpect(jsonPath("$.weekCard.period").value("MONTH"))
+                .andExpect(jsonPath("$.weekCard.title").value("Pierwsze 21 dni"));
     }
 
     @Test
@@ -60,7 +68,20 @@ class GuideIT {
                 .andExpect(jsonPath("$.stage.pregnancyWeks").doesNotExist())
                 .andExpect(jsonPath("$.stage.pregnancyWeek").value(22))
                 .andExpect(jsonPath("$.alerts[*].level", contains("INFO", "WARNING")))
-                .andExpect(jsonPath("$.timeline[*].key", contains("chor-brak")));
+                .andExpect(jsonPath("$.timeline[*].key", contains("chor-brak")))
+                .andExpect(jsonPath("$.plan[0].kind").value("NOTICE"))
+                .andExpect(jsonPath("$.plan[0].totalWeeks").doesNotExist())
+                .andExpect(jsonPath("$.weekCard.period").value("WEEK"));
+    }
+
+    @Test
+    void countsTheLeaveOfAChildTakenInWithTheBenefitsModule() throws Exception {
+        mvc.perform(post("/api/v1/guide/preview").contentType(MediaType.APPLICATION_JSON).content("""
+                {"role": "GUARDIAN", "stage": "ADOPTION", "date": "2026-11-20", "childBirthDate": "2013-01-17",
+                 "children": 1, "work": ["EMPLOYMENT"], "partner": "SHOW_PARTNER"}
+                """)).andExpect(status().isOk()).andExpect(matchesContract())
+                .andExpect(jsonPath("$.plan[0].title").value("Po przyjęciu dziecka: 47 tygodni zasiłku"))
+                .andExpect(jsonPath("$.plan[0].leaves[0].label").value("Na warunkach macierzyńskiego"));
     }
 
     @Test

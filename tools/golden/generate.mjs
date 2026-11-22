@@ -440,7 +440,30 @@ function withToday(isoDay, run) {
   try { return run(); } finally { globalThis.Date = RealDate; }
 }
 const D = await import(pathToFileURL(resolve(mockupDir, 'js', 'data.js')).href);
-const guideSource = appFunctions(['activeChild', 'ctx', 'finishOnboarding', 'buildTimeline', 'addOlder', 'alerts']);
+const W2 = await import(pathToFileURL(resolve(mockupDir, 'js', 'wiedza.js')).href);
+const guideSource = appFunctions(['activeChild', 'ctx', 'finishOnboarding', 'buildTimeline', 'addOlder', 'alerts', 'BEN_ART', 'planHtml']);
+// planHtml() returns HTML: read its rows, the leave card and the warning back into data
+function planItems(html) {
+  const items = [];
+  const re = /<a class="(plan-row|plan-card|card tint-warn plain)" href="#\/wiedza\/a\/([^"]+)">([\s\S]*?)<\/a>/g;
+  for (const [, cls, articleId, inner] of html.matchAll(re)) {
+    if (cls === 'plan-row') {
+      const [, icon, title, text] = inner.match(/\[icon:([^\]]+)\][\s\S]*?<b>([^<]*)<\/b><small>([^<]*)<\/small>/);
+      items.push({ kind: 'BENEFIT', icon, title, text, articleId, totalWeeks: null, segments: [] });
+    } else if (cls === 'plan-card') {
+      const [, title] = inner.match(/^\s*<b>([^<]*)<\/b>/);
+      const segments = [...inner.matchAll(/<span class="pb (\w)" style="flex:(\d+)"><em>([^<]*)<\/em><i>(\d+) tyg\. · (\d+)%<\/i><\/span>/g)]
+        .map(([, k, , label, weeks, pct]) => ({ kind: { m: 'MATERNITY', u: 'SUPPLEMENTARY', r: 'PARENTAL' }[k], label, weeks: +weeks, rate: +pct / 100 }));
+      const [, text] = inner.match(/<small>([\s\S]*)<\/small>\s*$/);
+      items.push({ kind: 'LEAVES', icon: null, title, text, articleId, totalWeeks: segments.reduce((a, x) => a + x.weeks, 0), segments });
+    } else {
+      const [, title, text] = inner.match(/<b>([^<]*)<\/b><span class="small">([^<]*)<\/span>/);
+      items.push({ kind: 'NOTICE', icon: null, title, text, articleId, totalWeeks: null, segments: [] });
+    }
+  }
+  if (!items.length && html) throw new Error('planHtml: nothing recognised in ' + html);
+  return items;
+}
 const ROLE = { MOTHER: 'mama', FATHER: 'tata', GUARDIAN: 'opiekun' };
 const STAGE = { PREGNANCY: 'ciaza', CHILD: 'dziecko', ADOPTION: 'adopcja' };
 const WORK = {
@@ -455,12 +478,13 @@ function guide(survey) {
     account: { iban: 'PL00 0000 0000 0000 0000 0000 0000' } };
   S.onb = { a: {
     role: ROLE[survey.role], stage: STAGE[survey.stage], date: survey.date, birth2: survey.childBirthDate,
-    count: String(survey.children), special: survey.preterm ? ['preterm'] : [],
+    count: String(survey.children), special: [...(survey.preterm ? ['preterm'] : []), ...(survey.zaZyciem ? ['zazyciem'] : [])],
     ptc: survey.preterm?.gestationWeek, pwg: survey.preterm?.birthWeightGrams, pdn: survey.preterm?.hospitalDays,
     work: survey.work.map((w) => WORK[w]), partner: PARTNER[survey.partner],
   } };
-  const fns = new Function('C', 'K', 'WORK_OPTIONS', 'S', 'U', 'go', 'runSplash', 'makeDocs', 'save',
-    `${guideSource}\nreturn { finishOnboarding, ctx, buildTimeline, alerts };`)(C, D.K, D.WORK_OPTIONS, S, {}, () => {}, () => {}, () => [], () => {});
+  const fns = new Function('C', 'K', 'WORK_OPTIONS', 'S', 'U', 'go', 'runSplash', 'makeDocs', 'save', 'icon', 'esc',
+    `${guideSource}\nreturn { finishOnboarding, ctx, buildTimeline, alerts, planHtml, BEN_ART };`)(C, D.K, D.WORK_OPTIONS, S, {},
+    () => {}, () => {}, () => [], () => {}, (name) => `[icon:${name}]`, (text) => text);
   fns.finishOnboarding();
   const c = fns.ctx();
   const dl = (d) => d && { type: d.type === 'before' ? 'BEFORE' : 'AFTER', raw: iso(d.raw), legal: iso(d.legal), shifted: !!d.shifted, reason: d.reason ?? null, safe: iso(d.safe) };
@@ -471,6 +495,18 @@ function guide(survey) {
       childAgeLabel: c.child.birth ? C.ageLabel(C.parseISO(c.child.birth)) : null,
     },
     alerts: fns.alerts(c).map((a) => ({ level: ALERT_LEVEL[a.lvl], icon: a.ico, title: a.t, text: a.d, href: a.h })),
+    plan: planItems(fns.planHtml(c)),
+    // the support-mode benefits (hiddenInNormal) are not part of the guest guide
+    benefits: D.BENEFITS.filter((b) => !b.hiddenInNormal).map((b) => [b, b.eligible(c)]).filter(([, e]) => e !== 'no')
+      .map(([b, e]) => ({ key: b.id, name: b.name, summary: b.short, institution: INSTITUTION[b.inst], eligibility: e === 'yes' ? 'YES' : 'MAYBE',
+        articleId: fns.BEN_ART[b.id] ?? null, wizardId: b.wizard ?? null, calculator: b.calc ?? null })),
+    // the card of vStart(): weeks of pregnancy, otherwise months of the child's life
+    weekCard: (() => {
+      const pregnancy = c.stage === 'ciaza';
+      const value = pregnancy ? c.week : (c.months ?? 0);
+      const card = (pregnancy ? W2.CARDS_POR.ciaza : W2.CARDS_POR.dziecko).find((k) => value >= k.from && value <= k.to);
+      return card ? { period: pregnancy ? 'WEEK' : 'MONTH', articleId: card.art, title: card.title, text: card.text } : null;
+    })(),
     timeline: fns.buildTimeline(c).map((i) => ({
       key: i.id, title: i.title, description: i.desc || null, lateNote: i.lateNote ?? null,
       institution: INSTITUTION[i.inst], date: iso(i.date), deadline: dl(i.dl), articleId: i.art ?? null,
@@ -481,7 +517,7 @@ function guide(survey) {
 }
 areas.guestGuide = () => {
   const day = (offset) => withToday(GUIDE_TODAY, () => iso(C.addDays(C.today(), offset)));
-  const survey = (o) => ({ role: 'MOTHER', stage: 'PREGNANCY', date: day(120), childBirthDate: null, children: 1, preterm: null,
+  const survey = (o) => ({ role: 'MOTHER', stage: 'PREGNANCY', date: day(120), childBirthDate: null, children: 1, preterm: null, zaZyciem: false,
     work: ['EMPLOYMENT'], partner: 'SHOW_PARTNER', ...o });
   const inputs = [
     // personas of the prototype (debt and sick leave are profile data, not survey answers)
@@ -508,9 +544,14 @@ areas.guestGuide = () => {
     ['adoption without sickness insurance', survey({ role: 'GUARDIAN', stage: 'ADOPTION', date: day(-30), childBirthDate: day(-400), work: ['NOT_WORKING'] })],
     ['father without sickness insurance, child 2 months old', survey({ role: 'FATHER', stage: 'CHILD', date: day(-60), work: ['NOT_WORKING'] })],
     ['premature baby, mother on a mandate contract', survey({ stage: 'CHILD', date: day(-10), work: ['MANDATE_CONTRACT'], preterm: { gestationWeek: 33, birthWeightGrams: 1900, hospitalDays: 12 } })],
+    ['"Za zyciem" twins, father', survey({ role: 'FATHER', stage: 'CHILD', date: day(-100), children: 2, zaZyciem: true })],
+    ['child taken in at 13.9 years', survey({ role: 'GUARDIAN', stage: 'ADOPTION', date: day(-2), childBirthDate: day(-5079) })],
+    ['child taken in over the age limit', survey({ role: 'GUARDIAN', stage: 'ADOPTION', date: day(-2), childBirthDate: day(-5500) })],
+    ['child 7 years old', survey({ stage: 'CHILD', date: day(-2600) })],
+    ['child 15 years old', survey({ stage: 'CHILD', date: day(-5500) })],
   ];
   return {
-    source: `js/app.js finishOnboarding(), ctx(), buildTimeline(), alerts() with today = ${GUIDE_TODAY}`,
+    source: `js/app.js finishOnboarding(), ctx(), buildTimeline(), alerts(), planHtml(), BENEFITS eligible() and the week card of vStart() with today = ${GUIDE_TODAY}`,
     cases: inputs.map(([name, input]) => ({ name, input, expected: withToday(GUIDE_TODAY, () => guide(input)) })),
   };
 };

@@ -1,4 +1,4 @@
-package com.hn26.zaradniaki.zusbaby.benefits.domain.leave;
+package com.hn26.zaradniaki.zusbaby.benefits.api.model;
 
 /** How a child is taken in (art. 183 KP). */
 public enum AdoptionType {

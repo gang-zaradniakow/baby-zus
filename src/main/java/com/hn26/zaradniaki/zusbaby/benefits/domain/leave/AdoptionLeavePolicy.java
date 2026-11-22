@@ -1,5 +1,6 @@
 package com.hn26.zaradniaki.zusbaby.benefits.domain.leave;
 
+import com.hn26.zaradniaki.zusbaby.benefits.api.model.TakenInChild;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.LeaveParameters;
 import com.hn26.zaradniaki.zusbaby.shared.domain.Weeks;
 import java.math.BigDecimal;

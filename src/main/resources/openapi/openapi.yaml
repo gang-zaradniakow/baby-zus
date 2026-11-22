@@ -282,10 +282,11 @@ paths:
       operationId: previewGuide
       summary: Guide of a guest, from the survey answers
       description: |
-        What a parent sees after the survey without logging in: week of pregnancy or age of the child, alerts and
-        the timeline of deadlines and milestones (sorted by date). Deadlines are counted with the Polish calendar as
-        in `/deadlines`; `status` says whether an item is late, due within 30 days, past or ahead today. Nothing is
-        stored.
+        What a parent sees after the survey without logging in: week of pregnancy or age of the child, alerts, the
+        timeline of deadlines and milestones (sorted by date), the benefit plan ("Co Ci przysługuje"), the benefits
+        of the catalog the family can get and the card of the week. Deadlines are counted with the Polish calendar as
+        in `/deadlines`; `status` says whether an item is late, due within 30 days, past or ahead today. Leave
+        lengths are those of `/calculations/leave-dimensions`. Nothing is stored.
       requestBody:
         required: true
         content:
@@ -1040,6 +1041,10 @@ components:
           maximum: 5
         preterm:
           $ref: '#/components/schemas/GuidePreterm'
+        zaZyciem:
+          type: boolean
+          default: false
+          description: '"Za życiem" certificate (not for a pregnancy).'
         work:
           type: array
           minItems: 1
@@ -1053,7 +1058,7 @@ components:
 
     GuidePreterm:
       type: object
-      description: Premature baby or a baby in hospital (not for a pregnancy).
+      description: Premature baby or a baby in hospital (only for a born child, stage CHILD).
       required: [gestationWeek, birthWeightGrams, hospitalDays]
       properties:
         gestationWeek:
@@ -1082,7 +1087,7 @@ components:
 
     GuidePreview:
       type: object
-      required: [stage, alerts, timeline]
+      required: [stage, alerts, timeline, plan, benefits]
       properties:
         stage:
           $ref: '#/components/schemas/GuideStage'
@@ -1094,6 +1099,104 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TimelineItem'
+        plan:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlanItem'
+        benefits:
+          type: array
+          description: Benefits of the catalog the family can (YES) or may (MAYBE) get, in the catalog's order.
+          items:
+            $ref: '#/components/schemas/EntitledBenefit'
+        weekCard:
+          $ref: '#/components/schemas/CardOfTheWeek'
+
+    PlanItem:
+      type: object
+      description: |
+        Row of the benefit plan. NOTICE = no benefits from ZUS (what to do); BENEFIT = one benefit; LEAVES = the
+        leaves one after another with their weeks and rates.
+      required: [kind, title, text, articleId, leaves]
+      properties:
+        kind:
+          type: string
+          enum: [NOTICE, BENEFIT, LEAVES]
+        icon:
+          type: string
+          description: Name of the frontend icon (BENEFIT only).
+        title:
+          type: string
+        text:
+          type: string
+          description: Polish text; for LEAVES HTML with `<b>`.
+        articleId:
+          type: string
+        totalWeeks:
+          type: integer
+          format: int32
+          description: Weeks of all leaves (LEAVES only).
+        leaves:
+          type: array
+          description: Empty unless LEAVES.
+          items:
+            $ref: '#/components/schemas/PlannedLeave'
+
+    PlannedLeave:
+      type: object
+      required: [kind, label, weeks, rate]
+      properties:
+        kind:
+          type: string
+          enum: [MATERNITY, SUPPLEMENTARY, PARENTAL]
+          description: MATERNITY also covers the leave on maternity terms of a child taken in.
+        label:
+          type: string
+        weeks:
+          type: integer
+          format: int32
+        rate:
+          type: number
+          description: Benefit rate as a fraction (0.7 = 70%).
+
+    EntitledBenefit:
+      type: object
+      required: [key, title, summary, institution, eligibility]
+      properties:
+        key:
+          type: string
+          example: rodz
+        title:
+          type: string
+        summary:
+          type: string
+        institution:
+          type: string
+          enum: [ZUS, EMPLOYER, INFO]
+        eligibility:
+          type: string
+          enum: ['YES', 'MAYBE']
+          description: MAYBE = depends on details the survey does not ask about.
+        articleId:
+          type: string
+        wizardId:
+          type: string
+        calculator:
+          type: string
+
+    CardOfTheWeek:
+      type: object
+      required: [period, articleId, title, text]
+      properties:
+        period:
+          type: string
+          enum: [WEEK, MONTH]
+          description: WEEK = for this week of pregnancy; MONTH = for this month of the child's life.
+        articleId:
+          type: string
+        title:
+          type: string
+        text:
+          type: string
 
     GuideStage:
       type: object

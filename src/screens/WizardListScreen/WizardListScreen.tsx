@@ -6,10 +6,10 @@ import { AppText } from '@/components/atoms/AppText';
 import { Accordion } from '@/components/molecules/Accordion';
 import { LinkRow } from '@/components/molecules/LinkRow';
 import { ScreenLayout } from '@/components/templates/ScreenLayout';
-import { FORMS_GLOSSARY } from '@/data/wizards/formsGlossary';
 import { WIZARDS } from '@/data/wizards';
 import { createWizardContext } from '@/domain/wizards/createWizardContext';
 import { moreRoutes } from '@/features/more/moreRoutes';
+import { useFormsGlossary } from '@/features/wizards/useFormsGlossary';
 import { useToday } from '@/hooks/useToday';
 import { useSession } from '@/session';
 
@@ -22,6 +22,7 @@ export function WizardListScreen() {
   const today = useToday();
   const { profile } = useSession();
   const ctx = createWizardContext(profile, today);
+  const forms = useFormsGlossary();
 
   return (
     <ScreenLayout
@@ -43,7 +44,7 @@ export function WizardListScreen() {
           ))}
         </View>
         <Accordion title="Słowniczek formularzy">
-          {FORMS_GLOSSARY.map((form) => (
+          {forms.map((form) => (
             <View key={form.code}>
               <AppText variant="label">{form.code}</AppText>
               <AppText variant="caption">{form.description}</AppText>

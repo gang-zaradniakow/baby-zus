@@ -1,4 +1,7 @@
-/** Słowniczek formularzy ZUS (z prototypu, js/data.js: FORMS). */
+/**
+ * Słowniczek formularzy ZUS (z prototypu, js/data.js: FORMS). Źródłem jest backend (`GET /api/v1/content/forms`);
+ * ta lista to zapas, gdy backend jest niedostępny.
+ */
 export const FORMS_GLOSSARY: readonly { code: string; description: string }[] = [
   { code: 'ZAM', description: 'Wniosek o zasiłek macierzyński — za urlop macierzyński, rodzicielski i ojcowski (od 24.10.2026 zastępuje też ZUR i ZAO)' },
   { code: 'ZAS-53', description: 'Wniosek o zasiłek chorobowy — np. osoba prowadząca firmę (do ZUS)' },

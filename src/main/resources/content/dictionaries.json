@@ -1,0 +1,203 @@
+{
+  "source": "js/data.js and js/wiedza.js of the frontend prototype",
+  "forms": [
+    {
+      "code": "ZAM",
+      "description": "Wniosek o zasiłek macierzyński — za urlop macierzyński, rodzicielski i ojcowski (od 24.10.2026 zastępuje też ZUR i ZAO)"
+    },
+    {
+      "code": "ZAS-53",
+      "description": "Wniosek o zasiłek chorobowy — np. osoba prowadząca firmę (do ZUS)"
+    },
+    {
+      "code": "Z-3",
+      "description": "Zaświadczenie płatnika składek dla pracownika (przekazuje pracodawca)"
+    },
+    {
+      "code": "Z-3a",
+      "description": "Zaświadczenie płatnika składek dla zleceniobiorcy (przekazuje zleceniodawca)"
+    },
+    {
+      "code": "ZAS-12",
+      "description": "Zaświadczenie płatnika składek na dalszy okres zasiłku"
+    },
+    {
+      "code": "Z-15A",
+      "description": "Wniosek o zasiłek opiekuńczy na dziecko"
+    },
+    {
+      "code": "Z-12",
+      "description": "Wniosek o zasiłek pogrzebowy"
+    },
+    {
+      "code": "ZUS ZUA",
+      "description": "Zgłoszenie do ubezpieczeń (np. ponowne do dobrowolnego chorobowego)"
+    },
+    {
+      "code": "ZUS ZCNA",
+      "description": "Zgłoszenie członka rodziny (dziecka) do ubezpieczenia zdrowotnego"
+    },
+    {
+      "code": "e-ZLA",
+      "description": "Elektroniczne zwolnienie lekarskie („L4”); kod B = ciąża"
+    },
+    {
+      "code": "Z-3b",
+      "description": "Zlikwidowany od 24.10.2026 — przedsiębiorca nie składa już tego zaświadczenia"
+    }
+  ],
+  "facts": [
+    "L4 w ciąży z kodem B to 100% podstawy — i aż 270 dni okresu zasiłkowego zamiast 182.",
+    "Płatnik, który na 30 listopada zgłaszał do chorobowego co najmniej 21 osób, sam wypłaca zasiłki. Mniejszym firmom zasiłki wypłaca ZUS.",
+    "Zasiłek pogrzebowy przy martwym urodzeniu przysługuje bez względu na czas trwania ciąży — 7000 zł.",
+    "Tata ma własne, nieprzenoszalne 9 tygodni urlopu rodzicielskiego. Jeśli ich nie wykorzysta — przepadną.",
+    "Zasiłek macierzyński nie może być niższy niż 1000 zł miesięcznie — ZUS sam go podwyższa.",
+    "Rodzice wcześniaków mogą dostać do 15 tygodni dodatkowego urlopu płatnego 100%.",
+    "Urlop ojcowski (2 tygodnie, 100%) trzeba wykorzystać przed pierwszymi urodzinami dziecka.",
+    "O swoją sprawę możesz zapytać ZUS mailowo: mama@zus.pl.",
+    "Do dobrowolnego ubezpieczenia chorobowego nie można zgłosić się wstecz — tylko od dnia złożenia ZUS ZUA.",
+    "Przedsiębiorczyni na zasiłku macierzyńskim jest automatycznie wyrejestrowana z dobrowolnego chorobowego — po zasiłku musi zgłosić się ponownie."
+  ],
+  "organizations": [
+    {
+      "name": "Fundacja Rodzić po Ludzku",
+      "topic": "Poronienie, strata ciąży, prawa pacjentki",
+      "url": "https://rodzicpoludzku.pl"
+    },
+    {
+      "name": "Stowarzyszenie Rodziców po Poronieniu",
+      "topic": "Wsparcie po poronieniu i martwym urodzeniu"
+    },
+    {
+      "name": "Bractwo Małych Stópek",
+      "topic": "Wsparcie rodziców po stracie dziecka"
+    },
+    {
+      "name": "Fundacja Wcześniak Rodzice-Rodzicom",
+      "topic": "Wcześniaki: informacje, grupy wsparcia",
+      "url": "https://wczesniak.pl"
+    },
+    {
+      "name": "Fundacja Gajusz (hospicjum perinatalne, Łódź)",
+      "topic": "Ciężka, nieuleczalna choroba dziecka, opieka perinatalna",
+      "url": "https://gajusz.org.pl"
+    },
+    {
+      "name": "Fundacja Warszawskie Hospicjum dla Dzieci",
+      "topic": "Hospicjum perinatalne i domowe"
+    },
+    {
+      "name": "Pomorze Dzieciom",
+      "topic": "Hospicjum perinatalne, centrum wsparcia po stracie"
+    },
+    {
+      "name": "Lista hospicjów perinatalnych (pacjent.gov.pl)",
+      "topic": "Hospicja perinatalne wg województw",
+      "url": "https://pacjent.gov.pl"
+    }
+  ],
+  "helplines": [
+    {
+      "number": "116 123",
+      "description": "Telefon zaufania dla dorosłych w kryzysie emocjonalnym"
+    },
+    {
+      "number": "800 120 002",
+      "description": "Niebieska Linia — przemoc w rodzinie"
+    },
+    {
+      "number": "112",
+      "description": "Numer alarmowy"
+    }
+  ],
+  "links": [
+    {
+      "url": "https://www.zus.pl",
+      "label": "ZUS — świadczenia dla rodziców"
+    },
+    {
+      "url": "https://www.gov.pl/web/rodzina/urlop-rodzicielski",
+      "label": "Ministerstwo Rodziny — urlop rodzicielski"
+    },
+    {
+      "url": "https://www.pip.gov.pl/dla-pracodawcow/porady-prawne/rodzicielstwo",
+      "label": "Państwowa Inspekcja Pracy — rodzicielstwo"
+    },
+    {
+      "url": "https://www.gov.pl/web/cyfryzacja/rejestr-stanu-cywilnego",
+      "label": "Rejestr stanu cywilnego — odpis aktu urodzenia"
+    },
+    {
+      "url": "https://www.zus.pl/-/zus-dla-przysz%C5%82ych-mam-i-rodzic%C3%B3w",
+      "label": "ZUS dla przyszłych mam i rodziców"
+    }
+  ],
+  "weekCards": {
+    "pregnancy": [
+      {
+        "from": 1,
+        "to": 20,
+        "articleId": "l4-ciaza",
+        "title": "Zwolnienie z kodem B = 100%",
+        "text": "Sama ciąża nie jest podstawą do L4, ale choroba w ciąży — tak. Zasiłek z kodem B wynosi 100% podstawy."
+      },
+      {
+        "from": 21,
+        "to": 29,
+        "articleId": "utrata-pracy",
+        "title": "Jesteś pod ochroną",
+        "text": "W ciąży pracodawca co do zasady nie może Cię zwolnić. Umowa na czas określony kończąca się po 3. miesiącu ciąży przedłuża się do porodu."
+      },
+      {
+        "from": 30,
+        "to": 33,
+        "articleId": "mac-przed-porodem",
+        "title": "Urlop przed porodem",
+        "text": "Możesz zacząć macierzyński do 6 tygodni przed terminem. Wniosek — 14 dni wcześniej."
+      },
+      {
+        "from": 34,
+        "to": 42,
+        "articleId": "wysokosc-mac",
+        "title": "81,5% czy 100% + 70%?",
+        "text": "Na decyzję masz 21 dni po porodzie. Sprawdź w kalkulatorze, który wariant pasuje do Twoich planów."
+      }
+    ],
+    "child": [
+      {
+        "from": 0,
+        "to": 0,
+        "articleId": "wysokosc-mac",
+        "title": "Pierwsze 21 dni",
+        "text": "Jeśli chcesz 81,5% przez cały okres, złóż wniosek o pełny wymiar urlopu do 21 dni po porodzie."
+      },
+      {
+        "from": 1,
+        "to": 3,
+        "articleId": "urlop-mac",
+        "title": "Tata może przejąć część urlopu",
+        "text": "Po 14 tygodniach mama może zrezygnować z dalszej części macierzyńskiego na rzecz taty."
+      },
+      {
+        "from": 4,
+        "to": 8,
+        "articleId": "rodzicielski",
+        "title": "Powrót do pracy na część etatu",
+        "text": "Urlop rodzicielski można łączyć z pracą do połowy etatu — urlop się wydłuża."
+      },
+      {
+        "from": 9,
+        "to": 11,
+        "articleId": "ojcowski",
+        "title": "Urlop ojcowski do 1. urodzin",
+        "text": "Tata ma 2 tygodnie (100%) do ukończenia przez dziecko 12 miesięcy."
+      },
+      {
+        "from": 12,
+        "articleId": "opiekunczy",
+        "title": "Gdy maluch zachoruje",
+        "text": "Zasiłek opiekuńczy: 80% podstawy, do 60 dni w roku. Wniosek Z-15A."
+      }
+    ]
+  }
+}

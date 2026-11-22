@@ -26,6 +26,8 @@ tags:
     description: Benefit calculations (insurance titles, benefit base, sickness and maternity benefits).
   - name: Knowledge
     description: Guide for parents ("Wiedza"), chapters and articles based on the ZUS guide for parents.
+  - name: Content
+    description: Read-only dictionaries (form glossary, facts, support contacts, week cards).
 
 paths:
   /api/v1/ping:
@@ -342,6 +344,70 @@ paths:
                 $ref: '#/components/schemas/KnowledgeSearchResult'
         '400':
           $ref: '#/components/responses/ValidationProblem'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/content/forms:
+    get:
+      tags: [Content]
+      operationId: getForms
+      summary: Glossary of ZUS forms
+      description: Form codes explained in plain Polish (e.g. `Z-3`, `ZAM`).
+      responses:
+        '200':
+          description: All forms.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentForms'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/content/facts:
+    get:
+      tags: [Content]
+      operationId: getFacts
+      summary: Facts for the "Did you know" box
+      description: Verified facts shown on the splash screen and the dashboard.
+      responses:
+        '200':
+          description: All facts.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentFacts'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/content/support:
+    get:
+      tags: [Content]
+      operationId: getSupportContacts
+      summary: Support organisations, helplines and useful pages
+      description: Charity organisations helping parents in difficult situations, support phone numbers and links to official pages.
+      responses:
+        '200':
+          description: All contacts.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupportContacts'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/content/week-cards:
+    get:
+      tags: [Content]
+      operationId: getWeekCards
+      summary: Cards of the week
+      description: Short tips for a week of pregnancy or a month of the child's life, each pointing to an article of the guide.
+      responses:
+        '200':
+          description: All cards.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentWeekCards'
         default:
           $ref: '#/components/responses/Problem'
 
@@ -1016,6 +1082,109 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/KnowledgeArticleSummary'
+
+    ContentForms:
+      type: object
+      required: [forms]
+      properties:
+        forms:
+          type: array
+          items:
+            $ref: '#/components/schemas/FormEntry'
+
+    FormEntry:
+      type: object
+      required: [code, description]
+      properties:
+        code:
+          type: string
+          example: Z-3
+        description:
+          type: string
+
+    ContentFacts:
+      type: object
+      required: [facts]
+      properties:
+        facts:
+          type: array
+          items:
+            type: string
+
+    SupportContacts:
+      type: object
+      required: [organizations, helplines, links]
+      properties:
+        organizations:
+          type: array
+          items:
+            $ref: '#/components/schemas/SupportOrganization'
+        helplines:
+          type: array
+          items:
+            $ref: '#/components/schemas/SupportHelpline'
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/KnowledgeLink'
+
+    SupportOrganization:
+      type: object
+      required: [name, topic]
+      properties:
+        name:
+          type: string
+        topic:
+          type: string
+          description: What the organisation helps with.
+        url:
+          type: string
+          description: Website, when known.
+
+    SupportHelpline:
+      type: object
+      required: [number, description]
+      properties:
+        number:
+          type: string
+          example: 116 123
+        description:
+          type: string
+
+    ContentWeekCards:
+      type: object
+      required: [pregnancy, child]
+      properties:
+        pregnancy:
+          type: array
+          description: Cards by week of pregnancy.
+          items:
+            $ref: '#/components/schemas/ContentWeekCard'
+        child:
+          type: array
+          description: Cards by month of the child's life (0 = first month).
+          items:
+            $ref: '#/components/schemas/ContentWeekCard'
+
+    ContentWeekCard:
+      type: object
+      description: Card shown from week (or month) `from` to `to`, both inclusive.
+      required: [from, articleId, title, text]
+      properties:
+        from:
+          type: integer
+          format: int32
+        to:
+          type: integer
+          format: int32
+          description: Left out when the card has no upper limit.
+        articleId:
+          type: string
+          description: Article of the guide (`/knowledge/articles/{id}`).
+        title:
+          type: string
+        text:
+          type: string
 
     ProblemDetail:
       type: object

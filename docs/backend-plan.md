@@ -446,9 +446,9 @@ Od PR 05 każdy PR z endpointem zaczyna się od wpisu w `openapi.yaml` (patrz 2.
 ### Faza 3 — przewodnik bez logowania
 | # | PR | Zawartość | Testy | P |
 |---|---|---|---|---|
-| 14 | Treści: Wiedza | Eksport `wiedza.js` → `content/knowledge.json` (`tools/content/export-knowledge.mjs`), port `KnowledgeCatalog` z adapterem JSON, `GET /knowledge/chapters`, `GET /knowledge/articles/{id}`, `GET /knowledge/search?q=` (normalizacja jak `normTxt()`) | Jednostkowe normalizacji i wyszukiwania, IT | P1 |
-| 15 | Treści: słowniki | Formularze, ciekawostki, karty tygodnia, organizacje, telefony, linki, katalog świadczeń | IT | P1 |
-| 16 | Przewodnik gościa | `Survey`, `TimelinePolicy`, `AlertPolicy`, `BenefitPlanPolicy`, `WeekCardPolicy`, `PreviewGuide`, `POST /guide/preview` | Snapshot osi czasu dla każdej persony (`FixedDateTimeGenerator`), IT | P0 |
+| 14 | Treści: Wiedza | Eksport `wiedza.js` → `content/knowledge.json` (`tools/content/export-content.mjs`), port `KnowledgeCatalog` z adapterem JSON, `GET /knowledge/chapters`, `GET /knowledge/articles/{id}`, `GET /knowledge/search?q=` (normalizacja jak `normTxt()`) | Jednostkowe normalizacji i wyszukiwania, IT | P1 |
+| 15 | Treści: słowniki | Formularze, ciekawostki, karty tygodnia, organizacje, telefony, linki (`content/dictionaries.json`, port `DictionaryCatalog`), `GET /content/forms`, `/content/facts`, `/content/support`, `/content/week-cards`. Katalog świadczeń przechodzi do PR 16, bo ma reguły uprawnień (`eligible`) | Jednostkowe, IT | P1 |
+| 16 | Przewodnik gościa | `Survey`, `TimelinePolicy`, `AlertPolicy`, `BenefitPlanPolicy` (z katalogiem świadczeń z `BENEFITS`), `WeekCardPolicy`, `PreviewGuide`, `POST /guide/preview` | Snapshot osi czasu dla każdej persony (`FixedDateTimeGenerator`), IT | P0 |
 
 ### Faza 4 — logowanie i eZUS
 | # | PR | Zawartość | Testy | P |

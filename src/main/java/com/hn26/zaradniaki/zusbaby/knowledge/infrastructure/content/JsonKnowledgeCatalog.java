@@ -16,7 +16,7 @@ import tools.jackson.databind.json.JsonMapper;
 /**
  * Adapter of the {@link KnowledgeCatalog} port: content exported from the
  * frontend prototype to {@code content/knowledge.json}
- * ({@code tools/content/export-knowledge.mjs}), read once at startup.
+ * ({@code tools/content/export-content.mjs}), read once at startup.
  */
 @Repository
 class JsonKnowledgeCatalog implements KnowledgeCatalog {

@@ -1,0 +1,13 @@
+name: Pull request
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  checks:
+    timeout-minutes: 20
+    runs-on: python
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.forgejo/actions/checks

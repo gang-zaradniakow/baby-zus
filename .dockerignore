@@ -1,0 +1,28 @@
+# Do obrazu trafiają tylko packages/ i apps/<APP> (zob. Dockerfile).
+# Reszta nie powinna nawet trafić do kontekstu budowania.
+.git
+.venv
+.forgejo
+hackaton
+data
+docs
+scripts
+tests
+**/tests
+**/__pycache__
+**/*.py[cod]
+**/*.egg-info
+.pytest_cache
+.mypy_cache
+.ruff_cache
+.hypothesis
+.coverage
+.coverage.*
+coverage.xml
+htmlcov
+.idea
+.vscode
+
+# Sekrety – konfiguracja tylko przez zmienne środowiskowe przy uruchomieniu
+.env
+.env.*

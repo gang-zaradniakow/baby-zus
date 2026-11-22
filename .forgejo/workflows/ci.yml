@@ -1,0 +1,20 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  REGISTRY: git.hack.kulesz.pl
+  IMAGE: git.hack.kulesz.pl/zespol/baby-zus-algorithms
+  SERVICE: baby-zus-algorithms
+
+# Budowa obrazu i wdrożenie (jak w java-app) dojdą, gdy ustalimy sposób wdrożenia.
+jobs:
+  checks:
+    timeout-minutes: 20
+    runs-on: python
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.forgejo/actions/checks

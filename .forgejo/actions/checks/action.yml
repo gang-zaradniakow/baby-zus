@@ -1,0 +1,35 @@
+name: checks
+description: Lint (ruff, mypy) i testy z pokryciem – to samo co `python tasks.py check`
+runs:
+  using: composite
+  steps:
+    - name: Ustawienia
+      shell: bash
+      run: echo "PIP_DISABLE_PIP_VERSION_CHECK=1" >> "$GITHUB_ENV"
+
+    - name: Cache pip – odczyt
+      id: pip
+      uses: actions/cache/restore@v4
+      with:
+        path: ~/.cache/pip
+        key: pip-${{ hashFiles('requirements-dev.txt', 'apps/*/requirements.txt', 'packages/*/pyproject.toml', 'apps/*/pyproject.toml') }}
+        restore-keys: pip-
+
+    - name: Instalacja (.venv, narzędzia, pakiety i aplikacje)
+      shell: bash
+      run: python tasks.py install
+
+    - name: Lint i typy (ruff, mypy)
+      shell: bash
+      run: python tasks.py lint
+
+    - name: Testy z integracyjnymi (Testcontainers), pokrycie ≥ 80%
+      shell: bash
+      run: python tasks.py test
+
+    - name: Cache pip – zapis
+      if: steps.pip.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v4
+      with:
+        path: ~/.cache/pip
+        key: ${{ steps.pip.outputs.cache-primary-key }}

@@ -1,4 +1,4 @@
-"""Tabele API (ZUS-40): sesje, wiadomości, log audytu, analityka, eskalacje.
+"""Tabele API (ZUS-40): sesje, wiadomości, log audytu, analityka, eskalacje; baza wiedzy (ZUS-35).
 
 Zasady danych (§9.1): ``user_ref`` to pseudonim (nigdy PESEL); token sesji tylko jako skrót
 SHA-256. Usunięcie sesji (prawo do usunięcia historii, ZUS-45) kasuje wiadomości, a wpisy
@@ -12,6 +12,7 @@ from typing import Any
 
 from sqlalchemy import (
     BigInteger,
+    Boolean,
     DateTime,
     Enum,
     ForeignKey,
@@ -26,6 +27,8 @@ from sqlalchemy import (
 )
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+
+from api.db.types import Vector
 
 NAMING_CONVENTION = {
     "ix": "ix_%(column_0_label)s",
@@ -181,3 +184,29 @@ class Escalation(Base):
     """Numer sprawy z (symulowanego) PUE po wysłaniu."""
     created_at: Mapped[datetime] = _now()
     confirmed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class ChunkKind(StrEnum):
+    LAW = "LAW"
+    GUIDE = "GUIDE"
+
+
+class KnowledgeChunk(Base):
+    """Fragment bazy wiedzy z embeddingiem (RAG, ZUS-35). Zapis i odczyt: ``assistant.rag``.
+
+    Klucz to (fragment, model embeddingów) – zmiana modelu nie miesza wektorów różnych wymiarów.
+    """
+
+    __tablename__ = "knowledge_chunks"
+
+    id: Mapped[str] = mapped_column(String(128), primary_key=True)
+    embedding_model: Mapped[str] = mapped_column(String(128), primary_key=True)
+    kind: Mapped[ChunkKind] = mapped_column(_enum(ChunkKind, "chunk_kind"))
+    title: Mapped[str] = mapped_column(Text)
+    text: Mapped[str] = mapped_column(Text)
+    url: Mapped[str] = mapped_column(Text)
+    act: Mapped[str | None] = mapped_column(String(128))
+    article: Mapped[str | None] = mapped_column(String(64))
+    to_verify: Mapped[bool] = mapped_column(Boolean, default=False)
+    content_hash: Mapped[str] = mapped_column(String(64))
+    embedding: Mapped[list[float]] = mapped_column(Vector())

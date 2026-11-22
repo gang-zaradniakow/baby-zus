@@ -1,0 +1,148 @@
+{
+  "server": "zus-naleznosci",
+  "instructions": "Zadłużenie składkowe zalogowanego użytkownika (ważne przy JDG i kategorii H).",
+  "tools": [
+    {
+      "name": "get_debt_status",
+      "description": "Zadłużenie składkowe na dzień (np. dzień powstania prawa do zasiłku).",
+      "inputSchema": {
+        "properties": {
+          "user_ref": {
+            "title": "User Ref",
+            "type": "string"
+          },
+          "on_date": {
+            "format": "date",
+            "title": "On Date",
+            "type": "string"
+          }
+        },
+        "required": [
+          "user_ref",
+          "on_date"
+        ],
+        "title": "get_debt_statusArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "$defs": {
+          "FactSource": {
+            "description": "Skąd pochodzi fakt: pobrany z ZUS, wpisany przez użytkownika, odczytany z dokumentu.",
+            "enum": [
+              "ZUS",
+              "USER",
+              "DOCUMENT"
+            ],
+            "title": "FactSource",
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "source": {
+            "$ref": "#/$defs/FactSource"
+          },
+          "onDate": {
+            "format": "date",
+            "title": "Ondate",
+            "type": "string"
+          },
+          "contributionDebt": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Kwota zaległości; ``null`` – brak informacji w danych sprawy.",
+            "title": "Contributiondebt"
+          },
+          "hasDebt": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hasdebt"
+          },
+          "note": {
+            "default": "Mock: stan zadłużenia z danych sprawy, niezależny od daty.",
+            "title": "Note",
+            "type": "string"
+          }
+        },
+        "required": [
+          "source",
+          "onDate",
+          "contributionDebt",
+          "hasDebt"
+        ],
+        "title": "DebtStatus",
+        "type": "object"
+      }
+    },
+    {
+      "name": "issue_debt_certificate",
+      "description": "Symulacja wydania zaświadczenia o niezaleganiu w opłacaniu składek.",
+      "inputSchema": {
+        "properties": {
+          "user_ref": {
+            "title": "User Ref",
+            "type": "string"
+          }
+        },
+        "required": [
+          "user_ref"
+        ],
+        "title": "issue_debt_certificateArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "certificateId": {
+            "title": "Certificateid",
+            "type": "string"
+          },
+          "issuedOn": {
+            "format": "date",
+            "title": "Issuedon",
+            "type": "string"
+          },
+          "hasDebt": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hasdebt"
+          },
+          "simulated": {
+            "default": true,
+            "title": "Simulated",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "certificateId",
+          "issuedOn",
+          "hasDebt"
+        ],
+        "title": "DebtCertificate",
+        "type": "object"
+      }
+    }
+  ]
+}

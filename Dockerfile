@@ -12,7 +12,8 @@ RUN python -m venv /opt/venv
 ENV PATH=/opt/venv/bin:$PATH
 WORKDIR /src
 COPY packages ./packages
-COPY apps/${APP} ./apps/${APP}
+# Wszystkie aplikacje: niektóre zależą od innych (mcp_servers → assistant: embeddingi, RAG).
+COPY apps ./apps
 # requirements.txt instaluje pakiety lokalne jako `-e`. W obrazie instalujemy je
 # zwykle (bez -e), żeby venv nie zależał od /src i dało się go skopiować dalej.
 # pip liczy ścieżki względem bieżącego katalogu, stąd instalacja z katalogu aplikacji.
@@ -26,13 +27,16 @@ ARG APP=api
 RUN groupadd --system --gid 10001 app \
  && useradd --system --uid 10001 --gid app --no-create-home --shell /usr/sbin/nologin app
 COPY --from=build /opt/venv /opt/venv
-# Persony T01–T12 dla PROFILE_SOURCE=mock (demo bez backendu profilu, ZUS-30/31).
+# Persony T01–T12 dla PROFILE_SOURCE=mock (demo bez backendu profilu, ZUS-30/31)
+# i korpus bazy wiedzy (serwer MCP wiedza, ZUS-35).
 COPY data/personas /app/data/personas
+COPY data/knowledge /app/data/knowledge
 ENV PATH=/opt/venv/bin:$PATH \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     APP_MODULE=${APP}.main:app \
-    PERSONAS_DIR=/app/data/personas
+    PERSONAS_DIR=/app/data/personas \
+    KNOWLEDGE_DIR=/app/data/knowledge
 WORKDIR /app
 USER app
 EXPOSE 8000

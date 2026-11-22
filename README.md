@@ -42,6 +42,11 @@ docker compose up --build     # db (Postgres 17 + pgvector) i api na http://loca
 docker compose ps             # wszystkie usługi powinny mieć stan „healthy”
 ```
 
+Automatyczne sprawdzenie (to samo robi job „docker compose up” w PR na runnerze z Dockerem):
+`python tasks.py compose-smoke` – buduje i uruchamia usługi w osobnym projekcie na portach
+18000/18001/15432, czeka aż `db`, `api` i `mcp_servers` będą zdrowe, sprawdza migracje,
+`/health` i kartę B.01 dla persony T01, a na końcu sprząta (`KEEP=1` zostawia usługi).
+
 Obraz każdej aplikacji buduje ten sam wieloetapowy `Dockerfile` (`python:3.14-slim`) z
 argumentem `APP` (domyślnie `api`, np. `docker build --build-arg APP=admin .`). CI buduje
 i publikuje obraz `api` jako `$IMAGE:<sha>` (`.forgejo/workflows/ci.yml`). W obrazie są

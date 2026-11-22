@@ -6,7 +6,7 @@ else
 PY ?= python3
 endif
 
-COMMANDS := venv install lint format typecheck test test-live test-e2e schemas check pre-commit clean
+COMMANDS := venv install lint format typecheck test test-live test-e2e compose-smoke schemas check pre-commit clean
 .PHONY: help $(COMMANDS)
 .DEFAULT_GOAL := help
 

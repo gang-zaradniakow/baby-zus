@@ -13,7 +13,14 @@ from api.db import migrate
 from api.db.models import Base
 from api.settings import get_settings
 
-TABLES = {"sessions", "messages", "audit_log", "analytics_events", "escalations"}
+TABLES = {
+    "sessions",
+    "messages",
+    "audit_log",
+    "analytics_events",
+    "escalations",
+    "knowledge_chunks",
+}
 OFFLINE_URL = "postgresql+asyncpg://u:p%40ss@localhost/x"
 
 
@@ -28,7 +35,7 @@ def test_offline_upgrade_sql_creates_all_tables(capsys: pytest.CaptureFixture[st
 
 
 def test_offline_downgrade_sql_drops_all_tables(capsys: pytest.CaptureFixture[str]) -> None:
-    migrate.downgrade(OFFLINE_URL, "0001:base", sql=True)
+    migrate.downgrade(OFFLINE_URL, "0002:base", sql=True)
     sql = capsys.readouterr().out
     for table in TABLES:
         assert f"DROP TABLE {table}" in sql
@@ -38,7 +45,7 @@ def test_offline_downgrade_sql_drops_all_tables(capsys: pytest.CaptureFixture[st
     ("argv", "expected"),
     [
         (["upgrade", "--sql", "--url", OFFLINE_URL], "CREATE TABLE sessions"),
-        (["downgrade", "0001:base", "--sql", "--url", OFFLINE_URL], "DROP TABLE sessions"),
+        (["downgrade", "0002:base", "--sql", "--url", OFFLINE_URL], "DROP TABLE sessions"),
     ],
 )
 def test_cli(argv: list[str], expected: str, capsys: pytest.CaptureFixture[str]) -> None:

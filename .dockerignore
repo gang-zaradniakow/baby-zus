@@ -1,4 +1,4 @@
-# Do obrazu trafiają tylko packages/, apps/<APP> i data/personas (zob. Dockerfile).
+# Do obrazu trafiają tylko packages/, apps/ oraz data/personas i data/knowledge (zob. Dockerfile).
 # Reszta nie powinna nawet trafić do kontekstu budowania.
 .git
 .venv
@@ -6,6 +6,7 @@
 hackaton
 data/*
 !data/personas
+!data/knowledge
 docs
 scripts
 tests

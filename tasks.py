@@ -156,10 +156,16 @@ def cmd_test_e2e() -> None:
     run(tool("pytest"), "-m", "e2e", "tests/e2e")
 
 
+def cmd_compose_smoke() -> None:
+    """docker compose up + sprawdzenie zdrowia usług i poziomu 1 (wymaga Dockera, bash, jq)."""
+    run("bash", "scripts/compose_smoke.sh")
+
+
 def cmd_schemas() -> None:
-    """Wygeneruj JSON Schema kontraktów i OpenAPI backendu profilu do docs/contracts."""
+    """Wygeneruj JSON Schema kontraktów, OpenAPI backendu profilu i snapshoty MCP."""
     run(venv_python(), "-m", "contracts.schema")
     run(venv_python(), "-m", "profile_source.openapi")
+    run(venv_python(), "-m", "mcp_servers.snapshot")
 
 
 def cmd_check() -> None:
@@ -195,6 +201,7 @@ COMMANDS: dict[str, Callable[[], None]] = {
     "test": cmd_test,
     "test-live": cmd_test_live,
     "test-e2e": cmd_test_e2e,
+    "compose-smoke": cmd_compose_smoke,
     "schemas": cmd_schemas,
     "check": cmd_check,
     "pre-commit": cmd_pre_commit,

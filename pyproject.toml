@@ -44,6 +44,8 @@ ignore = [
 "tasks.py" = ["T20", "S603", "S607"]   # skrypt CLI: print i uruchamianie narzędzi
 "**/contracts/schema.py" = ["T20"]      # CLI eksportu schematów
 "**/profile_source/openapi.py" = ["T20"]  # CLI eksportu kontraktu OpenAPI
+"**/mcp_servers/snapshot.py" = ["T20"]   # CLI snapshotu narzędzi MCP
+"**/assistant/rag/ingest.py" = ["T20"]   # CLI wczytania bazy wiedzy
 
 [tool.ruff.lint.isort]
 known-first-party = [

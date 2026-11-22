@@ -1,6 +1,6 @@
 # Lokalne uruchomienie: docker compose up --build  (ZUS-02)
 # Sekrety i konfiguracja z .env (wzór: .env.example); domyślne hasła tylko do pracy lokalnej.
-# Kolejne usługi (mcp_servers – ZUS-32, admin – ZUS-60) dochodzą razem z ich aplikacjami.
+# Kolejne usługi (admin – ZUS-60) dochodzą razem z ich aplikacjami.
 
 name: zus-asystent
 
@@ -65,6 +65,26 @@ services:
     environment: *db-url
     ports:
       - "${API_PORT:-8000}:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+
+  mcp_servers:
+    # Serwery MCP z §7 pod /<serwer>/mcp (ZUS-32); audyt w tabeli audit_log z migracji API.
+    <<: *app
+    image: zus-mcp-servers:local
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP: mcp_servers
+    environment:
+      <<: *db-url
+      MCP_TOKEN_SECRET: ${MCP_TOKEN_SECRET:-dev-only-change-me-0123456789}
+    ports:
+      - "${MCP_PORT:-8001}:8000"
     depends_on:
       db:
         condition: service_healthy

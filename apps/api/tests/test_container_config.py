@@ -42,10 +42,11 @@ def test_dockerfile_ships_personas_and_healthcheck() -> None:
     dockerfile = (ROOT / "Dockerfile").read_text(encoding="utf-8")
     assert "FROM python:${PYTHON_VERSION}-slim" in dockerfile
     assert "COPY data/personas" in dockerfile
+    assert "COPY data/knowledge" in dockerfile
     assert "HEALTHCHECK" in dockerfile
     assert "USER app" in dockerfile
     dockerignore = (ROOT / ".dockerignore").read_text(encoding="utf-8").splitlines()
-    assert {".env", "data/*", "!data/personas"} <= set(dockerignore)
+    assert {".env", "data/*", "!data/personas", "!data/knowledge"} <= set(dockerignore)
 
 
 def test_migrate_service_runs_alembic_once() -> None:

@@ -1,0 +1,49 @@
+{
+  "description": "Organizacje i materiały wsparcia dla ścieżki „sytuacja trudna” (§9.3, U2: dane w repozytorium, panel tylko je pokazuje). Adresy sprawdzone 22.11.2026; pozycje bez adresu (toVerify: true) wymagają potwierdzenia strony przed udostępnieniem linku.",
+  "organizations": [
+    {
+      "id": "mrpips-wsparcie-po-stracie",
+      "name": "Ministerstwo Rodziny, Pracy i Polityki Społecznej – wsparcie psychologiczne rodziców po stracie",
+      "description": "Informacje o wsparciu psychologicznym dla rodziców po utracie ciąży lub dziecka tuż po urodzeniu.",
+      "url": "https://www.gov.pl/web/rodzina/w-ministerstwie-pracy-o-psychologicznym-wsparciu-rodzicow-po-stracie",
+      "categories": ["żałoba", "poronienie"]
+    },
+    {
+      "id": "rodzic-po-ludzku-informator",
+      "name": "Fundacja Rodzić po Ludzku – informator „Poronienie i urodzenie martwego dziecka w szpitalu”",
+      "description": "Informator o prawach rodziców i o tym, czego mogą oczekiwać w szpitalu po poronieniu lub urodzeniu martwego dziecka.",
+      "url": "https://gdzierodzic.info/wp-content/uploads/2025/09/Informator-Rodzic-po-Ludzku-Poronienie-i-urodzenie-martwego-dziecka-w-szpitalu-wersja-na-telefon-2025.pdf",
+      "categories": ["żałoba", "poronienie"]
+    },
+    {
+      "id": "stowarzyszenie-rodzicow-po-poronieniu",
+      "name": "Stowarzyszenie Rodziców po Poronieniu",
+      "description": "Stowarzyszenie (Warszawa, KRS 0000260223) wspierające rodziców po poronieniu.",
+      "url": null,
+      "categories": ["poronienie", "żałoba"],
+      "toVerify": true
+    },
+    {
+      "id": "fundacja-wczesniak",
+      "name": "Fundacja Wcześniak Rodzice-Rodzicom",
+      "description": "Wsparcie rodziców dzieci urodzonych przed 36. tygodniem ciąży: poradnik dla rodziców, wypożyczalnia sprzętu (np. monitor oddechu, laktator).",
+      "url": "https://www.wczesniak.pl",
+      "categories": ["wcześniaki"]
+    },
+    {
+      "id": "nfz-opieka-perinatalna",
+      "name": "NFZ – perinatalna opieka paliatywna",
+      "description": "Komunikat NFZ o perinatalnej opiece paliatywnej dla rodzin, u których dziecka rozpoznano ciężką, nieuleczalną chorobę.",
+      "url": "https://www.nfz.gov.pl/aktualnosci/aktualnosci-centrali/komunikat-dotyczacy-perinatalnej-opieki-paliatywnej,7857.html",
+      "categories": ["ciężka choroba dziecka"]
+    },
+    {
+      "id": "fundacja-gajusz",
+      "name": "Fundacja Gajusz – hospicjum perinatalne (Łódź)",
+      "description": "Hospicjum perinatalne, stacjonarne i domowe dla dzieci; bezpłatna opieka nad całą rodziną dziecka z chorobą nieuleczalną.",
+      "url": null,
+      "categories": ["ciężka choroba dziecka", "żałoba"],
+      "toVerify": true
+    }
+  ]
+}

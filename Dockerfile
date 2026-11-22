@@ -5,6 +5,9 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN --mount=type=cache,target=/root/.npm npm ci --no-audit --no-fund
 COPY . .
+# Adres backendu wkompilowany w bundle (np. /api/baby-zus-backend); pusty = http://localhost:8080
+ARG EXPO_PUBLIC_API_URL
+ENV EXPO_PUBLIC_API_URL=${EXPO_PUBLIC_API_URL}
 RUN npm run build
 
 FROM nginxinc/nginx-unprivileged:stable-alpine

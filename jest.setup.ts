@@ -6,3 +6,12 @@
 
 // Marginesy bezpieczne (notch) nie istnieją w środowisku testów — biblioteka dostarcza atrapę.
 jest.mock('react-native-safe-area-context', () => require('react-native-safe-area-context/jest/mock').default);
+
+// Testy nie łączą się z backendem: każde zapytanie kończy się błędem sieci, więc aplikacja zostaje
+// przy danych lokalnych. Test, który sprawdza integrację z API, podmienia `fetch` u siebie.
+globalThis.fetch = jest.fn(() => Promise.reject(new Error('Brak sieci w testach'))) as jest.Mock;
+const warn = console.warn;
+jest.spyOn(console, 'warn').mockImplementation((message?: unknown, ...rest: unknown[]) => {
+  if (typeof message === 'string' && message.includes('z backendu niedostępne')) return;
+  warn(message, ...rest);
+});

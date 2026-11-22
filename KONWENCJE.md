@@ -24,6 +24,9 @@ src/
     templates/      szkielety ekranów (ScreenLayout, CenteredLayout, StepLayout).
   navigation/     Nawigacja: lista zakładek, RootNavigator (kto widzi które ekrany).
   session/        Stan sesji: zalogowanie + profil rodzica (Context + Provider + hook).
+  api/            Klient baby-zus-backend: typy kontraktu (openapi.yaml), zapytania i mapowanie
+                  odpowiedzi na modele aplikacji — czysty TypeScript, bez Reacta. Folder na zasób
+                  (`api/legalParameters/`).
   domain/         Logika biznesowa i typy — czysty TypeScript, bez Reacta.
   data/           Dane statyczne: opcje formularzy, później katalog świadczeń, persony.
   hooks/          Ogólne hooki wielokrotnego użytku (useToday).
@@ -33,6 +36,7 @@ src/
 
 Zasada zależności (strzałka = „może importować”):
 `app → screens → features → components → theme`, a `domain`, `data` i `utils` może importować każdy.
+`api` importują hooki i providery (np. `params/`), nigdy komponenty widoku.
 `domain` nie importuje nic z UI. Niższa warstwa nigdy nie importuje wyższej.
 
 Gdzie położyć nowy plik?

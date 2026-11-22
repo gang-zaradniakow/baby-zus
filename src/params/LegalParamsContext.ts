@@ -12,7 +12,7 @@ export type LegalParamsValue = {
   /** Rejestr zmian — najnowsze pierwsze (w produkcji: z datą obowiązywania i autorem). */
   changeLog: readonly ParamsChange[];
   save: (params: LegalParams, description: string) => void;
-  /** Przywraca parametry domyślne (stan prawny z `data/legalParams`). */
+  /** Przywraca parametry domyślne (z backendu, a bez niego — z `data/legalParams`). */
   reset: () => void;
 };
 

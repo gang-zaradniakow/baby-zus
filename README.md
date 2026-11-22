@@ -13,3 +13,15 @@ npm start        # zeskanuj kod QR w aplikacji Expo Go
 npm run web      # podgląd w przeglądarce
 npm run typecheck
 ```
+
+## Backend
+
+Dane i parametry pochodzą z [baby-zus-backend](../baby-zus-backend) (kontrakt: `openapi.yaml`).
+Adres ustawia zmienna `EXPO_PUBLIC_API_URL` (domyślnie `http://localhost:8080`), np.:
+
+```bash
+EXPO_PUBLIC_API_URL=http://192.168.1.10:8080 npm start
+```
+
+Gdy backend jest niedostępny, aplikacja działa na danych lokalnych z `src/data/`.
+Przy `npm run web` backend musi wpuszczać origin podglądu w CORS (`CORS_ALLOWED_ORIGINS=http://localhost:8081`).

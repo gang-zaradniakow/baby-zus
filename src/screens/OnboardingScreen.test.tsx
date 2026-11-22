@@ -21,6 +21,16 @@ async function renderOnboarding() {
   return probe;
 }
 
+/**
+ * Pierwszy render w pliku płaci jednorazowy koszt „zimnego startu” (React Native ładuje komponenty
+ * leniwie). Na wolnym runnerze CI to przekraczało limit pierwszego testu — rozgrzewamy więc ekran
+ * raz, przed testami, z osobnym, hojnym limitem czasu.
+ */
+beforeAll(async () => {
+  const { unmount } = await renderWithProviders(<OnboardingScreen />);
+  unmount();
+}, 60_000);
+
 describe('OnboardingScreen — przejście przez ankietę', () => {
   it('pierwszy krok: pytanie o rolę, bez przycisku „Wróć” i „Dalej”', async () => {
     await renderOnboarding();

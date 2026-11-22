@@ -9,18 +9,21 @@ import { applyZusAccount } from './applyZusAccount';
 import type { CalculatorForm, CalculatorSituation, FormParent, PersonForm } from './CalculatorForm';
 import { computeCalculation } from './computeCalculation';
 import { createCalculatorForm } from './createCalculatorForm';
+import { useBackendPregnancy } from './useBackendPregnancy';
+import { withBackendPregnancy } from './withBackendPregnancy';
 
 type Patch<K extends keyof CalculatorForm> = Partial<CalculatorForm[K]>;
 
 /**
- * Stan kalkulatora: formularz wypełniony z ankiety, nazwane zmiany pól i wynik liczony na bieżąco.
+ * Stan kalkulatora: formularz wypełniony z ankiety, nazwane zmiany pól i wynik liczony na bieżąco
+ * (L4 w ciąży — potwierdzany przez backend).
  * `initialSituation` — np. z przycisku „Policz” w artykule.
  */
 export function useCalculatorForm(initialSituation?: CalculatorSituation) {
   const today = useToday();
   const { profile, isSignedIn } = useSession();
   const zus = useZusData();
-  const { params } = useLegalParams();
+  const { params, isChanged } = useLegalParams();
 
   /** Formularz z ankiety; po zalogowaniu moja osoba dostaje podstawy z eZUS. */
   const initialForm = (situation?: CalculatorSituation): CalculatorForm => {
@@ -41,12 +44,18 @@ export function useCalculatorForm(initialSituation?: CalculatorSituation) {
 
   const set = <K extends keyof CalculatorForm>(key: K, value: CalculatorForm[K]) =>
     setForm((f) => ({ ...f, [key]: value }));
+  // Wynik liczymy od razu lokalnie; L4 w ciąży po chwili potwierdza backend i jego kwoty zastępują lokalne.
+  const local = computeCalculation(form, today, params);
+  const backend = useBackendPregnancy(form, local, isChanged);
+  const result =
+    local.kind === 'pregnancy' && backend ? withBackendPregnancy(local, backend, form.childrenCount, params) : local;
+
   const patch = <K extends 'preterm' | 'adoption' | 'fatherPlan' | 'work' | 'pregnancy'>(key: K, value: Patch<K>) =>
     setForm((f) => ({ ...f, [key]: { ...f[key], ...value } }));
 
   return {
     form,
-    result: computeCalculation(form, today, params),
+    result,
     setSituation: (situation: CalculatorSituation) => set('situation', situation),
     setDateText: (dateText: string) => set('dateText', dateText),
     setChildrenCount: (childrenCount: number) => set('childrenCount', childrenCount),

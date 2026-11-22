@@ -29,9 +29,7 @@ jobs:
         run: echo "${{ secrets.REGISTRY_TOKEN }}" | docker login "$REGISTRY" -u "${{ vars.REGISTRY_USER }}" --password-stdin
 
       - name: Budowa obrazu
-        run: docker build \
-           --build-arg EXPO_PUBLIC_API_URL="${{ vars.EXPO_PUBLIC_API_URL }}" \
-           -t "$IMAGE:${{ github.sha }}" .
+        run: docker build --build-arg EXPO_PUBLIC_API_URL="${{ vars.EXPO_PUBLIC_API_URL }}" -t "$IMAGE:${{ github.sha }}" .
 
       - name: Wysłanie obrazu
         run: docker push "$IMAGE:${{ github.sha }}"

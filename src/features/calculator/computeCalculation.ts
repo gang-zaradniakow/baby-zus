@@ -4,6 +4,7 @@ import type { BenefitSimulation } from '@/domain/calculator/BenefitSimulation';
 import type { CalcCheck } from '@/domain/calculator/CalcCheck';
 import { concurrentTitlesSickPay, type ConcurrentSickPay } from '@/domain/calculator/concurrentTitlesSickPay';
 import { simulateBenefit } from '@/domain/calculator/simulateBenefit';
+import { toNetAmount } from '@/domain/calculator/toNetAmount';
 import { parsePolishDate } from '@/domain/dates/parsePolishDate';
 
 import type { CalculatorForm } from './CalculatorForm';
@@ -12,6 +13,8 @@ import { resolvePersonForm, type ResolvedPersonForm } from './resolvePersonForm'
 export type PregnancyCalculation = {
   kind: 'pregnancy';
   sickPay: ConcurrentSickPay;
+  /** Razem na rękę. */
+  netTotal: number;
   /** Wyjaśnienia do pokazania (bez zdublowanych „brak ubezpieczenia”). */
   checks: CalcCheck[];
   /** Gdy zasiłku z ZUS nie ma — co przysługuje po porodzie. */
@@ -34,15 +37,30 @@ const prefixed = (prefix: string, checks: readonly CalcCheck[]) => checks.map((c
 /** Te komunikaty powtarza wynik (karta „nie przysługuje” / świadczenie zastępcze). */
 const DUPLICATED_NO = /Rolnik w KRUS|Żaden z tytułów|Brak ubezpieczenia/;
 
+/**
+ * Wynik L4 w ciąży z policzonego `sickPay` (lokalnie albo przez backend): wyjaśnienia do pokazania
+ * i świadczenie zastępcze, gdy zasiłku nie ma.
+ */
+export function buildPregnancyCalculation(
+  sickPay: ConcurrentSickPay,
+  netTotal: number,
+  mother: ResolvedPersonForm,
+  childrenCount: number,
+  params: LegalParams = LEGAL_PARAMS,
+): PregnancyCalculation {
+  const none = sickPay.parts.length === 0;
+  const allowance = none ? allowanceInstead(mother.resolution, childrenCount, params) : null;
+  const checks = sickPay.checks.filter((c) => c.level !== 'ok' && !(none && DUPLICATED_NO.test(c.text)));
+  return { kind: 'pregnancy', sickPay, netTotal, checks, allowance, mother };
+}
+
 /** Wynik kalkulatora dla bieżącego formularza — port `simOut` z prototypu (bez HTML). */
 export function computeCalculation(form: CalculatorForm, today: Date, params: LegalParams = LEGAL_PARAMS): Calculation {
   const mother = resolvePersonForm(form.mother, params);
 
   if (form.situation === 'pregnancy') {
     const sickPay = concurrentTitlesSickPay(mother.resolution, form.pregnancy, params);
-    const allowance = sickPay.parts.length === 0 ? allowanceInstead(mother.resolution, form.childrenCount, params) : null;
-    const checks = sickPay.checks.filter((c) => c.level !== 'ok' && !(sickPay.parts.length === 0 && DUPLICATED_NO.test(c.text)));
-    return { kind: 'pregnancy', sickPay, checks, allowance, mother };
+    return buildPregnancyCalculation(sickPay, toNetAmount(sickPay.total, params), mother, form.childrenCount, params);
   }
 
   const father = resolvePersonForm(form.father, params);

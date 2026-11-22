@@ -12,6 +12,6 @@ jest.mock('react-native-safe-area-context', () => require('react-native-safe-are
 globalThis.fetch = jest.fn(() => Promise.reject(new Error('Brak sieci w testach'))) as jest.Mock;
 const warn = console.warn;
 jest.spyOn(console, 'warn').mockImplementation((message?: unknown, ...rest: unknown[]) => {
-  if (typeof message === 'string' && /z backendu niedostępne/.test(message)) return;
+  if (typeof message === 'string' && /z backendu niedostęp/.test(message)) return;
   warn(message, ...rest);
 });

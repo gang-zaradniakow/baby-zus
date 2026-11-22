@@ -3,7 +3,7 @@ import { ApiError } from './ApiError';
 
 type Problem = { code?: string; gentleMessage?: string };
 
-/** GET na ścieżkę backendu (np. `/api/v1/ping`) i odczyt JSON. Odpowiedź inna niż 2xx kończy się `ApiError`. */
+/** Zapytanie do ścieżki backendu (np. `/api/v1/ping`) i odczyt JSON. Odpowiedź inna niż 2xx kończy się `ApiError`. */
 export async function fetchJson<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${path}`, {
     ...init,

@@ -1,8 +1,20 @@
 import { renderHook, waitFor } from '@testing-library/react-native';
 
+import { resetApiConfigForTests } from '@/api/apiConfig';
 import { FORMS_GLOSSARY } from '@/data/wizards/formsGlossary';
 
 import { useFormsGlossary } from './useFormsGlossary';
+
+/** Backend „skonfigurowany” na czas testu — `fetch` i tak jest podmieniony (jest.setup.ts). */
+beforeEach(() => {
+  resetApiConfigForTests();
+  process.env.EXPO_PUBLIC_API_URL = 'https://api.test';
+});
+
+afterEach(() => {
+  process.env.EXPO_PUBLIC_API_URL = '';
+  resetApiConfigForTests();
+});
 
 describe('useFormsGlossary', () => {
   it('pokazuje słowniczek z backendu', async () => {

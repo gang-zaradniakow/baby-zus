@@ -1,5 +1,6 @@
 /** Identyfikatory zgodne z prototypem mZUS (data.js), żeby przenosić logikę świadczeń 1:1. */
-export type ParentStage = 'ciaza' | 'dziecko' | 'adopcja';
+/** `planuje` — dziecka jeszcze nie ma w drodze; osoba sprawdza, ile dostanie w ciąży i po porodzie. */
+export type ParentStage = 'planuje' | 'ciaza' | 'dziecko' | 'adopcja';
 
 /** Kim osoba wypełniająca ankietę jest dla dziecka. */
 export type ParentRole = 'mama' | 'tata' | 'opiekun';
@@ -29,7 +30,7 @@ export type ParentProfile = {
   stage: ParentStage;
   /**
    * Data zdarzenia w formacie `RRRR-MM-DD`, zależnie od etapu:
-   * termin porodu (ciąża), data urodzenia (dziecko) albo data przyjęcia (adopcja).
+   * planowany termin porodu (planuje), termin porodu (ciąża), data urodzenia (dziecko) albo data przyjęcia (adopcja).
    */
   eventDate: string;
   /** Przy adopcji: data urodzenia dziecka (`RRRR-MM-DD`) — od niej zależy długość urlopu. */

@@ -82,6 +82,7 @@ export function useWizardForm(definition: WizardDefinition) {
       wizardId: definition.id,
       createdAt: new Date(),
       applicantName: ctx.applicantName,
+      ...(definition.draft && { draft: true }),
       ...(result.kind === 'submission' && { upo: createUpoNumber(today, sequence) }),
     };
     addSentDocument(document);

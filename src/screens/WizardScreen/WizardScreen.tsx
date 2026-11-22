@@ -47,7 +47,8 @@ function WizardFlow({ definition }: { definition: WizardDefinition }) {
   const back = () => {
     if (!wizard.back()) exit();
   };
-  const online = wizard.institution !== 'PRAC';
+  // Szkic nie trafia do urzędu, więc nie wymaga logowania nawet przy wniosku do ZUS.
+  const online = !definition.draft && wizard.institution !== 'PRAC';
 
   // Wnioski przez eZUS / gov.pl wymagają zalogowania (pisma do pracodawcy — nie).
   if (online && !isSignedIn) {
@@ -67,7 +68,11 @@ function WizardFlow({ definition }: { definition: WizardDefinition }) {
           </View>
           <AppText>{definition.intro}</AppText>
           <AppText variant="caption" color={colors.textMuted}>
-            {online ? 'Wynik: wniosek przez internet (symulacja, z numerem UPO).' : 'Wynik: pismo do pracodawcy — do wydruku albo wysłania do kadr.'}
+            {definition.draft
+              ? 'Wynik: szkic wniosku w Moich dokumentach — złożysz go po porodzie.'
+              : online
+                ? 'Wynik: wniosek przez internet (symulacja, z numerem UPO).'
+                : 'Wynik: pismo do pracodawcy — do wydruku albo wysłania do kadr.'}
           </AppText>
           <Button title="Zaczynamy" onPress={wizard.start} />
         </View>
@@ -93,7 +98,10 @@ function WizardFlow({ definition }: { definition: WizardDefinition }) {
       }
       footer={
         isReview ? (
-          <Button title={online ? 'Wyślij (symulacja)' : 'Utwórz pismo'} onPress={finish} />
+          <Button
+            title={definition.draft ? 'Zapisz szkic' : online ? 'Wyślij (symulacja)' : 'Utwórz pismo'}
+            onPress={finish}
+          />
         ) : (
           <Button title="Dalej" onPress={wizard.next} />
         )

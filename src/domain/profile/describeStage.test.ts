@@ -9,6 +9,10 @@ const profile = (stage: ParentProfile['stage'], eventDate: string): ParentProfil
   makeProfile({ stage, eventDate });
 
 describe('describeStage', () => {
+  it('planowanie: orientacyjny termin', () => {
+    expect(describeStage(profile('planuje', '2027-09-01'), today)).toBe('Planujecie dziecko · orientacyjnie 01.09.2027');
+  });
+
   it('ciąża: tydzień i termin', () => {
     expect(describeStage(profile('ciaza', '2027-03-13'), today)).toBe('Ciąża · 24. tydzień · termin 13.03.2027');
   });

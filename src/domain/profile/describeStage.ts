@@ -9,6 +9,8 @@ export function describeStage(profile: ParentProfile, today: Date): string {
   const date = fromISODate(profile.eventDate);
 
   switch (profile.stage) {
+    case 'planuje':
+      return `Planujecie dziecko · orientacyjnie ${formatDate(date)}`;
     case 'ciaza':
       return `Ciąża · ${pregnancyWeek(date, today)}. tydzień · termin ${formatDate(date)}`;
     case 'dziecko':

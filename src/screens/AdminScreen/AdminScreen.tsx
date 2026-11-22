@@ -9,7 +9,9 @@ import { Card } from '@/components/atoms/Card';
 import { NumberField } from '@/components/molecules/NumberField';
 import { TextField } from '@/components/molecules/TextField';
 import { ScreenLayout } from '@/components/templates/ScreenLayout';
-import { LEGAL_PARAMS, type LegalParams } from '@/data/legalParams';
+import type { LegalParams } from '@/data/legalParams';
+import { fromISODate } from '@/domain/dates/calendarDate';
+import { formatDate } from '@/domain/dates/formatDate';
 import { describeParamChanges } from '@/features/admin/describeParamChanges';
 import { EDITABLE_PARAM_GROUPS } from '@/features/admin/editableParams';
 import { MoreSection } from '@/features/more/components/MoreSection';
@@ -26,11 +28,12 @@ const DEMO_PASSWORD = 'zus2026';
 
 /**
  * Panel administracyjny (mock): zmiana parametrów prawnych bez zmiany kodu — zapis obowiązuje od razu
- * we wszystkich kalkulatorach. Bez REST (prototyp: `PUT /api/params`); rejestr zmian w pamięci.
+ * we wszystkich kalkulatorach. Wartości domyślne przychodzą z backendu (`GET /api/v1/legal-parameters`);
+ * zmiany są lokalne, w pamięci — backend nie ma jeszcze zapisu parametrów.
  */
 export function AdminScreen() {
   const { colors } = useTheme();
-  const { params, save, reset, changeLog } = useLegalParams();
+  const { params, defaults, source, save, reset, changeLog } = useLegalParams();
   const [password, setPassword] = useState('');
   const [loggedIn, setLoggedIn] = useState(false);
   const [draft, setDraft] = useState<LegalParams>(params);
@@ -72,12 +75,19 @@ export function AdminScreen() {
       backLabel="Więcej"
     >
       <View style={styles.content}>
+        <Card tone={source.kind === 'server' ? 'info' : 'accent'}>
+          <AppText variant="caption">
+            {source.kind === 'server'
+              ? `Wartości domyślne z serwera: wersja ${source.version}, obowiązuje od ${formatDate(fromISODate(source.validFrom))}. Zmiany poniżej są lokalne (demo).`
+              : 'Brak połączenia z serwerem — wartości domyślne z aplikacji. Zmiany poniżej są lokalne (demo).'}
+          </AppText>
+        </Card>
         {EDITABLE_PARAM_GROUPS.map((group) => (
           <Card key={group.title} title={group.title}>
             {group.fields.map((field) => (
               <NumberField
                 key={field.id}
-                label={field.get(params) !== field.get(LEGAL_PARAMS) ? `${field.label} (zmienione)` : field.label}
+                label={field.get(params) !== field.get(defaults) ? `${field.label} (zmienione)` : field.label}
                 value={field.get(draft)}
                 onChange={(value) => setDraft((d) => field.set(d, value))}
               />
@@ -92,7 +102,7 @@ export function AdminScreen() {
           icon={RotateCcw}
           onPress={() => {
             reset();
-            setDraft(LEGAL_PARAMS);
+            setDraft(defaults);
           }}
         />
 

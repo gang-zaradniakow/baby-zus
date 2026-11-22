@@ -13,6 +13,7 @@ export type EventDateValidation = {
 const COMPLETE_LENGTH = 'DD.MM.RRRR'.length;
 const MAX_PREGNANCY_WEEKS = 42;
 const APP_SCOPE_MONTHS = 36;
+const PLANNING_SCOPE_MONTHS = 36;
 
 /** Sprawdza datę z onboardingu w kontekście etapu (termin porodu w przyszłości, urodzenie w przeszłości). */
 export function validateEventDate(stage: ParentStage | null, text: string, today: Date): EventDateValidation {
@@ -20,6 +21,14 @@ export function validateEventDate(stage: ParentStage | null, text: string, today
 
   const date = parsePolishDate(text);
   if (!date) return { date: null, error: 'Taka data nie istnieje. Sprawdź dzień i miesiąc.' };
+
+  if (stage === 'planuje') {
+    if (date < today) return { date: null, error: 'Planowany termin powinien być w przyszłości.' };
+    if (date > addMonths(today, PLANNING_SCOPE_MONTHS)) {
+      return { date: null, error: 'Podaj termin w ciągu najbliższych 3 lat.' };
+    }
+    return { date, error: null };
+  }
 
   if (stage === 'ciaza') {
     if (date < today) {

@@ -35,6 +35,47 @@ rework nie zostanie zrobiony.
 
 ---
 
+## Backend (API) — parametry prawne i terminy
+
+- **Branch/commit:** `feat/api-client`: `42b6357` (konfiguracja adresu, klient HTTP), `9040d77`
+  (`/legal-parameters`), `d713fa6` (`/deadlines`).
+- **Czym jest:** Połączenie z baby-zus-backend wg kontraktu `openapi.yaml` (wersja 0.1.0):
+  - `GET /api/v1/legal-parameters` — parametry prawne kalkulatorów pobierane przy starcie aplikacji
+    (`LegalParamsProvider`); klucze backendu (`MINIMUM_WAGE`…) mapowane jawną tabelą na `LegalParams`.
+    Panel administracyjny nakłada zmiany na wartości z serwera i pokazuje wersję i datę obowiązywania.
+  - `GET /api/v1/deadlines` — terminy na osi czasu potwierdza serwer (jego kalendarz świąt rozstrzyga);
+    każdy termin niesie regułę (`DeadlineRule`), a wynik serwera zastępuje lokalny.
+  - **Offline / bez backendu:** wszystko liczy się lokalnie jak wcześniej. Testy potwierdzają, że lokalne
+    terminy są identyczne z backendowymi (16 przypadków z `golden/deadlines.json`), a odpowiedź
+    parametrów 2026 daje dokładnie lokalne `LEGAL_PARAMS`.
+  - Błędy RFC 9457 → `ApiError` z `code` i łagodnym komunikatem `gentleMessage`; limit czasu 8 s.
+- **Adres backendu (TEST / PROD):**
+  - **Web (Docker):** obraz jest jeden dla TEST i PROD, więc adres podaje się **przy starcie kontenera**
+    zmienną `API_URL`. nginx (`nginx/default.conf.template`, envsubst obrazu nginx) zwraca go pod
+    `/config.json`, a aplikacja czyta go przy starcie.
+    - **TEST:** `API_URL=https://test.hack.kulesz.pl/api/baby-zus-backend`. Cały host jest za SSO (authentik):
+      przeglądarka zalogowana do frontendu wysyła ciasteczko sesji także do API (ten sam host — bez CORS).
+      Po wygaśnięciu sesji zapytania dostają 302 na logowanie → aplikacja liczy lokalnie. Z `expo start`
+      i aplikacji mobilnej TEST jest niedostępny (SSO) — lokalnie używamy backendu na `localhost:8080`.
+    - **PROD:** `API_URL=https://prod.hack.kulesz.pl/api/baby-zus-backend` (22.11.2026 backend PROD odpowiadał
+      502 — jeszcze niewdrożony; do tego czasu aplikacja liczy lokalnie).
+    - Gdy serwer frontendu ma `/config.json`, liczy się **tylko on** — pusty `API_URL` = bez backendu, nigdy
+      adres zapasowy z `.env.production` (żeby TEST nie trafił do PROD).
+  - **Lokalnie (`expo start`):** `.env.development` → `EXPO_PUBLIC_API_URL=http://localhost:8080`;
+    własny adres bez commitowania w `.env.development.local`.
+  - **Aplikacja mobilna (EAS):** `.env.production` → `EXPO_PUBLIC_API_URL=https://prod.hack.kulesz.pl/api/baby-zus-backend`
+    (albo nadpisanie w EAS Environment Variables, np. dla buildu testowego).
+  - Kolejność: `/config.json` (web na serwerze) → `EXPO_PUBLIC_API_URL` (lokalnie i mobilnie) → brak (liczymy lokalnie).
+- **Pliki:** `src/api/` (`apiConfig`, `fetchJson`, `ApiError`, `apiTypes`, `mapLegalParameters`,
+  `legalParametersApi`, `deadlinesApi`, `__fixtures__/`), `src/params/LegalParamsProvider.tsx`,
+  `src/features/timeline/useServerDeadlines.ts`, `src/domain/deadlines/Deadline.ts` (`DeadlineRule`),
+  `.env.development`, `.env.production`, `nginx/default.conf.template`, `Dockerfile`, `jest.setup.ts`
+  (testy domyślnie bez backendu).
+- **Do zrobienia po stronie wdrożenia/backendu:** ustawić `API_URL` w kontenerze frontendu (TEST — adres
+  wyżej i PROD; skrypt wdrożenia jest na serwerze, poza tym repo). CORS w backendzie
+  (`CORS_ALLOWED_ORIGINS`, domyślnie tylko `localhost:8765`) trzeba poszerzyć tylko wtedy, gdy frontend
+  stoi pod innym hostem niż backend, albo do pracy z `expo start` na `localhost:8081`.
+
 ## Motyw i design system
 
 - **Branch/commit:** `d2ca630 feat(theme): tokeny designu z prototypu ZUS baby i tryb jasny/ciemny` (main)

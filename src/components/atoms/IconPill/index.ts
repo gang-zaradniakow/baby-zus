@@ -1,1 +1,0 @@
-export { IconPill } from './IconPill';

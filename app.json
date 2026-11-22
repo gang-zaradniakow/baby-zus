@@ -11,6 +11,7 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "pl.babyzus.mzusrodzic",
       "adaptiveIcon": {
         "backgroundColor": "#11734B",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -24,6 +25,12 @@
     },
     "plugins": [
       "expo-router"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "bb1d31f9-531b-4082-bcef-f3158c533437"
+      }
+    },
+    "owner": "m0h1"
   }
 }

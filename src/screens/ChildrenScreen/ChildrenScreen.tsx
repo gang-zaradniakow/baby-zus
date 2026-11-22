@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { Baby, HandHeart, HeartPulse, PenLine } from 'lucide-react-native';
+import { Baby, CalendarHeart, HandHeart, HeartPulse, PenLine } from 'lucide-react-native';
 import { View } from 'react-native';
 
 import { AppText } from '@/components/atoms/AppText';
@@ -8,6 +8,7 @@ import { IconCircle } from '@/components/atoms/IconCircle';
 import { LinkRow } from '@/components/molecules/LinkRow';
 import { ScreenLayout } from '@/components/templates/ScreenLayout';
 import { describeStage } from '@/domain/profile/describeStage';
+import { isBeforeBirth } from '@/domain/profile/isBeforeBirth';
 import { moreRoutes } from '@/features/more/moreRoutes';
 import { useToday } from '@/hooks/useToday';
 import { useSession } from '@/session';
@@ -15,7 +16,7 @@ import { useTheme } from '@/theme';
 
 import { styles } from './ChildrenScreen.styles';
 
-const STAGE_ICON = { ciaza: HeartPulse, dziecko: Baby, adopcja: HandHeart } as const;
+const STAGE_ICON = { planuje: CalendarHeart, ciaza: HeartPulse, dziecko: Baby, adopcja: HandHeart } as const;
 
 /**
  * Profil dziecka z ankiety. Profil obsługuje dziś jedno dziecko (w prototypie: kilka profili
@@ -43,7 +44,7 @@ export function ChildrenScreen() {
             <View style={styles.row}>
               <IconCircle icon={STAGE_ICON[profile.stage]} />
               <View style={styles.texts}>
-                <AppText variant="label">{profile.childName ?? (profile.stage === 'ciaza' ? 'Maluszek' : 'Dziecko')}</AppText>
+                <AppText variant="label">{profile.childName ?? (isBeforeBirth(profile.stage) ? 'Maluszek' : 'Dziecko')}</AppText>
                 <AppText variant="caption" color={colors.textMuted}>
                   {describeStage(profile, today)}
                 </AppText>

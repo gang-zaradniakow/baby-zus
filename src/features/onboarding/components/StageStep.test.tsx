@@ -3,11 +3,12 @@ import { render, screen, userEvent } from '@testing-library/react-native';
 import { StageStep } from './StageStep';
 
 describe('StageStep', () => {
-  it('pyta o etap i pokazuje trzy opcje radio', async () => {
+  it('pyta o etap i pokazuje cztery opcje radio (z „Planuję dziecko”)', async () => {
     await render(<StageStep selected={null} onSelect={jest.fn()} />);
 
     expect(screen.getByRole('header', { name: 'Na jakim etapie teraz jesteś?' })).toBeOnTheScreen();
-    expect(screen.getAllByRole('radio')).toHaveLength(3);
+    expect(screen.getAllByRole('radio')).toHaveLength(4);
+    expect(screen.getByRole('radio', { name: /Planuję dziecko/ })).toBeOnTheScreen();
   });
 
   it('zaznacza tylko wybraną opcję', async () => {

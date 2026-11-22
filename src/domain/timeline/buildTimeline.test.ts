@@ -16,6 +16,16 @@ describe('buildTimeline', () => {
     }
   });
 
+  it('pokazuje wyłącznie sprawy u pracodawcy i w ZUS', () => {
+    for (const stage of ['ciaza', 'dziecko', 'adopcja'] as const) {
+      const items = buildTimeline(makeProfile({ stage, employment: ['brak'] }), today, new Set());
+      expect(items.every((i) => i.institution === 'PRAC' || i.institution === 'ZUS')).toBe(true);
+    }
+    expect(ids(buildTimeline(makeProfile(), today, new Set()))).not.toEqual(
+      expect.arrayContaining(['usc', 'becikowe', 'mac-end']),
+    );
+  });
+
   it('oznacza zadania z listy zrobionych', () => {
     const items = buildTimeline(makeProfile(), today, new Set(['nfz']));
     expect(byId(items, 'nfz')?.status).toBe('done');
@@ -37,9 +47,9 @@ describe('buildTimeline', () => {
       expect(ids(items)).toContain('zua');
     });
 
-    it('bez ubezpieczenia: świadczenie rodzicielskie zamiast zasiłku', () => {
+    it('bez ubezpieczenia: brak wniosków o zasiłek (świadczenie rodzicielskie z gminy jest poza osią)', () => {
       const items = buildTimeline(makeProfile({ employment: ['brak'] }), today, new Set());
-      expect(ids(items)).toContain('swrodz');
+      expect(ids(items)).not.toContain('swrodz');
       expect(ids(items)).not.toContain('w81');
       expect(ids(items)).not.toContain('mac-end');
     });
@@ -50,11 +60,11 @@ describe('buildTimeline', () => {
       expect(ids(items)).not.toContain('tata9');
     });
 
-    it('zgłoszenie w USC 21 dni po urodzeniu jest „wkrótce”, a po miesiącu — po terminie', () => {
+    it('wniosek o 81,5% (21 dni po urodzeniu) jest „wkrótce”, a po miesiącu — po terminie', () => {
       const fresh = buildTimeline(makeProfile({ eventDate: '2026-11-01' }), today, new Set());
-      expect(byId(fresh, 'usc')?.status).toBe('now');
+      expect(byId(fresh, 'w81')?.status).toBe('now');
       const late = buildTimeline(makeProfile({ eventDate: '2026-10-01' }), today, new Set());
-      expect(byId(late, 'usc')?.status).toBe('late');
+      expect(byId(late, 'w81')?.status).toBe('late');
     });
   });
 
@@ -63,13 +73,12 @@ describe('buildTimeline', () => {
 
     it('terminy po porodzie są szacunkowe', () => {
       const items = buildTimeline(pregnancy, today, new Set());
-      expect(byId(items, 'usc')?.estimate).toBe(true);
       expect(byId(items, '800')?.estimate).toBe(true);
     });
 
     it('z ubezpieczeniem: urlop przed porodem i decyzja 81,5%', () => {
       expect(ids(buildTimeline(pregnancy, today, new Set()))).toEqual(
-        expect.arrayContaining(['mac-przed', 'w81-plan', 'opieka10', 'polozna', 'becikowe']),
+        expect.arrayContaining(['mac-przed', 'w81-plan']),
       );
     });
 
@@ -79,10 +88,9 @@ describe('buildTimeline', () => {
       expect(byId(selfEmployed, 'mac-przed')?.institution).toBe('ZUS');
     });
 
-    it('bez ubezpieczenia: brak urlopu, jest świadczenie rodzicielskie', () => {
+    it('bez ubezpieczenia: brak urlopu przed porodem', () => {
       const items = buildTimeline({ ...pregnancy, employment: ['brak'] }, today, new Set());
       expect(ids(items)).not.toContain('mac-przed');
-      expect(ids(items)).toContain('swrodz');
     });
   });
 

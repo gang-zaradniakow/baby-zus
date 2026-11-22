@@ -1,6 +1,7 @@
 import { act, renderHook, waitFor } from '@testing-library/react-native';
 import type { ReactNode } from 'react';
 
+import { resetApiConfigForTests } from '@/api/apiConfig';
 import { LegalParamsProvider } from '@/params';
 import { SessionProvider } from '@/session';
 
@@ -30,6 +31,17 @@ function mockSicknessBackend() {
 
 const sicknessCalls = () =>
   (globalThis.fetch as jest.Mock).mock.calls.filter(([url]) => String(url).endsWith('/sickness-in-pregnancy'));
+
+/** Backend „skonfigurowany” na czas testu — `fetch` i tak jest podmieniony (jest.setup.ts). */
+beforeEach(() => {
+  resetApiConfigForTests();
+  process.env.EXPO_PUBLIC_API_URL = 'https://api.test';
+});
+
+afterEach(() => {
+  process.env.EXPO_PUBLIC_API_URL = '';
+  resetApiConfigForTests();
+});
 
 describe('useCalculatorForm — L4 w ciąży z backendu', () => {
   afterEach(() => (globalThis.fetch as jest.Mock).mockImplementation(() => Promise.reject(new Error('Brak sieci'))));

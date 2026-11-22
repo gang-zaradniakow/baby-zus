@@ -9,6 +9,12 @@ export type EventDateQuestion = {
 
 /** Pytanie o datę zależy od etapu wybranego w kroku 1. */
 export const EVENT_DATE_QUESTIONS: Record<ParentStage, EventDateQuestion> = {
+  planuje: {
+    title: 'Kiedy mniej więcej chcielibyście powitać dziecko?',
+    subtitle: 'Orientacyjna data wystarczy — policzymy, co warto załatwić wcześniej.',
+    label: 'Planowany termin porodu',
+    hint: 'Np. 01.09.2027. Zawsze możesz ją zmienić.',
+  },
   ciaza: {
     title: 'Kiedy masz termin porodu?',
     subtitle: 'Na tej podstawie policzymy Twoje terminy w urzędach.',

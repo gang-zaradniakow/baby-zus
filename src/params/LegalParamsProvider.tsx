@@ -1,38 +1,59 @@
-import { useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 
+import { fetchLegalParameters } from '@/api/legalParametersApi';
+import type { MappedLegalParameters } from '@/api/mapLegalParameters';
 import { LEGAL_PARAMS, type LegalParams } from '@/data/legalParams';
 
-import { LegalParamsContext, type LegalParamsValue, type ParamsChange } from './LegalParamsContext';
-import { useBackendLegalParams } from './useBackendLegalParams';
+import { LegalParamsContext, type LegalParamsValue, type ParamsChange, type ParamsSource } from './LegalParamsContext';
 
 type Props = { children: ReactNode };
 
 /**
- * Parametry prawne: domyślne z backendu (`GET /api/v1/legal-parameters`), a dopóki nie przyjdą albo gdy
- * backend jest niedostępny — lokalne z `data/legalParams`. Zmiany z Panelu administracyjnego trzymamy
- * w pamięci jako nadpisanie (backend nie ma jeszcze zapisu) i obowiązują od razu we wszystkich kalkulatorach.
+ * Parametry prawne kalkulatorów. Przy starcie pobiera obowiązujący zestaw z backendu
+ * (`GET /api/v1/legal-parameters`); bez połączenia zostają wartości lokalne z `data/legalParams`.
+ * Zmiany z Panelu administracyjnego (mock) nakładają się na wartości domyślne, w pamięci.
  */
 export function LegalParamsProvider({ children }: Props) {
-  const defaults = useBackendLegalParams() ?? LEGAL_PARAMS;
+  const [server, setServer] = useState<MappedLegalParameters | null>(null);
+  const [failed, setFailed] = useState(false);
   const [override, setOverride] = useState<LegalParams | null>(null);
   const [changeLog, setChangeLog] = useState<readonly ParamsChange[]>([]);
 
-  const value = useMemo<LegalParamsValue>(
-    () => ({
+  useEffect(() => {
+    let active = true;
+    fetchLegalParameters()
+      .then((mapped) => active && setServer(mapped))
+      .catch(() => active && setFailed(true));
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const value = useMemo<LegalParamsValue>(() => {
+    const defaults = server?.params ?? LEGAL_PARAMS;
+    const source: ParamsSource = server
+      ? { kind: 'server', version: server.version, validFrom: server.validFrom, description: server.description }
+      : failed
+        ? { kind: 'local' }
+        : { kind: 'loading' };
+    const log = (description: string) => setChangeLog((entries) => [{ at: new Date(), description }, ...entries]);
+
+    return {
       params: override ?? defaults,
+      defaults,
+      source,
       isChanged: override !== null,
       changeLog,
       save: (next, description) => {
         setOverride(next);
-        setChangeLog((log) => [{ at: new Date(), description }, ...log]);
+        log(description);
       },
       reset: () => {
         setOverride(null);
-        setChangeLog((log) => [{ at: new Date(), description: 'Przywrócono parametry domyślne' }, ...log]);
+        log('Przywrócono parametry domyślne');
       },
-    }),
-    [defaults, override, changeLog],
-  );
+    };
+  }, [server, failed, override, changeLog]);
 
   return <LegalParamsContext value={value}>{children}</LegalParamsContext>;
 }

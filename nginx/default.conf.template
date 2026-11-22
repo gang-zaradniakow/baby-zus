@@ -1,0 +1,29 @@
+# Szablon: obraz nginx przy starcie podstawia zmienne (envsubst) i zapisuje wynik w /etc/nginx/conf.d/default.conf.
+# Podstawiane są tylko zmienne ustawione w kontenerze — $uri itp. zostają nietknięte.
+server {
+    listen 8080;
+    root /usr/share/nginx/html;
+
+    # Konfiguracja frontendu w czasie uruchomienia: obraz Dockera jest jeden dla TEST i PROD, a adres
+    # backendu podaje zmienna kontenera API_URL (envsubst z obrazu nginx podstawia ją przy starcie).
+    location = /config.json {
+        default_type application/json;
+        add_header Cache-Control "no-store";
+        return 200 '{"apiUrl":"${API_URL}"}';
+    }
+
+    location / {
+        try_files $uri $uri.html $uri/ /index.html;
+    }
+
+    # Pliki z hashem w nazwie (Vite) można cache'ować na zawsze
+    location /_expo/static/ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+
+    # index.html zawsze świeży, żeby po wdrożeniu przeglądarka pobrała nowe assety
+    location = /index.html {
+        add_header Cache-Control "no-cache";
+    }
+}

@@ -12,6 +12,7 @@ import type {
   SpecialSituationId,
 } from '@/domain/profile/ParentProfile';
 import { hasExternalPayer } from '@/domain/profile/hasExternalPayer';
+import { isBeforeBirth } from '@/domain/profile/isBeforeBirth';
 import { validateChildBirthDate } from '@/domain/profile/validateChildBirthDate';
 import { toggleEmployment } from '@/domain/profile/toggleEmployment';
 import { validateEventDate } from '@/domain/profile/validateEventDate';
@@ -82,7 +83,7 @@ export function useOnboardingForm(onComplete: (profile: ParentProfile) => void) 
     const payerSize = hasExternalPayer(draft.employment) ? (draft.payerSize ?? undefined) : undefined;
     const name = draft.name.trim();
     // W ciąży nie pytamy o imię dziecka — ignorujemy to, co zostało po zmianie etapu.
-    const childName = draft.stage === 'ciaza' ? '' : draft.childName.trim();
+    const childName = draft.stage && isBeforeBirth(draft.stage) ? '' : draft.childName.trim();
     onComplete({
       role: draft.role,
       stage: draft.stage,

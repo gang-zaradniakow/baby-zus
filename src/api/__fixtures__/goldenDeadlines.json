@@ -1,0 +1,261 @@
+{
+  "source": "js/calc.js: deadline(), deadlineMonths()",
+  "cases": [
+    {
+      "name": "DAYS_AFTER 21 from 2026-11-21: ends on a Saturday",
+      "input": {
+        "kind": "DAYS_AFTER",
+        "event": "2026-11-21",
+        "amount": 21
+      },
+      "expected": {
+        "type": "AFTER",
+        "raw": "2026-12-12",
+        "legal": "2026-12-14",
+        "shifted": true,
+        "reason": "sobota",
+        "safe": "2026-12-11"
+      }
+    },
+    {
+      "name": "DAYS_AFTER 21 from 2026-12-03: ends on Christmas Eve 2026",
+      "input": {
+        "kind": "DAYS_AFTER",
+        "event": "2026-12-03",
+        "amount": 21
+      },
+      "expected": {
+        "type": "AFTER",
+        "raw": "2026-12-24",
+        "legal": "2026-12-28",
+        "shifted": true,
+        "reason": "Wigilia (od 2025 r.)",
+        "safe": "2026-12-23"
+      }
+    },
+    {
+      "name": "DAYS_AFTER 21 from 2025-12-03: ends on Christmas Eve 2025, first year it is free",
+      "input": {
+        "kind": "DAYS_AFTER",
+        "event": "2025-12-03",
+        "amount": 21
+      },
+      "expected": {
+        "type": "AFTER",
+        "raw": "2025-12-24",
+        "legal": "2025-12-29",
+        "shifted": true,
+        "reason": "Wigilia (od 2025 r.)",
+        "safe": "2025-12-23"
+      }
+    },
+    {
+      "name": "DAYS_AFTER 21 from 2024-12-03: Christmas Eve 2024 is a working day",
+      "input": {
+        "kind": "DAYS_AFTER",
+        "event": "2024-12-03",
+        "amount": 21
+      },
+      "expected": {
+        "type": "AFTER",
+        "raw": "2024-12-24",
+        "legal": "2024-12-24",
+        "shifted": false,
+        "reason": null,
+        "safe": "2024-12-23"
+      }
+    },
+    {
+      "name": "DAYS_AFTER 21 from 2026-03-16: ends on Easter Monday",
+      "input": {
+        "kind": "DAYS_AFTER",
+        "event": "2026-03-16",
+        "amount": 21
+      },
+      "expected": {
+        "type": "AFTER",
+        "raw": "2026-04-06",
+        "legal": "2026-04-07",
+        "shifted": true,
+        "reason": "Poniedziałek Wielkanocny",
+        "safe": "2026-04-03"
+      }
+    },
+    {
+      "name": "DAYS_AFTER 21 from 2026-11-02: ends on a Monday",
+      "input": {
+        "kind": "DAYS_AFTER",
+        "event": "2026-11-02",
+        "amount": 21
+      },
+      "expected": {
+        "type": "AFTER",
+        "raw": "2026-11-23",
+        "legal": "2026-11-23",
+        "shifted": false,
+        "reason": null,
+        "safe": "2026-11-20"
+      }
+    },
+    {
+      "name": "DAYS_AFTER 21 from 2026-05-12: ends on a Tuesday",
+      "input": {
+        "kind": "DAYS_AFTER",
+        "event": "2026-05-12",
+        "amount": 21
+      },
+      "expected": {
+        "type": "AFTER",
+        "raw": "2026-06-02",
+        "legal": "2026-06-02",
+        "shifted": false,
+        "reason": null,
+        "safe": "2026-06-01"
+      }
+    },
+    {
+      "name": "DAYS_AFTER 7 from 2026-04-20: seven days, working day",
+      "input": {
+        "kind": "DAYS_AFTER",
+        "event": "2026-04-20",
+        "amount": 7
+      },
+      "expected": {
+        "type": "AFTER",
+        "raw": "2026-04-27",
+        "legal": "2026-04-27",
+        "shifted": false,
+        "reason": null,
+        "safe": "2026-04-24"
+      }
+    },
+    {
+      "name": "DAYS_BEFORE 21 from 2026-06-25: falls on Corpus Christi",
+      "input": {
+        "kind": "DAYS_BEFORE",
+        "event": "2026-06-25",
+        "amount": 21
+      },
+      "expected": {
+        "type": "BEFORE",
+        "raw": "2026-06-04",
+        "legal": "2026-06-04",
+        "shifted": false,
+        "reason": "Boże Ciało",
+        "safe": "2026-06-03"
+      }
+    },
+    {
+      "name": "DAYS_BEFORE 21 from 2026-03-29: falls on a Sunday",
+      "input": {
+        "kind": "DAYS_BEFORE",
+        "event": "2026-03-29",
+        "amount": 21
+      },
+      "expected": {
+        "type": "BEFORE",
+        "raw": "2026-03-08",
+        "legal": "2026-03-08",
+        "shifted": false,
+        "reason": "niedziela",
+        "safe": "2026-03-06"
+      }
+    },
+    {
+      "name": "DAYS_BEFORE 14 from 2027-01-20: falls on Epiphany",
+      "input": {
+        "kind": "DAYS_BEFORE",
+        "event": "2027-01-20",
+        "amount": 14
+      },
+      "expected": {
+        "type": "BEFORE",
+        "raw": "2027-01-06",
+        "legal": "2027-01-06",
+        "shifted": false,
+        "reason": "Trzech Króli",
+        "safe": "2027-01-05"
+      }
+    },
+    {
+      "name": "DAYS_BEFORE 7 from 2026-11-23: falls on a working day",
+      "input": {
+        "kind": "DAYS_BEFORE",
+        "event": "2026-11-23",
+        "amount": 7
+      },
+      "expected": {
+        "type": "BEFORE",
+        "raw": "2026-11-16",
+        "legal": "2026-11-16",
+        "shifted": false,
+        "reason": null,
+        "safe": "2026-11-16"
+      }
+    },
+    {
+      "name": "MONTHS_AFTER 3 from 2026-11-30: end of month, ends on a Sunday",
+      "input": {
+        "kind": "MONTHS_AFTER",
+        "event": "2026-11-30",
+        "amount": 3
+      },
+      "expected": {
+        "type": "AFTER",
+        "raw": "2027-02-28",
+        "legal": "2027-03-01",
+        "shifted": true,
+        "reason": "niedziela",
+        "safe": "2027-02-26"
+      }
+    },
+    {
+      "name": "MONTHS_AFTER 1 from 2026-01-31: end of January to end of February, Saturday",
+      "input": {
+        "kind": "MONTHS_AFTER",
+        "event": "2026-01-31",
+        "amount": 1
+      },
+      "expected": {
+        "type": "AFTER",
+        "raw": "2026-02-28",
+        "legal": "2026-03-02",
+        "shifted": true,
+        "reason": "sobota",
+        "safe": "2026-02-27"
+      }
+    },
+    {
+      "name": "MONTHS_AFTER 6 from 2026-10-31: end of month, working day",
+      "input": {
+        "kind": "MONTHS_AFTER",
+        "event": "2026-10-31",
+        "amount": 6
+      },
+      "expected": {
+        "type": "AFTER",
+        "raw": "2027-04-30",
+        "legal": "2027-04-30",
+        "shifted": false,
+        "reason": null,
+        "safe": "2027-04-29"
+      }
+    },
+    {
+      "name": "MONTHS_AFTER 12 from 2026-08-15: ends on Assumption Day",
+      "input": {
+        "kind": "MONTHS_AFTER",
+        "event": "2026-08-15",
+        "amount": 12
+      },
+      "expected": {
+        "type": "AFTER",
+        "raw": "2027-08-15",
+        "legal": "2027-08-16",
+        "shifted": true,
+        "reason": "Wniebowzięcie NMP",
+        "safe": "2027-08-13"
+      }
+    }
+  ]
+}

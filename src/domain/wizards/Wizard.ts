@@ -21,6 +21,8 @@ export type WizardContext = {
   childBirth: Date | null;
   /** Data przyjęcia dziecka (adopcja / rodzina zastępcza). */
   adoptionDate: Date | null;
+  /** Przewidywany termin porodu — tylko w ciąży. */
+  dueDate: Date | null;
   childrenCount: number;
   /** Sama firma (bez etatu) — wnioski idą prosto do ZUS. */
   businessOnly: boolean;
@@ -69,6 +71,11 @@ export type WizardDefinition = {
   short: string;
   intro: string;
   institution: (ctx: WizardContext) => WizardInstitution;
+  /**
+   * Szkic przygotowywany przed zdarzeniem (np. w ciąży): wynik zapisujemy w „Moich dokumentach”
+   * bez wysyłki i bez logowania — złożyć go trzeba dopiero po porodzie.
+   */
+  draft?: boolean;
   steps: (ctx: WizardContext) => WizardStep[];
   build: (answers: WizardAnswers, ctx: WizardContext) => WizardResult;
 };

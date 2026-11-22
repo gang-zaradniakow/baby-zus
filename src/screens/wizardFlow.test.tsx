@@ -87,6 +87,26 @@ describe('Kreatory wniosków — przepływ', () => {
     expect(screen.getByRole('button', { name: /^Wniosek o urlop ojcowski\. .*pismo do pracodawcy/ })).toBeOnTheScreen();
   });
 
+  it('w ciąży, sama firma: szkic macierzyńskiego bez logowania → „Szkic zapisany”', async () => {
+    const user = userEvent.setup();
+    const { session } = await renderApp();
+    await act(() => session().completeOnboarding(makeProfile({ stage: 'ciaza', eventDate: '2027-02-15', employment: ['jdg'] })));
+    await user.press(screen.getByRole('button', { name: /^Szkic wniosku o zasiłek macierzyński/ }));
+
+    expect(screen.queryByRole('header', { name: 'Zaloguj się' })).toBeNull();
+    await user.press(screen.getByRole('button', { name: 'Zaczynamy' }));
+    await user.press(screen.getByRole('button', { name: 'Dalej' })); // termin z profilu
+    await user.press(screen.getByRole('button', { name: 'Dalej' })); // od porodu
+    await user.press(screen.getByRole('button', { name: 'Dalej' })); // liczba dzieci z profilu
+    await user.press(screen.getByRole('radio', { name: /^Na razie sam macierzyński/ }));
+    await user.press(screen.getByRole('button', { name: 'Dalej' }));
+    await user.press(screen.getByRole('button', { name: 'Zapisz szkic' }));
+
+    expect(screen.getByRole('header', { name: 'Szkic zapisany' })).toBeOnTheScreen();
+    expect(screen.getByText(/złóż go w eZUS na formularzu ZAM/)).toBeOnTheScreen();
+    expect(screen.getByRole('button', { name: 'Udostępnij szkic' })).toBeOnTheScreen();
+  });
+
   it('gość: wniosek do ZUS (Z-12) wymaga logowania', async () => {
     await renderApp('/wiecej/wniosek/w-pogrzebowy');
     expect(screen.getByRole('header', { name: 'Zaloguj się' })).toBeOnTheScreen();

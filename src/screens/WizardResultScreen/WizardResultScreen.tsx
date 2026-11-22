@@ -31,21 +31,34 @@ export function WizardResultScreen() {
     const share = () =>
       Share.share({ title: document.title, message: letterToText(document.letter, document.applicantName, document.createdAt) });
     return (
-      <ScreenLayout title="Gotowe pismo" subtitle={document.title} onBack={back} backLabel="Wiadomości">
+      <ScreenLayout
+        title={document.draft ? 'Szkic wniosku' : 'Gotowe pismo'}
+        subtitle={document.title}
+        onBack={back}
+        backLabel="Wiadomości"
+      >
         <View style={styles.content}>
-          <Card tone="primary" title="Pismo jest gotowe">
-            <AppText variant="caption">
-              Wydrukuj je albo wyślij do kadr (osobiście albo mailem). To nie trafia do ZUS — to częsty błąd, który tu
-              eliminujemy.
-            </AppText>
-          </Card>
+          {document.draft ? (
+            <Card tone="accent" title="Szkic zapisany">
+              <AppText variant="caption">
+                Nic jeszcze nie zostało wysłane. Szkic czeka w Wiadomościach → Moje dokumenty.
+              </AppText>
+            </Card>
+          ) : (
+            <Card tone="primary" title="Pismo jest gotowe">
+              <AppText variant="caption">
+                Wydrukuj je albo wyślij do kadr (osobiście albo mailem). To nie trafia do ZUS — to częsty błąd, który tu
+                eliminujemy.
+              </AppText>
+            </Card>
+          )}
           {document.note ? (
             <Card tone="info">
               <AppText variant="caption">{document.note}</AppText>
             </Card>
           ) : null}
           <LetterPreview letter={document.letter} applicantName={document.applicantName} date={document.createdAt} />
-          <Button title="Udostępnij / wyślij do kadr" icon={Share2} onPress={share} />
+          <Button title={document.draft ? 'Udostępnij szkic' : 'Udostępnij / wyślij do kadr'} icon={Share2} onPress={share} />
         </View>
       </ScreenLayout>
     );

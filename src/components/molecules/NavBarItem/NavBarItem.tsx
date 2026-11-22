@@ -3,7 +3,7 @@ import type { ComponentRef, Ref } from 'react';
 import { Pressable, type View } from 'react-native';
 
 import { AppText } from '@/components/atoms/AppText';
-import { IconPill } from '@/components/atoms/IconPill';
+import { IconGlow } from '@/components/atoms/IconGlow';
 import type { TabDefinition } from '@/navigation/tabs';
 import { useTheme } from '@/theme';
 
@@ -31,10 +31,10 @@ export function NavBarItem({ tab, isFocused = false, ...triggerProps }: Props) {
       accessibilityState={{ selected: isFocused }}
       style={({ pressed }) => [styles.item, pressed && styles.pressed]}
     >
-      <IconPill
+      <IconGlow
         icon={tab.icon}
         color={tint.icon}
-        backgroundColor={tint.pill}
+        glowColor={tint.glow}
         strokeWidth={isFocused ? 2.5 : 2}
       />
       <AppText

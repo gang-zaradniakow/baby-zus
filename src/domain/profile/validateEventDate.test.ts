@@ -10,6 +10,12 @@ describe('validateEventDate', () => {
     expect(validateEventDate('ciaza', '15.03', today)).toEqual({ date: null, error: null });
   });
 
+  it('planowanie: termin w przyszłości, najwyżej 3 lata naprzód', () => {
+    expect(validateEventDate('planuje', '01.09.2027', today).error).toBeNull();
+    expect(validateEventDate('planuje', '01.11.2026', today).error).toMatch(/w przyszłości/);
+    expect(validateEventDate('planuje', '01.01.2030', today).error).toMatch(/3 lat/);
+  });
+
   it('nieistniejąca data daje komunikat', () => {
     const result = validateEventDate('dziecko', '31.02.2026', today);
     expect(result.date).toBeNull();

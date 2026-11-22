@@ -3,19 +3,19 @@ import { lightColors } from '@/theme';
 import { resolveNavBarItemColors } from './resolveNavBarItemColors';
 
 describe('resolveNavBarItemColors', () => {
-  it('aktywna zakładka: kolor tonu i „pigułka” w tle', () => {
+  it('aktywna zakładka: kolor tonu i kółko z poświatą', () => {
     expect(resolveNavBarItemColors('primary', true, lightColors)).toEqual({
       icon: lightColors.primary,
       label: lightColors.primary,
-      pill: lightColors.primarySoft,
+      glow: lightColors.primarySoft,
     });
   });
 
-  it('nieaktywna zakładka: szara, bez pigułki', () => {
+  it('nieaktywna zakładka: szara, bez kółka', () => {
     expect(resolveNavBarItemColors('primary', false, lightColors)).toEqual({
       icon: lightColors.navInactive,
       label: lightColors.navInactive,
-      pill: undefined,
+      glow: undefined,
     });
   });
 

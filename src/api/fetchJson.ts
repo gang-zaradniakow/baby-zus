@@ -1,17 +1,57 @@
-import { API_BASE_URL } from './apiBaseUrl';
-import { ApiError } from './ApiError';
+import { resolveApiBaseUrl } from './apiConfig';
+import { ApiError, DEFAULT_GENTLE_MESSAGE } from './ApiError';
+import type { ProblemDetail } from './apiTypes';
 
-type Problem = { code?: string; gentleMessage?: string };
+/** Po tylu ms przerywamy zapytanie — lepiej szybko pokazać wyliczenie lokalne niż kręcić kółkiem. */
+export const API_TIMEOUT_MS = 8000;
 
-/** Zapytanie do ścieżki backendu (np. `/api/v1/ping`) i odczyt JSON. Odpowiedź inna niż 2xx kończy się `ApiError`. */
-export async function fetchJson<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    ...init,
-    headers: { Accept: 'application/json', ...init?.headers },
-  });
-  if (!response.ok) {
-    const problem: Problem = await response.json().catch(() => ({}));
-    throw new ApiError(response.status, problem.code, problem.gentleMessage);
+type Query = Record<string, string | number | undefined>;
+
+/** Opcje `fetch` (np. `method`, `body`, `signal` dla POST) plus parametry zapytania doklejane do adresu. */
+export type FetchJsonOptions = RequestInit & { query?: Query };
+
+function toQueryString(query: Query): string {
+  const pairs = Object.entries(query)
+    .filter(([, value]) => value !== undefined)
+    .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`);
+  return pairs.length ? `?${pairs.join('&')}` : '';
+}
+
+async function problemFrom(response: Response): Promise<ApiError> {
+  try {
+    const problem = (await response.json()) as Partial<ProblemDetail>;
+    return new ApiError('http', problem.gentleMessage ?? DEFAULT_GENTLE_MESSAGE, response.status, problem.code);
+  } catch {
+    return new ApiError('http', DEFAULT_GENTLE_MESSAGE, response.status);
   }
-  return (await response.json()) as T;
+}
+
+/**
+ * Zapytanie do backendu (`/api/v1/...`) i odczyt JSON. Rzuca `ApiError`: `notConfigured` (brak adresu),
+ * `timeout`, `network` albo `http` z kodem i łagodnym komunikatem z problemu RFC 9457.
+ * `signal` wywołującego (np. anulowanie przy zmianie formularza) przerywa zapytanie tak samo jak timeout.
+ */
+export async function fetchJson<T>(path: string, { query = {}, signal, headers, ...init }: FetchJsonOptions = {}): Promise<T> {
+  const baseUrl = await resolveApiBaseUrl();
+  if (!baseUrl) throw new ApiError('notConfigured');
+
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
+  const abort = () => controller.abort();
+  signal?.addEventListener('abort', abort);
+  try {
+    const response = await fetch(`${baseUrl}${path}${toQueryString(query)}`, {
+      ...init,
+      headers: { Accept: 'application/json', ...headers },
+      signal: controller.signal,
+    });
+    if (!response.ok) throw await problemFrom(response);
+    return (await response.json()) as T;
+  } catch (error) {
+    if (error instanceof ApiError) throw error;
+    throw new ApiError(controller.signal.aborted ? 'timeout' : 'network');
+  } finally {
+    clearTimeout(timer);
+    signal?.removeEventListener('abort', abort);
+  }
 }

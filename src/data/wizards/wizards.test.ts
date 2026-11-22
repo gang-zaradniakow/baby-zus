@@ -20,9 +20,9 @@ const check = (id: string, stepId: string, answers: WizardAnswers) => {
 };
 
 describe('kreatory wniosków', () => {
-  it('9 kreatorów z prototypu, unikalne id', () => {
-    expect(WIZARDS).toHaveLength(9);
-    expect(new Set(WIZARDS.map((w) => w.id)).size).toBe(9);
+  it('9 kreatorów z prototypu + szkic macierzyńskiego w ciąży, unikalne id', () => {
+    expect(WIZARDS).toHaveLength(10);
+    expect(new Set(WIZARDS.map((w) => w.id)).size).toBe(10);
   });
 
   it('każdy kreator da się przejść na wartościach startowych z profilu + wyborach i zbudować wynik', () => {
@@ -39,6 +39,43 @@ describe('kreatory wniosków', () => {
 
   it('wybór jest obowiązkowy', () => {
     expect(check('w-ojcowski', 'parts', {})).toMatchObject({ level: 'error', text: /Wybierz jedną/ });
+  });
+
+  describe('szkic wniosku o zasiłek macierzyński (w ciąży)', () => {
+    const pregnant = createWizardContext(makeProfile({ stage: 'ciaza', eventDate: '2027-02-15' }), today);
+    const draft = wizard('w-macierzynski-szkic');
+    const checkDraft = (stepId: string, answers: WizardAnswers) =>
+      checkStep(draft.steps(pregnant).find((s) => s.id === stepId)!, answers, pregnant);
+
+    it('jest szkicem; termin porodu podpowiada się z profilu', () => {
+      expect(draft.draft).toBe(true);
+      expect(prefillAnswers(draft.steps(pregnant), pregnant)).toMatchObject({ due: '15.02.2027', weeksBefore: '0' });
+    });
+
+    it('najwcześniej 6 tygodni przed terminem; termin z przeszłości tylko ostrzega', () => {
+      expect(checkDraft('weeksBefore', { weeksBefore: '6' })).toBeNull();
+      expect(checkDraft('weeksBefore', { weeksBefore: '7' })).toMatchObject({ level: 'error', text: /najwyżej 6 tygodni/ });
+      expect(checkDraft('due', { due: '01.11.2026' })).toMatchObject({ level: 'warning' });
+    });
+
+    it('pismo do kadr: start 2 tyg. przed terminem, 81,5% za macierzyński + rodzicielski, notka o 21 dniach', () => {
+      const result = draft.build({ due: '15.02.2027', weeksBefore: '2', count: '1', variant: '815' }, pregnant);
+      if (result.kind !== 'letter') throw new Error('oczekiwano pisma');
+      expect(result.letter.to).toBe('Pracodawca — dział kadr');
+      expect(result.letter.paragraphs[0]).toMatch(/20 tygodni od dnia 01\.02\.2027, tj\. 2 tyg\. przed .*15\.02\.2027/);
+      expect(result.letter.paragraphs[1]).toMatch(/32 tygodni .* 81,5%/);
+      expect(result.letter.attachments[0]).toMatch(/przewidywanej dacie porodu/);
+      expect(result.note).toMatch(/21 dni po porodzie/);
+    });
+
+    it('sama firma: bez „urlopu” z Kodeksu pracy — wniosek ZAM przez eZUS', () => {
+      const business = createWizardContext(makeProfile({ stage: 'ciaza', eventDate: '2027-02-15', employment: ['jdg'] }), today);
+      const result = draft.build({ due: '15.02.2027', weeksBefore: '0', count: '1', variant: '100' }, business);
+      if (result.kind !== 'letter') throw new Error('oczekiwano pisma');
+      expect(result.letter.to).toMatch(/ZAM/);
+      expect(result.letter.paragraphs.join(' ')).not.toMatch(/Kodeksu pracy/);
+      expect(result.letter.paragraphs[0]).toMatch(/od dnia porodu .* 100%/);
+    });
   });
 
   describe('81,5% — 21 dni od porodu', () => {

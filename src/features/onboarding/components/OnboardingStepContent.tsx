@@ -1,3 +1,5 @@
+import { isBeforeBirth } from '@/domain/profile/isBeforeBirth';
+
 import type { OnboardingForm } from '../useOnboardingForm';
 
 import { ChildBirthDateStep } from './ChildBirthDateStep';
@@ -52,7 +54,7 @@ export function OnboardingStepContent({ form }: Props) {
         <NamesStep
           name={form.draft.name}
           childName={form.draft.childName}
-          asksChildName={form.draft.stage !== 'ciaza'}
+          asksChildName={!form.draft.stage || !isBeforeBirth(form.draft.stage)}
           onChangeName={form.setName}
           onChangeChildName={form.setChildName}
         />

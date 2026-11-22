@@ -3,6 +3,12 @@ import type { ParentStage } from '@/domain/profile/ParentProfile';
 /** Podpowiedzi pytań na start rozmowy (z prototypu, js/kb.js: SUGGESTIONS). */
 export const SUGGESTIONS: Record<ParentStage | 'general' | 'support', readonly string[]> = {
   general: ['Ile wyniesie mój zasiłek macierzyński?', 'Ile trwa urlop macierzyński?', '81,5% czy 100% + 70%?', 'Gdzie złożyć wniosek?'],
+  planuje: [
+    'Ile dostanę na L4 w ciąży?',
+    'Ile wyniesie mój zasiłek macierzyński?',
+    'Mam firmę — czy dostanę zasiłek macierzyński?',
+    'Zmieniam pracę — czy stracę zasiłek?',
+  ],
   ciaza: [
     'Ile dostanę na L4 w ciąży?',
     'Co lepiej wybrać: 81,5% czy 100% + 70%?',

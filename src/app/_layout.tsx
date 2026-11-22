@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import { LoadingGate } from '@/navigation/LoadingGate';
 import { RootNavigator } from '@/navigation/RootNavigator';
 import { LegalParamsProvider } from '@/params';
 import { SessionProvider } from '@/session';
@@ -14,7 +15,9 @@ export default function RootLayout() {
         <LegalParamsProvider>
           <SessionProvider>
             <StatusBar style="auto" />
-            <RootNavigator />
+            <LoadingGate>
+              <RootNavigator />
+            </LoadingGate>
           </SessionProvider>
         </LegalParamsProvider>
       </ThemeProvider>

@@ -1,0 +1,146 @@
+{
+  "description": "Streszczenia przepisów (nie cytaty) dla wyszukiwania RAG. Link prowadzi do aktu w ISAP; wiążący jest tekst aktu. Pozycje z toVerify: true wymagają przeglądu przez osobę znającą przepisy.",
+  "fragments": [
+    {
+      "id": "kp-180-wymiar",
+      "act": "Kodeks pracy",
+      "article": "art. 180",
+      "title": "Wymiar urlopu macierzyńskiego",
+      "text": "Urlop macierzyński trwa 20 tygodni przy urodzeniu jednego dziecka przy jednym porodzie, 31 tygodni przy dwojgu dzieciach, 33 tygodnie przy trojgu, 35 tygodni przy czworgu i 37 tygodni przy pięciorgu lub więcej dzieciach. Do 6 tygodni urlopu można wykorzystać przed przewidywaną datą porodu.",
+      "url": "https://isap.sejm.gov.pl/isap.nsf/DocDetails.xsp?id=WDU19740240141"
+    },
+    {
+      "id": "kp-180-hospitalizacja-matki",
+      "act": "Kodeks pracy",
+      "article": "art. 180 § 12–13",
+      "title": "Przejęcie urlopu przez ojca przy pobycie matki w szpitalu",
+      "text": "Gdy matka po wykorzystaniu co najmniej 8 tygodni urlopu macierzyńskiego przebywa w szpitalu albo innym zakładzie leczniczym i nie może sprawować osobistej opieki nad dzieckiem, ojciec dziecka może wykorzystać część urlopu macierzyńskiego odpowiadającą okresowi pobytu matki w szpitalu.",
+      "url": "https://isap.sejm.gov.pl/isap.nsf/DocDetails.xsp?id=WDU19740240141",
+      "toVerify": true
+    },
+    {
+      "id": "kp-180-1-martwe-urodzenie",
+      "act": "Kodeks pracy",
+      "article": "art. 180¹ § 1",
+      "title": "Urlop macierzyński po martwym urodzeniu lub śmierci dziecka",
+      "text": "W razie urodzenia martwego dziecka lub zgonu dziecka przed upływem 8 tygodni życia pracownicy przysługuje urlop macierzyński w wymiarze 8 tygodni po porodzie, nie krócej jednak niż 7 dni od dnia zgonu dziecka.",
+      "url": "https://isap.sejm.gov.pl/isap.nsf/DocDetails.xsp?id=WDU19740240141"
+    },
+    {
+      "id": "kp-182-1a-rodzicielski",
+      "act": "Kodeks pracy",
+      "article": "art. 182¹a",
+      "title": "Wymiar urlopu rodzicielskiego",
+      "text": "Urlop rodzicielski trwa 41 tygodni przy urodzeniu jednego dziecka i 43 tygodnie przy porodzie mnogim; przy dziecku z zaświadczeniem „Za życiem” odpowiednio 65 i 67 tygodni. Każdemu z rodziców przysługuje wyłączne prawo do 9 tygodni urlopu rodzicielskiego, których nie można przenieść na drugiego rodzica. Urlop wykorzystuje się do końca roku kalendarzowego, w którym dziecko kończy 6 lat.",
+      "url": "https://isap.sejm.gov.pl/isap.nsf/DocDetails.xsp?id=WDU19740240141"
+    },
+    {
+      "id": "kp-182-1b-podzial",
+      "act": "Kodeks pracy",
+      "article": "art. 182¹b",
+      "title": "Podział urlopu rodzicielskiego i jednoczesne korzystanie",
+      "text": "Urlop rodzicielski można wykorzystać jednorazowo albo w częściach, w wymiarze tygodnia lub jego wielokrotności, w nie więcej niż 5 częściach. Rodzice mogą korzystać z urlopu rodzicielskiego jednocześnie; łączny wymiar urlopu nie może wtedy przekroczyć wymiaru przysługującego na dziecko.",
+      "url": "https://isap.sejm.gov.pl/isap.nsf/DocDetails.xsp?id=WDU19740240141",
+      "toVerify": true
+    },
+    {
+      "id": "kp-182-1e-praca",
+      "act": "Kodeks pracy",
+      "article": "art. 182¹e",
+      "title": "Praca w trakcie urlopu rodzicielskiego",
+      "text": "Urlop rodzicielski można łączyć z pracą u pracodawcy udzielającego urlopu w wymiarze nie wyższym niż połowa pełnego wymiaru czasu pracy. Wymiar urlopu rodzicielskiego wydłuża się wtedy proporcjonalnie do wymiaru czasu pracy.",
+      "url": "https://isap.sejm.gov.pl/isap.nsf/DocDetails.xsp?id=WDU19740240141",
+      "toVerify": true
+    },
+    {
+      "id": "kp-182-3-ojcowski",
+      "act": "Kodeks pracy",
+      "article": "art. 182³",
+      "title": "Urlop ojcowski",
+      "text": "Pracownik-ojciec wychowujący dziecko ma prawo do urlopu ojcowskiego w wymiarze 2 tygodni, do ukończenia przez dziecko 12 miesięcy życia. Urlop można wykorzystać jednorazowo albo w nie więcej niż dwóch częściach, z których żadna nie jest krótsza niż tydzień.",
+      "url": "https://isap.sejm.gov.pl/isap.nsf/DocDetails.xsp?id=WDU19740240141"
+    },
+    {
+      "id": "kp-183-adopcja",
+      "act": "Kodeks pracy",
+      "article": "art. 183",
+      "title": "Urlop na warunkach urlopu macierzyńskiego – adopcja i rodzina zastępcza",
+      "text": "Pracownik, który przyjął dziecko na wychowanie i wystąpił do sądu o jego przysposobienie albo przyjął dziecko jako rodzina zastępcza (z wyjątkiem zawodowej), ma prawo do urlopu na warunkach urlopu macierzyńskiego – co do zasady do ukończenia przez dziecko 7 lat, a przy odroczonym obowiązku szkolnym do 10 lat.",
+      "url": "https://isap.sejm.gov.pl/isap.nsf/DocDetails.xsp?id=WDU19740240141",
+      "toVerify": true
+    },
+    {
+      "id": "uz-29-prawo-macierzynski",
+      "act": "ustawa zasiłkowa",
+      "article": "art. 29",
+      "title": "Prawo do zasiłku macierzyńskiego",
+      "text": "Zasiłek macierzyński przysługuje osobie objętej ubezpieczeniem chorobowym (obowiązkowym albo dobrowolnym), która w okresie tego ubezpieczenia albo urlopu wychowawczego urodziła dziecko lub przyjęła dziecko na wychowanie, a także ojcu i innym członkom rodziny w przypadkach określonych w ustawie. Prawo do zasiłku macierzyńskiego nie zależy od okresu wyczekiwania.",
+      "url": "https://isap.sejm.gov.pl/isap.nsf/DocDetails.xsp?id=WDU19990600636"
+    },
+    {
+      "id": "uz-30-likwidacja",
+      "act": "ustawa zasiłkowa",
+      "article": "art. 30",
+      "title": "Zasiłek w wysokości zasiłku macierzyńskiego po likwidacji pracodawcy",
+      "text": "Ubezpieczonej, z którą w okresie ciąży rozwiązano umowę o pracę z powodu ogłoszenia upadłości lub likwidacji pracodawcy, przysługuje do dnia porodu zasiłek w wysokości zasiłku macierzyńskiego.",
+      "url": "https://isap.sejm.gov.pl/isap.nsf/DocDetails.xsp?id=WDU19990600636",
+      "toVerify": true
+    },
+    {
+      "id": "uz-31-wysokosc",
+      "act": "ustawa zasiłkowa",
+      "article": "art. 31",
+      "title": "Wysokość zasiłku macierzyńskiego",
+      "text": "Miesięczny zasiłek macierzyński wynosi 100% podstawy wymiaru za okres urlopu macierzyńskiego i 70% podstawy za okres urlopu rodzicielskiego. Gdy wniosek o urlop macierzyński i rodzicielski w pełnym wymiarze zostanie złożony nie później niż 21 dni po porodzie, zasiłek za cały ten okres wynosi 81,5% podstawy wymiaru.",
+      "url": "https://isap.sejm.gov.pl/isap.nsf/DocDetails.xsp?id=WDU19990600636"
+    },
+    {
+      "id": "uz-36-podstawa",
+      "act": "ustawa zasiłkowa",
+      "article": "art. 36",
+      "title": "Podstawa wymiaru zasiłku",
+      "text": "Podstawę wymiaru zasiłku pracownika stanowi przeciętne miesięczne wynagrodzenie wypłacone za 12 pełnych miesięcy kalendarzowych poprzedzających miesiąc powstania prawa do zasiłku, po odliczeniu składek na ubezpieczenia społeczne finansowanych przez ubezpieczonego.",
+      "url": "https://isap.sejm.gov.pl/isap.nsf/DocDetails.xsp?id=WDU19990600636"
+    },
+    {
+      "id": "uz-11-chorobowy-ciaza",
+      "act": "ustawa zasiłkowa",
+      "article": "art. 11",
+      "title": "Wysokość zasiłku chorobowego w ciąży",
+      "text": "Miesięczny zasiłek chorobowy wynosi co do zasady 80% podstawy wymiaru. Za okres niezdolności do pracy przypadającej w okresie ciąży zasiłek chorobowy wynosi 100% podstawy wymiaru (zwolnienie lekarskie z kodem B).",
+      "url": "https://isap.sejm.gov.pl/isap.nsf/DocDetails.xsp?id=WDU19990600636"
+    },
+    {
+      "id": "uz-4-okres-wyczekiwania",
+      "act": "ustawa zasiłkowa",
+      "article": "art. 4",
+      "title": "Okres wyczekiwania na zasiłek chorobowy",
+      "text": "Osoba objęta obowiązkowo ubezpieczeniem chorobowym nabywa prawo do zasiłku chorobowego po 30 dniach nieprzerwanego ubezpieczenia, a osoba ubezpieczona dobrowolnie (np. zleceniobiorca, przedsiębiorca) – po 90 dniach.",
+      "url": "https://isap.sejm.gov.pl/isap.nsf/DocDetails.xsp?id=WDU19990600636"
+    },
+    {
+      "id": "uz-8-okres-zasilkowy",
+      "act": "ustawa zasiłkowa",
+      "article": "art. 8",
+      "title": "Okres zasiłkowy",
+      "text": "Zasiłek chorobowy przysługuje przez okres trwania niezdolności do pracy, nie dłużej niż 182 dni, a gdy niezdolność do pracy przypada w okresie ciąży – nie dłużej niż 270 dni.",
+      "url": "https://isap.sejm.gov.pl/isap.nsf/DocDetails.xsp?id=WDU19990600636"
+    },
+    {
+      "id": "uz-18-rehabilitacyjne",
+      "act": "ustawa zasiłkowa",
+      "article": "art. 18",
+      "title": "Świadczenie rehabilitacyjne",
+      "text": "Świadczenie rehabilitacyjne przysługuje po wyczerpaniu zasiłku chorobowego, gdy dalsze leczenie lub rehabilitacja lecznicza rokują odzyskanie zdolności do pracy; przysługuje przez okres niezbędny do jej przywrócenia, nie dłużej niż 12 miesięcy.",
+      "url": "https://isap.sejm.gov.pl/isap.nsf/DocDetails.xsp?id=WDU19990600636"
+    },
+    {
+      "id": "uz-61-platnik",
+      "act": "ustawa zasiłkowa",
+      "article": "art. 61",
+      "title": "Kto wypłaca zasiłek – pracodawca czy ZUS",
+      "text": "Zasiłki wypłacają płatnicy składek, którzy zgłaszają do ubezpieczenia chorobowego więcej niż 20 ubezpieczonych (według stanu na 30 listopada roku poprzedniego). Ubezpieczonym zgłoszonym przez mniejszych płatników, a także zleceniobiorcom i przedsiębiorcom zasiłki wypłaca ZUS.",
+      "url": "https://isap.sejm.gov.pl/isap.nsf/DocDetails.xsp?id=WDU19990600636"
+    }
+  ]
+}

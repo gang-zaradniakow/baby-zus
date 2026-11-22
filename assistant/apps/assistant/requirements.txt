@@ -1,0 +1,13 @@
+# Instaluj z katalogu apps/assistant (pip liczy ścieżki -e względem bieżącego katalogu):
+#   cd apps/assistant && pip install -r requirements.txt
+-e ../../packages/contracts
+-e ../../packages/rules_engine
+-e .
+
+openai==3.57.0
+httpx==0.28.1
+mcp==2.3.0
+pydantic==2.14.4
+pydantic-settings==2.16.3
+sqlalchemy[asyncio]==2.1.9
+asyncpg==0.32.0

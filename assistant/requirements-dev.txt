@@ -1,0 +1,18 @@
+# Narzędzia deweloperskie (instaluj z katalogu głównego repozytorium).
+# Zależności aplikacji instaluje `python tasks.py install` – każdą z jej katalogu
+# (apps/*/requirements.txt). Sterownik Postgresa (asyncpg) jest w apps/api i apps/admin.
+
+# testy
+pytest==9.2.0
+pytest-cov==7.1.0
+pytest-asyncio==1.5.0
+hypothesis==6.170.17
+respx==0.23.1
+jsonschema==4.26.0
+types-jsonschema==4.26.0.20261006
+testcontainers[postgres]==4.15.0
+
+# jakość kodu
+ruff==0.17.6
+mypy==2.4.1
+pre-commit==4.7.0

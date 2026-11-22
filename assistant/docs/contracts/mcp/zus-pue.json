@@ -1,0 +1,255 @@
+{
+  "server": "zus-pue",
+  "instructions": "Symulacja PUE/eZUS: wiadomości do ZUS, status spraw, umawianie kontaktu.",
+  "tools": [
+    {
+      "name": "book_contact",
+      "description": "Umów e-wizytę, oddzwonienie albo wizytę w placówce – najbliższy dzień roboczy, 10:00.",
+      "inputSchema": {
+        "$defs": {
+          "ContactChannel": {
+            "enum": [
+              "EVISIT",
+              "CALLBACK",
+              "BRANCH_VISIT"
+            ],
+            "title": "ContactChannel",
+            "type": "string"
+          }
+        },
+        "properties": {
+          "user_ref": {
+            "title": "User Ref",
+            "type": "string"
+          },
+          "channel": {
+            "$ref": "#/$defs/ContactChannel"
+          },
+          "preferred_date": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Preferred Date"
+          }
+        },
+        "required": [
+          "user_ref",
+          "channel"
+        ],
+        "title": "book_contactArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "$defs": {
+          "ContactChannel": {
+            "enum": [
+              "EVISIT",
+              "CALLBACK",
+              "BRANCH_VISIT"
+            ],
+            "title": "ContactChannel",
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "bookingId": {
+            "title": "Bookingid",
+            "type": "string"
+          },
+          "channel": {
+            "$ref": "#/$defs/ContactChannel"
+          },
+          "slotStart": {
+            "description": "Termin w strefie Europe/Warsaw.",
+            "format": "date-time",
+            "title": "Slotstart",
+            "type": "string"
+          },
+          "simulated": {
+            "default": true,
+            "title": "Simulated",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "bookingId",
+          "channel",
+          "slotStart"
+        ],
+        "title": "Booking",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_case_status",
+      "description": "Status spraw użytkownika; z ``case_id`` – jednej sprawy.",
+      "inputSchema": {
+        "properties": {
+          "user_ref": {
+            "title": "User Ref",
+            "type": "string"
+          },
+          "case_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Case Id"
+          }
+        },
+        "required": [
+          "user_ref"
+        ],
+        "title": "get_case_statusArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "$defs": {
+          "Case": {
+            "additionalProperties": false,
+            "properties": {
+              "caseId": {
+                "title": "Caseid",
+                "type": "string"
+              },
+              "subject": {
+                "title": "Subject",
+                "type": "string"
+              },
+              "status": {
+                "$ref": "#/$defs/CaseStatus"
+              },
+              "createdOn": {
+                "format": "date",
+                "title": "Createdon",
+                "type": "string"
+              },
+              "simulated": {
+                "default": true,
+                "title": "Simulated",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "caseId",
+              "subject",
+              "status",
+              "createdOn"
+            ],
+            "title": "Case",
+            "type": "object"
+          },
+          "CaseStatus": {
+            "enum": [
+              "SENT"
+            ],
+            "title": "CaseStatus",
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "cases": {
+            "items": {
+              "$ref": "#/$defs/Case"
+            },
+            "title": "Cases",
+            "type": "array"
+          }
+        },
+        "required": [
+          "cases"
+        ],
+        "title": "CaseList",
+        "type": "object"
+      }
+    },
+    {
+      "name": "send_question",
+      "description": "Wyślij wiadomość do ZUS (symulacja) – zwraca numer sprawy.",
+      "inputSchema": {
+        "properties": {
+          "user_ref": {
+            "title": "User Ref",
+            "type": "string"
+          },
+          "subject": {
+            "maxLength": 200,
+            "minLength": 3,
+            "title": "Subject",
+            "type": "string"
+          },
+          "message": {
+            "maxLength": 4000,
+            "minLength": 1,
+            "title": "Message",
+            "type": "string"
+          }
+        },
+        "required": [
+          "user_ref",
+          "subject",
+          "message"
+        ],
+        "title": "send_questionArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "$defs": {
+          "CaseStatus": {
+            "enum": [
+              "SENT"
+            ],
+            "title": "CaseStatus",
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "caseId": {
+            "title": "Caseid",
+            "type": "string"
+          },
+          "subject": {
+            "title": "Subject",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/$defs/CaseStatus"
+          },
+          "createdOn": {
+            "format": "date",
+            "title": "Createdon",
+            "type": "string"
+          },
+          "simulated": {
+            "default": true,
+            "title": "Simulated",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "caseId",
+          "subject",
+          "status",
+          "createdOn"
+        ],
+        "title": "Case",
+        "type": "object"
+      }
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+name: Pull request
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  checks:
+    timeout-minutes: 20
+    runs-on: python
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.forgejo/actions/checks
+
+  compose:
+    # ZUS-02 AC: `docker compose up` → wszystkie usługi zdrowe, migracje OK, poziom 1 odpowiada.
+    # Runner `budowanie` ma Dockera (ten sam co build w ci.yml). Osobny projekt i porty,
+    # żeby nie kolidować z wdrożeniem TEST na tym samym hoście.
+    name: docker compose up
+    timeout-minutes: 30
+    runs-on: budowanie
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Usługi zdrowe i API odpowiada
+        env:
+          COMPOSE_PROJECT: zus-pr-${{ github.run_id }}
+        run: bash scripts/compose_smoke.sh

@@ -1,0 +1,13 @@
+# Instaluj z katalogu apps/admin (pip liczy ścieżki -e względem bieżącego katalogu):
+#   cd apps/admin && pip install -r requirements.txt
+-e ../../packages/contracts
+-e ../../packages/rules_engine
+-e .
+
+fastapi==0.165.0
+uvicorn[standard]==0.54.0
+jinja2==3.1.6
+sqlalchemy[asyncio]==2.1.9
+asyncpg==0.32.0
+pydantic==2.14.4
+pydantic-settings==2.16.3

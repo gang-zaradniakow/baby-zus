@@ -1,0 +1,40 @@
+hackaton/
+__pycache__/
+.ipynb_checkpoints/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Środowiska i sekrety
+.venv/
+.env
+.env.*
+!.env.example
+
+# Zależności są w requirements-dev.txt i apps/*/requirements.txt. Lokalny
+# `pip freeze > requirements.txt` w katalogu głównym nie trafi do repo.
+# Ukośnik na początku ogranicza wzorzec do katalogu głównego (apps/* zostają).
+/requirements.txt
+
+# Narzędzia
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+
+# Sprawy ZUS (PDF) mogą zawierać dane osobowe – tylko lokalnie
+data/cases_zus/*
+!data/cases_zus/.gitkeep
+
+# IDE / system
+.idea/
+.vscode/
+.DS_Store

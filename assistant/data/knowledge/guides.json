@@ -1,0 +1,53 @@
+{
+  "description": "Streszczenia poradników ZUS i gov.pl dla wyszukiwania RAG. Adresy sprawdzone 22.11.2026; treść poradnika na stronie źródłowej jest wiążąca.",
+  "fragments": [
+    {
+      "id": "zus-macierzynski-komu",
+      "title": "Komu przysługuje zasiłek macierzyński",
+      "text": "Zasiłek macierzyński przysługuje osobom objętym ubezpieczeniem chorobowym – obowiązkowo (pracownicy) albo dobrowolnie (np. zleceniobiorcy, przedsiębiorcy). Prawo do zasiłku nie zależy od tego, jak długo trwało ubezpieczenie chorobowe przed porodem.",
+      "url": "https://www.zus.pl/en/swiadczenia/zasilki/zasilek-macierzynski/komu-przysluguje"
+    },
+    {
+      "id": "zus-macierzynski-wysokosc",
+      "title": "Wysokość zasiłku macierzyńskiego",
+      "text": "Za okres urlopu macierzyńskiego, ojcowskiego i uzupełniającego urlopu macierzyńskiego zasiłek wynosi 100% podstawy wymiaru, a za okres urlopu rodzicielskiego 70%. Jeśli wniosek o zasiłek za cały okres urlopu macierzyńskiego i rodzicielskiego złożysz nie później niż 21 dni po porodzie, zasiłek za cały ten okres wynosi 81,5% podstawy.",
+      "url": "https://www.zus.pl/en/swiadczenia/zasilki/zasilek-macierzynski/wysokosc"
+    },
+    {
+      "id": "zus-macierzynski-okres",
+      "title": "Jak długo przysługuje zasiłek za okres urlopu macierzyńskiego",
+      "text": "Długość okresu zasiłkowego zależy od liczby dzieci urodzonych przy jednym porodzie: jedno dziecko – 20 tygodni (140 dni), dwoje – 31 tygodni (217 dni), troje – 33 tygodnie, czworo – 35 tygodni, pięcioro i więcej – 37 tygodni.",
+      "url": "https://www.zus.pl/en/swiadczenia/zasilki/zasilek-macierzynski/prawo-do-zasilku-i-okres-przyslugiwania/za-okres-urlopu-macierzynskiego-albo-urlopu-na-warunkach-urlopu-macierzynskiego"
+    },
+    {
+      "id": "zus-uzupelniajacy-urlop",
+      "title": "Zasiłek za okres uzupełniającego urlopu macierzyńskiego",
+      "text": "Rodzicom wcześniaków i noworodków wymagających hospitalizacji przysługuje uzupełniający urlop macierzyński, a za jego okres zasiłek macierzyński w wysokości 100% podstawy. Długość urlopu zależy od liczby tygodni pobytu dziecka w szpitalu; potrzebne jest zaświadczenie szpitala o pobycie dziecka.",
+      "url": "https://www.zus.pl/en/-/zasi%C5%82ek-macierzy%C5%84ski-za-okres-uzupe%C5%82niaj%C4%85cego-urlopu-macierzy%C5%84skiego"
+    },
+    {
+      "id": "zus-zasilek-w-wysokosci-macierzynskiego",
+      "title": "Jak uzyskać zasiłek w wysokości zasiłku macierzyńskiego",
+      "text": "Poradnik ZUS opisuje, kiedy i jak uzyskać zasiłek w wysokości zasiłku macierzyńskiego – m.in. dla ubezpieczonej, z którą w ciąży rozwiązano umowę z powodu likwidacji lub upadłości pracodawcy – oraz jakie dokumenty złożyć.",
+      "url": "https://www.zus.pl/en/-/jak-uzyskac-zasilek-w-wysokosci-zasilku-macierzynskiego"
+    },
+    {
+      "id": "zus-pobyt-matki-w-szpitalu",
+      "title": "Zasiłek macierzyński w związku z pobytem matki dziecka w szpitalu",
+      "text": "Gdy matka dziecka przebywa w szpitalu lub innej placówce leczniczej i nie może opiekować się dzieckiem, zasiłek macierzyński za część okresu urlopu może pobierać ojciec dziecka. Poradnik ZUS opisuje warunki i wymagane dokumenty, w tym zaświadczenie o pobycie matki w szpitalu.",
+      "url": "https://www.zus.pl/en/-/jak-uzyskac-zasilek-macierzynski-w-zwiazku-z-pobytem-matki-dziecka-w-szpitalu"
+    },
+    {
+      "id": "zus-poradnik-macierzynski-wychowawczy",
+      "title": "Poradnik ZUS: zasiłek macierzyński i wychowawczy",
+      "text": "Broszura ZUS omawia zasiłek macierzyński, urlopy związane z rodzicielstwem i urlop wychowawczy: kto ma prawo do świadczeń, jak się je oblicza i jakie dokumenty złożyć.",
+      "url": "https://www.zus.pl/documents/10182/167567/macierzynski_wychowawczy.pdf/8f6c71cf-bf01-43e9-83b4-a52551029a23"
+    },
+    {
+      "id": "gov-wczesniaki-dluzszy-urlop",
+      "title": "Rodzice wcześniaków z dłuższym urlopem macierzyńskim",
+      "text": "Ministerstwo Rodziny, Pracy i Polityki Społecznej opisuje zmiany wydłużające urlop macierzyński rodzicom wcześniaków i dzieci hospitalizowanych po porodzie (uzupełniający urlop macierzyński).",
+      "url": "https://www.gov.pl/web/rodzina/rodzice-wczesniakow-z-dluzszym-urlopem-macierzynskim-jest-projekt-ustawy"
+    }
+  ]
+}

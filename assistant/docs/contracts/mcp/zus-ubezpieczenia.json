@@ -1,0 +1,311 @@
+{
+  "server": "zus-ubezpieczenia",
+  "instructions": "Dane z ZUS o ubezpieczeniu zalogowanego użytkownika: okresy, przychody, płatnik.",
+  "tools": [
+    {
+      "name": "get_contribution_base",
+      "description": "Miesięczne przychody brutto i procent potrąconych składek (do podstawy wymiaru).",
+      "inputSchema": {
+        "properties": {
+          "user_ref": {
+            "title": "User Ref",
+            "type": "string"
+          }
+        },
+        "required": [
+          "user_ref"
+        ],
+        "title": "get_contribution_baseArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "$defs": {
+          "FactSource": {
+            "description": "Skąd pochodzi fakt: pobrany z ZUS, wpisany przez użytkownika, odczytany z dokumentu.",
+            "enum": [
+              "ZUS",
+              "USER",
+              "DOCUMENT"
+            ],
+            "title": "FactSource",
+            "type": "string"
+          },
+          "MonthlySalary": {
+            "additionalProperties": false,
+            "description": "Przychód brutto za miesiąc (podstawa wymiaru liczona w silniku, ZUS-12).",
+            "properties": {
+              "month": {
+                "examples": [
+                  "2026-03"
+                ],
+                "pattern": "^\\d{4}-(0[1-9]|1[0-2])$",
+                "title": "Month",
+                "type": "string"
+              },
+              "gross": {
+                "anyOf": [
+                  {
+                    "minimum": 0.0,
+                    "type": "number"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ],
+                "title": "Gross"
+              }
+            },
+            "required": [
+              "month",
+              "gross"
+            ],
+            "title": "MonthlySalary",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Dane do podstawy wymiaru – samą podstawę liczy serwer ``kalkulator`` (silnik).",
+        "properties": {
+          "source": {
+            "$ref": "#/$defs/FactSource"
+          },
+          "salaries": {
+            "items": {
+              "$ref": "#/$defs/MonthlySalary"
+            },
+            "title": "Salaries",
+            "type": "array"
+          },
+          "deductionRate": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Procent potrąconych składek ze sprawy (U7); ``null`` – domyślny z parametrów silnika.",
+            "title": "Deductionrate"
+          }
+        },
+        "required": [
+          "source",
+          "salaries",
+          "deductionRate"
+        ],
+        "title": "ContributionData",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_insurance_periods",
+      "description": "Tytuły ubezpieczenia (umowa o pracę, zlecenie, działalność) i okresy podlegania.",
+      "inputSchema": {
+        "properties": {
+          "user_ref": {
+            "title": "User Ref",
+            "type": "string"
+          }
+        },
+        "required": [
+          "user_ref"
+        ],
+        "title": "get_insurance_periodsArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "$defs": {
+          "EmploymentEndReason": {
+            "enum": [
+              "BANKRUPTCY",
+              "LIQUIDATION",
+              "EMPLOYER_DEATH",
+              "COURT_RULING",
+              "CONTRACT_EXPIRY",
+              "OTHER"
+            ],
+            "title": "EmploymentEndReason",
+            "type": "string"
+          },
+          "FactSource": {
+            "description": "Skąd pochodzi fakt: pobrany z ZUS, wpisany przez użytkownika, odczytany z dokumentu.",
+            "enum": [
+              "ZUS",
+              "USER",
+              "DOCUMENT"
+            ],
+            "title": "FactSource",
+            "type": "string"
+          },
+          "InsurancePeriod": {
+            "additionalProperties": false,
+            "description": "Okres podlegania ubezpieczeniu z jednego tytułu.",
+            "properties": {
+              "title": {
+                "$ref": "#/$defs/InsuranceTitle"
+              },
+              "sickness": {
+                "$ref": "#/$defs/SicknessInsurance"
+              },
+              "dateFrom": {
+                "format": "date",
+                "title": "Datefrom",
+                "type": "string"
+              },
+              "dateTo": {
+                "anyOf": [
+                  {
+                    "format": "date",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Dateto"
+              },
+              "endReason": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/EmploymentEndReason"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              }
+            },
+            "required": [
+              "title",
+              "sickness",
+              "dateFrom"
+            ],
+            "title": "InsurancePeriod",
+            "type": "object"
+          },
+          "InsuranceTitle": {
+            "enum": [
+              "EMPLOYMENT",
+              "MANDATE_CONTRACT",
+              "BUSINESS"
+            ],
+            "title": "InsuranceTitle",
+            "type": "string"
+          },
+          "SicknessInsurance": {
+            "enum": [
+              "MANDATORY",
+              "VOLUNTARY",
+              "NONE"
+            ],
+            "title": "SicknessInsurance",
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "source": {
+            "$ref": "#/$defs/FactSource"
+          },
+          "periods": {
+            "items": {
+              "$ref": "#/$defs/InsurancePeriod"
+            },
+            "title": "Periods",
+            "type": "array"
+          }
+        },
+        "required": [
+          "source",
+          "periods"
+        ],
+        "title": "InsurancePeriods",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_payer_info",
+      "description": "Liczba ubezpieczonych u płatnika na 30 listopada (kto wypłaca zasiłek, art. 61).",
+      "inputSchema": {
+        "properties": {
+          "user_ref": {
+            "title": "User Ref",
+            "type": "string"
+          }
+        },
+        "required": [
+          "user_ref"
+        ],
+        "title": "get_payer_infoArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "$defs": {
+          "FactSource": {
+            "description": "Skąd pochodzi fakt: pobrany z ZUS, wpisany przez użytkownika, odczytany z dokumentu.",
+            "enum": [
+              "ZUS",
+              "USER",
+              "DOCUMENT"
+            ],
+            "title": "FactSource",
+            "type": "string"
+          },
+          "PayerInfo": {
+            "additionalProperties": false,
+            "description": "Liczba ubezpieczonych u płatnika – decyduje, kto wypłaca zasiłek (art. 61).",
+            "properties": {
+              "insuredCountNov30": {
+                "minimum": 0,
+                "title": "Insuredcountnov30",
+                "type": "integer"
+              },
+              "countDate": {
+                "format": "date",
+                "title": "Countdate",
+                "type": "string"
+              }
+            },
+            "required": [
+              "insuredCountNov30",
+              "countDate"
+            ],
+            "title": "PayerInfo",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "source": {
+            "$ref": "#/$defs/FactSource"
+          },
+          "payer": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/PayerInfo"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Liczba ubezpieczonych na 30 listopada; ``null`` – brak danych płatnika."
+          }
+        },
+        "required": [
+          "source",
+          "payer"
+        ],
+        "title": "PayerData",
+        "type": "object"
+      }
+    }
+  ]
+}

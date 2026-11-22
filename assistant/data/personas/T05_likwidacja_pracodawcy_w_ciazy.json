@@ -1,0 +1,61 @@
+{
+  "id": "T05",
+  "title": "Likwidacja pracodawcy w ciąży",
+  "scenario": "Rozwiązanie umowy w ciąży z powodu likwidacji pracodawcy → zasiłek w wysokości macierzyńskiego do porodu",
+  "scope": "ENGINE",
+  "source": {
+    "kind": "MANUAL",
+    "note": "wyliczenie ręczne – do podmiany na sprawę ZUS"
+  },
+  "today": "2026-11-22",
+  "profile": {
+    "profileId": "persona-t05",
+    "applicant": {
+      "role": "MOTHER",
+      "insurance": {
+        "source": "ZUS",
+        "periods": [
+          {
+            "title": "EMPLOYMENT",
+            "sickness": "MANDATORY",
+            "dateFrom": "2022-03-01",
+            "dateTo": "2026-08-31",
+            "endReason": "LIQUIDATION"
+          }
+        ]
+      }
+    },
+    "child": {
+      "source": "USER",
+      "expectedBirthDate": "2026-12-10"
+    }
+  },
+  "stage": {
+    "stage": "E1",
+    "flags": []
+  },
+  "expected": [
+    {
+      "intentId": "A.04_zasilek_w_wysokosci_macierzynskiego",
+      "verdict": "YES",
+      "summaryContains": [
+        "od 01.09.2026",
+        "wypłaca ZUS"
+      ]
+    },
+    {
+      "intentId": "A.09_zasilek_po_ustaniu_umowy",
+      "verdict": "YES",
+      "summaryContains": [
+        "po stronie pracodawcy"
+      ]
+    },
+    {
+      "intentId": "G.05_kto_wyplaca",
+      "verdict": "YES",
+      "summaryContains": [
+        "ZUS"
+      ]
+    }
+  ]
+}

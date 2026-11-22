@@ -1,0 +1,81 @@
+{
+  "server": "usc",
+  "instructions": "Symulacja USC: wniosek o odpis aktu urodzenia dziecka.",
+  "tools": [
+    {
+      "name": "request_birth_certificate",
+      "description": "Złóż wniosek o odpis aktu urodzenia (zupełny albo skrócony) – symulacja.",
+      "inputSchema": {
+        "$defs": {
+          "CertificateKind": {
+            "enum": [
+              "FULL",
+              "SHORT"
+            ],
+            "title": "CertificateKind",
+            "type": "string"
+          }
+        },
+        "properties": {
+          "user_ref": {
+            "title": "User Ref",
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/$defs/CertificateKind"
+          }
+        },
+        "required": [
+          "user_ref",
+          "kind"
+        ],
+        "title": "request_birth_certificateArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "$defs": {
+          "CertificateKind": {
+            "enum": [
+              "FULL",
+              "SHORT"
+            ],
+            "title": "CertificateKind",
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "requestId": {
+            "title": "Requestid",
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/$defs/CertificateKind"
+          },
+          "submittedOn": {
+            "format": "date",
+            "title": "Submittedon",
+            "type": "string"
+          },
+          "note": {
+            "default": "Gdy zasiłek wypłaca ZUS, odpis aktu urodzenia ZUS pobiera sam – nie musisz go dołączać.",
+            "title": "Note",
+            "type": "string"
+          },
+          "simulated": {
+            "default": true,
+            "title": "Simulated",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "requestId",
+          "kind",
+          "submittedOn"
+        ],
+        "title": "CertificateRequest",
+        "type": "object"
+      }
+    }
+  ]
+}

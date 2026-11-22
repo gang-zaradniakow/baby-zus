@@ -1,0 +1,14 @@
+[build-system]
+requires = ["setuptools>=80"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "zus-rules-engine"
+version = "0.1.0"
+description = "Deterministyczny silnik reguł: uprawnienia, okresy i kwoty zasiłków"
+requires-python = ">=3.14"
+# Celowo bez zależności zewnętrznych poza kontraktami: silnik nie ma I/O.
+dependencies = ["zus-contracts"]
+
+[tool.setuptools.package-data]
+rules_engine = ["py.typed"]

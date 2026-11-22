@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$defs": {
+    "Flag": {
+      "description": "Flagi nakładane na etap (ustalenie U3).",
+      "enum": [
+        "ADOPTION",
+        "DIFFICULT"
+      ],
+      "title": "Flag",
+      "type": "string"
+    },
+    "Stage": {
+      "description": "Etap ścieżki rodzica (ustalenie U3).",
+      "enum": [
+        "E0",
+        "E1",
+        "E2",
+        "E3"
+      ],
+      "title": "Stage",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Etap i flagi wyliczone dla dziecka. ``stage = None`` – za mało danych, by go ustalić.",
+  "properties": {
+    "stage": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Stage"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "flags": {
+      "items": {
+        "$ref": "#/$defs/Flag"
+      },
+      "title": "Flags",
+      "type": "array"
+    }
+  },
+  "required": [
+    "stage"
+  ],
+  "title": "StageInfo",
+  "type": "object"
+}

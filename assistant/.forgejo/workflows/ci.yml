@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  REGISTRY: git.hack.kulesz.pl
+  IMAGE: git.hack.kulesz.pl/zespol/baby-zus-algorithms
+  SERVICE: baby-zus-algorithms
+
+jobs:
+  checks:
+    timeout-minutes: 20
+    runs-on: python
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.forgejo/actions/checks
+
+  build:
+    needs: checks
+    runs-on: budowanie
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Logowanie do rejestru
+        run: echo "${{ secrets.REGISTRY_TOKEN }}" | docker login "$REGISTRY" -u "${{ vars.REGISTRY_USER }}" --password-stdin
+
+      - name: Budowa obrazu
+        run: docker build -t "$IMAGE:${{ github.sha }}" .
+
+      - name: Wysłanie obrazu
+        run: docker push "$IMAGE:${{ github.sha }}"
+
+  deploy-test:
+    needs: build
+    runs-on: budowanie
+    steps:
+      - name: Wdrożenie na TEST
+        run: |
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_ed25519 && chmod 600 ~/.ssh/id_ed25519
+          echo "${{ vars.DEPLOY_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+          ssh -p 2200 deploy@10.42.0.1 test "$SERVICE" "$IMAGE:${{ github.sha }}" "${{ github.sha }}"

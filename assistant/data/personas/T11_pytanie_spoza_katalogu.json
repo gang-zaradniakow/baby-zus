@@ -1,0 +1,49 @@
+{
+  "id": "T11",
+  "title": "Pytanie spoza katalogu bez źródła",
+  "scenario": "Pytanie spoza katalogu bez źródła → brak zmyślonej odpowiedzi, propozycja eskalacji",
+  "scope": "LEVEL2",
+  "source": {
+    "kind": "MANUAL",
+    "note": "JDG od 01.02.2025 bez dobrowolnego ubezpieczenia chorobowego → brak prawa do macierzyńskiego (A.08 NIE); pytanie o wyprawkę spoza katalogu"
+  },
+  "today": "2026-11-22",
+  "profile": {
+    "profileId": "persona-t11",
+    "applicant": {
+      "role": "MOTHER",
+      "insurance": {
+        "source": "ZUS",
+        "periods": [
+          {
+            "title": "BUSINESS",
+            "sickness": "NONE",
+            "dateFrom": "2025-02-01"
+          }
+        ],
+        "contributionDebt": "0.00"
+      }
+    },
+    "child": {
+      "source": "ZUS",
+      "birthDate": "2026-11-12"
+    }
+  },
+  "expected": [
+    {
+      "intentId": "H.07_ochrona_przed_zwolnieniem",
+      "unsupported": true
+    },
+    {
+      "intentId": "A.08_bez_ubezpieczenia_chorobowego",
+      "verdict": "NO",
+      "summaryContains": [
+        "bez ubezpieczenia chorobowego"
+      ]
+    }
+  ],
+  "level2": {
+    "question": "Czy ZUS dopłaci mi do wyprawki, jeśli kupię wózek przed porodem?",
+    "expectedBehavior": "OUT_OF_CATALOG, brak źródła w bazie wiedzy → brak odpowiedzi merytorycznej i akcja ESCALATE"
+  }
+}

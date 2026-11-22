@@ -1,0 +1,357 @@
+{
+  "server": "wiedza",
+  "instructions": "Przepisy i poradniki ZUS/gov.pl z linkami oraz organizacje wsparcia. Cytuj tylko wyniki.",
+  "tools": [
+    {
+      "name": "list_support_orgs",
+      "description": "Organizacje wsparcia dla sytuacji trudnej (żałoba, poronienie, wcześniaki, choroba).",
+      "inputSchema": {
+        "$defs": {
+          "Situation": {
+            "description": "Sytuacja trudna, dla której szukamy wsparcia (§9.3).",
+            "enum": [
+              "MISCARRIAGE",
+              "STILLBIRTH",
+              "CHILD_DEATH",
+              "PREMATURE_BIRTH",
+              "CHILD_HOSPITALIZATION",
+              "SEVERE_ILLNESS"
+            ],
+            "title": "Situation",
+            "type": "string"
+          }
+        },
+        "properties": {
+          "situation": {
+            "$ref": "#/$defs/Situation"
+          }
+        },
+        "required": [
+          "situation"
+        ],
+        "title": "list_support_orgsArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "$defs": {
+          "Situation": {
+            "description": "Sytuacja trudna, dla której szukamy wsparcia (§9.3).",
+            "enum": [
+              "MISCARRIAGE",
+              "STILLBIRTH",
+              "CHILD_DEATH",
+              "PREMATURE_BIRTH",
+              "CHILD_HOSPITALIZATION",
+              "SEVERE_ILLNESS"
+            ],
+            "title": "Situation",
+            "type": "string"
+          },
+          "SupportOrg": {
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "minLength": 1,
+                "title": "Id",
+                "type": "string"
+              },
+              "name": {
+                "minLength": 1,
+                "title": "Name",
+                "type": "string"
+              },
+              "description": {
+                "minLength": 1,
+                "title": "Description",
+                "type": "string"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "format": "uri",
+                    "maxLength": 2083,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "``None`` – strona niepotwierdzona (``to_verify``); pokazujemy nazwę bez linku.",
+                "title": "Url"
+              },
+              "categories": {
+                "items": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "minItems": 1,
+                "title": "Categories",
+                "type": "array"
+              },
+              "toVerify": {
+                "default": false,
+                "title": "Toverify",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "description",
+              "url",
+              "categories"
+            ],
+            "title": "SupportOrg",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "situation": {
+            "$ref": "#/$defs/Situation"
+          },
+          "organizations": {
+            "items": {
+              "$ref": "#/$defs/SupportOrg"
+            },
+            "title": "Organizations",
+            "type": "array"
+          }
+        },
+        "required": [
+          "situation",
+          "organizations"
+        ],
+        "title": "SupportOrgs",
+        "type": "object"
+      }
+    },
+    {
+      "name": "search_guides",
+      "description": "Poradniki ZUS i gov.pl z linkiem do strony źródłowej.",
+      "inputSchema": {
+        "properties": {
+          "query": {
+            "description": "Pytanie lub fraza",
+            "maxLength": 500,
+            "minLength": 2,
+            "title": "Query",
+            "type": "string"
+          },
+          "limit": {
+            "default": 3,
+            "description": "Liczba wyników",
+            "maximum": 10,
+            "minimum": 1,
+            "title": "Limit",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "title": "search_guidesArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "$defs": {
+          "Fragment": {
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "title": "Id",
+                "type": "string"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "text": {
+                "title": "Text",
+                "type": "string"
+              },
+              "url": {
+                "format": "uri",
+                "maxLength": 2083,
+                "minLength": 1,
+                "title": "Url",
+                "type": "string"
+              },
+              "act": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Act"
+              },
+              "article": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Article"
+              },
+              "toVerify": {
+                "title": "Toverify",
+                "type": "boolean"
+              },
+              "score": {
+                "title": "Score",
+                "type": "number"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "text",
+              "url",
+              "act",
+              "article",
+              "toVerify",
+              "score"
+            ],
+            "title": "Fragment",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "results": {
+            "items": {
+              "$ref": "#/$defs/Fragment"
+            },
+            "title": "Results",
+            "type": "array"
+          }
+        },
+        "required": [
+          "results"
+        ],
+        "title": "SearchResults",
+        "type": "object"
+      }
+    },
+    {
+      "name": "search_law",
+      "description": "Streszczenia przepisów (Kodeks pracy, ustawa zasiłkowa) z linkiem do aktu w ISAP.",
+      "inputSchema": {
+        "properties": {
+          "query": {
+            "description": "Pytanie lub fraza",
+            "maxLength": 500,
+            "minLength": 2,
+            "title": "Query",
+            "type": "string"
+          },
+          "limit": {
+            "default": 3,
+            "description": "Liczba wyników",
+            "maximum": 10,
+            "minimum": 1,
+            "title": "Limit",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "title": "search_lawArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "$defs": {
+          "Fragment": {
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "title": "Id",
+                "type": "string"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "text": {
+                "title": "Text",
+                "type": "string"
+              },
+              "url": {
+                "format": "uri",
+                "maxLength": 2083,
+                "minLength": 1,
+                "title": "Url",
+                "type": "string"
+              },
+              "act": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Act"
+              },
+              "article": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Article"
+              },
+              "toVerify": {
+                "title": "Toverify",
+                "type": "boolean"
+              },
+              "score": {
+                "title": "Score",
+                "type": "number"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "text",
+              "url",
+              "act",
+              "article",
+              "toVerify",
+              "score"
+            ],
+            "title": "Fragment",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "results": {
+            "items": {
+              "$ref": "#/$defs/Fragment"
+            },
+            "title": "Results",
+            "type": "array"
+          }
+        },
+        "required": [
+          "results"
+        ],
+        "title": "SearchResults",
+        "type": "object"
+      }
+    }
+  ]
+}

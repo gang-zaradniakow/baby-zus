@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=80"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "zus-mcp-servers"
+version = "0.1.0"
+description = "Serwery MCP (mocki danych ZUS, kalkulator, dokumenty, wiedza, profil)"
+requires-python = ">=3.14"
+dependencies = [
+  "zus-contracts",
+  "zus-rules-engine",
+  "zus-profile-source",
+  "zus-assistant",  # EmbeddingClient i baza wiedzy (RAG) dla serwera wiedza
+  "mcp>=2.3,<3",
+  "pydantic-settings>=2.16,<3",
+  "sqlalchemy[asyncio]>=2.1,<3",  # zapis do audit_log (schemat z migracji API)
+  "asyncpg>=0.32,<1",
+]
+
+[tool.setuptools.package-data]
+mcp_servers = ["py.typed"]

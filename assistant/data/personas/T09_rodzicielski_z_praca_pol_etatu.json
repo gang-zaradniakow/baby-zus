@@ -1,0 +1,203 @@
+{
+  "id": "T09",
+  "title": "Urlop rodzicielski i praca na ½ etatu",
+  "scenario": "Rodzic na rodzicielskim + praca ½ etatu → wydłużony okres i proporcjonalny zasiłek",
+  "scope": "ENGINE",
+  "source": {
+    "kind": "MANUAL",
+    "note": "224 dni przy ½ etatu = 16 tyg. puli, wydłużenie 112 dni; 6040,30 × 70% / 30 = 140,94; × ½ = 70,47/dzień × 224 = 15 785,28"
+  },
+  "today": "2026-11-22",
+  "profile": {
+    "profileId": "persona-t09",
+    "applicant": {
+      "role": "MOTHER",
+      "insurance": {
+        "source": "ZUS",
+        "periods": [
+          {
+            "title": "EMPLOYMENT",
+            "sickness": "MANDATORY",
+            "dateFrom": "2023-01-02"
+          }
+        ],
+        "salaries": [
+          {
+            "month": "2025-11",
+            "gross": "7000.00"
+          },
+          {
+            "month": "2025-12",
+            "gross": "7000.00"
+          },
+          {
+            "month": "2026-01",
+            "gross": "7000.00"
+          },
+          {
+            "month": "2026-02",
+            "gross": "7000.00"
+          },
+          {
+            "month": "2026-03",
+            "gross": "7000.00"
+          },
+          {
+            "month": "2026-04",
+            "gross": "7000.00"
+          },
+          {
+            "month": "2026-05",
+            "gross": "7000.00"
+          },
+          {
+            "month": "2026-06",
+            "gross": "7000.00"
+          },
+          {
+            "month": "2026-07",
+            "gross": "7000.00"
+          },
+          {
+            "month": "2026-08",
+            "gross": "7000.00"
+          },
+          {
+            "month": "2026-09",
+            "gross": "7000.00"
+          },
+          {
+            "month": "2026-10",
+            "gross": "7000.00"
+          }
+        ],
+        "payer": {
+          "insuredCountNov30": 45,
+          "countDate": "2025-11-30"
+        },
+        "deductionRate": "0.1371"
+      }
+    },
+    "partner": {
+      "role": "FATHER",
+      "insurance": {
+        "source": "ZUS",
+        "periods": [
+          {
+            "title": "EMPLOYMENT",
+            "sickness": "MANDATORY",
+            "dateFrom": "2022-05-01"
+          }
+        ],
+        "payer": {
+          "insuredCountNov30": 8,
+          "countDate": "2025-11-30"
+        },
+        "salaries": [
+          {
+            "month": "2025-11",
+            "gross": "9000.00"
+          },
+          {
+            "month": "2025-12",
+            "gross": "9000.00"
+          },
+          {
+            "month": "2026-01",
+            "gross": "9000.00"
+          },
+          {
+            "month": "2026-02",
+            "gross": "9000.00"
+          },
+          {
+            "month": "2026-03",
+            "gross": "9000.00"
+          },
+          {
+            "month": "2026-04",
+            "gross": "9000.00"
+          },
+          {
+            "month": "2026-05",
+            "gross": "9000.00"
+          },
+          {
+            "month": "2026-06",
+            "gross": "9000.00"
+          },
+          {
+            "month": "2026-07",
+            "gross": "9000.00"
+          },
+          {
+            "month": "2026-08",
+            "gross": "9000.00"
+          },
+          {
+            "month": "2026-09",
+            "gross": "9000.00"
+          },
+          {
+            "month": "2026-10",
+            "gross": "9000.00"
+          }
+        ],
+        "deductionRate": "0.1371"
+      }
+    },
+    "partnerConsent": true,
+    "child": {
+      "source": "ZUS",
+      "birthDate": "2026-11-12"
+    },
+    "leavePlan": [
+      {
+        "parent": "MOTHER",
+        "type": "RODZICIELSKI",
+        "dateFrom": "2027-04-01",
+        "dateTo": "2027-11-10",
+        "workFraction": "0.5"
+      }
+    ]
+  },
+  "expected": [
+    {
+      "intentId": "E.05_wydluzenie_urlopu_przy_pracy",
+      "verdict": "YES",
+      "summaryContains": [
+        "wykorzystane 16 z 41 tygodni",
+        "wydłuża się o 112 dni"
+      ]
+    },
+    {
+      "intentId": "E.03_wplyw_pracy_na_kwote",
+      "verdict": "YES",
+      "calculation": {
+        "base": "6040.30",
+        "total": "15785.28",
+        "periods": [
+          {
+            "type": "RODZICIELSKI",
+            "from": "2027-04-01",
+            "to": "2027-11-10",
+            "rate": "0.35",
+            "amount": "15785.28"
+          }
+        ]
+      }
+    },
+    {
+      "intentId": "E.01_praca_na_rodzicielskim",
+      "verdict": "YES"
+    },
+    {
+      "intentId": "D.01_prawa_drugiego_rodzica",
+      "verdict": "YES",
+      "summaryContains": [
+        "9 tygodni",
+        "urlop ojcowski (14 dni)"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+# Instalacja: `make install` (robi `pre-commit install`). Ręcznie: `make pre-commit`.
+# ruff i mypy biorą wersje z .venv (requirements-dev.txt), więc nie rozjeżdżają się z CI.
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+        args: ["--markdown-linebreak-ext=md"]   # dwie spacje = złamanie wiersza w Markdownie
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: ["--maxkb=1024"]
+      - id: detect-private-key
+
+  # Wersja ruff musi być taka sama jak w requirements-dev.txt.
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.17.6
+    hooks:
+      - id: ruff-check
+        args: ["--fix"]
+      - id: ruff-format
+
+  - repo: local
+    hooks:
+      # `language: python` daje hookowi własnego `python` na PATH na każdym systemie;
+      # tasks.py używa potem mypy z .venv (wersja z requirements-dev.txt).
+      - id: mypy
+        name: mypy (tasks.py typecheck)
+        entry: python tasks.py typecheck
+        language: python
+        pass_filenames: false
+        types_or: [python, pyi]
+      - id: no-case-data
+        name: nie commituj PDF-ów ze sprawami ZUS
+        entry: Pliki w data/cases_zus mogą zawierać dane osobowe – trzymaj je poza gitem.
+        language: fail
+        files: ^data/cases_zus/(?!\.gitkeep$)

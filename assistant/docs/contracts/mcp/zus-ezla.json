@@ -1,0 +1,91 @@
+{
+  "server": "zus-ezla",
+  "instructions": "Zwolnienia lekarskie e-ZLA zalogowanego użytkownika (okresy i kody).",
+  "tools": [
+    {
+      "name": "list_sick_leaves",
+      "description": "e-ZLA z okresami i kodami literowymi; kod B = niezdolność w okresie ciąży.",
+      "inputSchema": {
+        "properties": {
+          "user_ref": {
+            "title": "User Ref",
+            "type": "string"
+          }
+        },
+        "required": [
+          "user_ref"
+        ],
+        "title": "list_sick_leavesArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "$defs": {
+          "FactSource": {
+            "description": "Skąd pochodzi fakt: pobrany z ZUS, wpisany przez użytkownika, odczytany z dokumentu.",
+            "enum": [
+              "ZUS",
+              "USER",
+              "DOCUMENT"
+            ],
+            "title": "FactSource",
+            "type": "string"
+          },
+          "SickLeave": {
+            "additionalProperties": false,
+            "description": "Zwolnienie lekarskie e-ZLA.",
+            "properties": {
+              "dateFrom": {
+                "format": "date",
+                "title": "Datefrom",
+                "type": "string"
+              },
+              "dateTo": {
+                "format": "date",
+                "title": "Dateto",
+                "type": "string"
+              },
+              "code": {
+                "anyOf": [
+                  {
+                    "pattern": "^[A-E]$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Code"
+              }
+            },
+            "required": [
+              "dateFrom",
+              "dateTo"
+            ],
+            "title": "SickLeave",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "source": {
+            "$ref": "#/$defs/FactSource"
+          },
+          "sickLeaves": {
+            "items": {
+              "$ref": "#/$defs/SickLeave"
+            },
+            "title": "Sickleaves",
+            "type": "array"
+          }
+        },
+        "required": [
+          "source",
+          "sickLeaves"
+        ],
+        "title": "SickLeaves",
+        "type": "object"
+      }
+    }
+  ]
+}

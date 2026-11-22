@@ -1,0 +1,39 @@
+name: checks
+description: Lint, testy i build frontendu
+runs:
+  using: composite
+  steps:
+    - name: Cache npm – odczyt
+      id: npm
+      uses: actions/cache/restore@v4
+      with:
+        path: ~/.npm
+        key: npm-${{ hashFiles('package-lock.json') }}
+        restore-keys: npm-
+
+    - name: Instalacja zależności
+      shell: bash
+      run: npm ci --no-audit --no-fund
+
+    - name: Kontrola typów
+      shell: bash
+      run: npm run typecheck
+
+    - name: Lint
+      shell: bash
+      run: npm run lint --if-present
+
+    - name: Testy
+      shell: bash
+      run: npm test --if-present
+
+    - name: Build (z kontrolą typów)
+      shell: bash
+      run: npm run build
+
+    - name: Cache npm – zapis
+      if: steps.npm.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v4
+      with:
+        path: ~/.npm
+        key: ${{ steps.npm.outputs.cache-primary-key }}

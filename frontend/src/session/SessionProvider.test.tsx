@@ -1,0 +1,110 @@
+import { act, renderHook } from '@testing-library/react-native';
+
+import { makeProfile } from '@/testing/profiles';
+
+import { SessionProvider } from './SessionProvider';
+import { useSession } from './useSession';
+
+function renderSession() {
+  return renderHook(() => useSession(), { wrapper: SessionProvider });
+}
+
+describe('SessionProvider + useSession', () => {
+  it('na start: niezalogowany, bez profilu i bez zrobionych zadań', async () => {
+    const { result } = await renderSession();
+
+    expect(result.current.isSignedIn).toBe(false);
+    expect(result.current.profile).toBeNull();
+    expect(result.current.completedTaskIds.size).toBe(0);
+  });
+
+  it('signIn loguje użytkownika', async () => {
+    const { result } = await renderSession();
+
+    await act(() => result.current.signIn());
+
+    expect(result.current.isSignedIn).toBe(true);
+  });
+
+  it('toggleTask oznacza zadanie jako zrobione, a ponowne wywołanie cofa to', async () => {
+    const { result } = await renderSession();
+
+    await act(() => result.current.toggleTask('usc-zgloszenie'));
+    expect(result.current.completedTaskIds.has('usc-zgloszenie')).toBe(true);
+
+    await act(() => result.current.toggleTask('usc-zgloszenie'));
+    expect(result.current.completedTaskIds.has('usc-zgloszenie')).toBe(false);
+  });
+
+  it('completeOnboarding zapisuje profil i czyści postęp poprzedniej osi czasu', async () => {
+    const { result } = await renderSession();
+    const profile = makeProfile({ stage: 'ciaza' });
+
+    await act(() => result.current.toggleTask('stare-zadanie'));
+    await act(() => result.current.completeOnboarding(profile));
+
+    expect(result.current.profile).toEqual(profile);
+    expect(result.current.completedTaskIds.size).toBe(0);
+  });
+
+  it('signOut tylko wylogowuje — profil gościa zostaje, bo nie zależy od logowania', async () => {
+    const { result } = await renderSession();
+    const profile = makeProfile();
+
+    await act(() => result.current.signIn());
+    await act(() => result.current.completeOnboarding(profile));
+    await act(() => result.current.toggleTask('usc-zgloszenie'));
+    await act(() => result.current.signOut());
+
+    expect(result.current.isSignedIn).toBe(false);
+    expect(result.current.profile).toEqual(profile);
+    expect(result.current.completedTaskIds.has('usc-zgloszenie')).toBe(true);
+  });
+
+  it('resetProfile czyści profil i postęp, ale nie wylogowuje', async () => {
+    const { result } = await renderSession();
+
+    await act(() => result.current.signIn());
+    await act(() => result.current.completeOnboarding(makeProfile()));
+    await act(() => result.current.toggleTask('usc-zgloszenie'));
+    await act(() => result.current.resetProfile());
+
+    expect(result.current.isSignedIn).toBe(true);
+    expect(result.current.profile).toBeNull();
+    expect(result.current.completedTaskIds.size).toBe(0);
+  });
+
+  it('bez providera zwraca bezpieczne wartości domyślne', async () => {
+    const { result } = await renderHook(() => useSession());
+
+    expect(result.current.isSignedIn).toBe(false);
+    expect(() => result.current.signIn()).not.toThrow();
+  });
+  it('applyPersona: profil przykładowej osoby, logowanie i czysty postęp', async () => {
+    const { result } = await renderSession();
+    const profile = makeProfile({ name: 'Anna' });
+
+    await act(() => result.current.toggleTask('stare-zadanie'));
+    await act(() => result.current.applyPersona('anna', profile));
+
+    expect(result.current).toMatchObject({ isSignedIn: true, personaId: 'anna', profile });
+    expect(result.current.completedTaskIds.size).toBe(0);
+  });
+
+  it('pisma: przeczytane i przeniesione do archiwum; nowy profil czyści skrzynkę', async () => {
+    const { result } = await renderSession();
+
+    await act(() => result.current.markDocumentRead('pismo-1'));
+    await act(() => result.current.toggleDocumentArchived('pismo-1'));
+    expect(result.current.readDocumentIds.has('pismo-1')).toBe(true);
+    expect(result.current.movedDocumentIds.has('pismo-1')).toBe(true);
+
+    await act(() => result.current.toggleDocumentArchived('pismo-1'));
+    expect(result.current.movedDocumentIds.has('pismo-1')).toBe(false);
+
+    await act(() => result.current.markDocumentRead('pismo-2'));
+    await act(() => result.current.completeOnboarding(makeProfile()));
+    expect(result.current.readDocumentIds.size).toBe(0);
+    expect(result.current.personaId).toBeNull();
+  });
+});

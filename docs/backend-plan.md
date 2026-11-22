@@ -434,7 +434,7 @@ Od PR 05 każdy PR z endpointem zaczyna się od wpisu w `openapi.yaml` (patrz 2.
 | 07 | Harness testów golden | `tools/golden/generate.mjs`, format fixture, bazowa klasa testu, fixture terminów | Golden: terminy | P0 |
 | 08 | Zbieg tytułów i podstawa z Z-3 | `InsuranceTitles`, `InsuranceTitleResolver`, `BenefitBaseCalculator`, `BenefitParameters` (z zapytania `legalrules`), `POST /calculations/insurance`, `POST /calculations/benefit-base` | Jednostkowe + golden `resolvePerson`, `podstawaZ3` | P0 |
 | 09 | Wymiary urlopów | `LeaveDimensionsPolicy`, `AdoptionLeavePolicy`, `SupplementaryLeavePolicy`, `LeaveParameters`, `POST /calculations/leave-dimensions` | Jednostkowe + golden `adoptWeeks`, `uzupelniajacy` | P0 |
-| 10 | Zasiłek chorobowy w ciąży | `PregnancySicknessCalculator`, `POST /calculations/sickness-in-pregnancy` | Jednostkowe + golden `chorobowyCiaza`, `chorobowyMulti`, IT | P0 |
+| 10 | Zasiłek chorobowy w ciąży | `PregnancySicknessCalculator` (na tytułach z `InsuranceTitleResolver`), `SicknessParameters`, `IncomeTaxAdvance` (kwota na rękę), `POST /calculations/sickness-in-pregnancy` | Jednostkowe + golden `chorobowyCiaza`, `chorobowyMulti`, IT | P0 |
 | 11 | Symulator macierzyńskiego, cz. 1: segmenty | Podział urlopu, przejęcie, uzupełniający, ojcowski, segmenty, kontrole uprawnień | Jednostkowe + golden (`segs`, `checks`) | P0 |
 | 12 | Symulator macierzyńskiego, cz. 2: kwoty i praca | Netto, minimum 1000 zł, 81,5% vs 100/70, łączenie z pracą, limity, `AlternativeBenefitPolicy`, `POST /calculations/maternity` | Jednostkowe + golden (`totals`, `notes`), IT | P0 |
 

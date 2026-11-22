@@ -207,6 +207,35 @@ paths:
         default:
           $ref: '#/components/responses/Problem'
 
+  /api/v1/calculations/sickness-in-pregnancy:
+    post:
+      tags: [Calculations]
+      operationId: calculatePregnancySickness
+      summary: Sickness benefit in pregnancy (sick leave with code B)
+      description: |
+        Pay during sick leave in pregnancy, 100% of the base, for each insurance title separately (titles resolved as
+        in `/calculations/insurance`). Employment: sick pay from the employer for the first 33 days of the year
+        (14 days from the age of 50), then the sickness benefit. Mandate contract and own firm: benefit from the first
+        day. The benefit period in pregnancy is 270 days, then the rehabilitation benefit (up to 12 months). The
+        waiting period (30 / 90 days of insurance) is checked and explained.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PregnancySicknessRequest'
+      responses:
+        '200':
+          description: Calculated pay for the sick leave.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PregnancySickness'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        default:
+          $ref: '#/components/responses/Problem'
+
 components:
   responses:
     ValidationProblem:
@@ -522,6 +551,72 @@ components:
           format: int32
         rule:
           type: string
+
+    PregnancySicknessRequest:
+      type: object
+      required: [titles, days]
+      properties:
+        titles:
+          $ref: '#/components/schemas/InsuranceTitlesRequest'
+        days:
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 2000
+          description: Days of sick leave in pregnancy.
+        usedSickPayDays:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 400
+          default: 0
+          description: Sick-pay days from the employer already used this calendar year.
+        aged50OrMore:
+          type: boolean
+          default: false
+          description: Aged 50 or more (14 days of sick pay instead of 33).
+        insuredDays:
+          type: integer
+          format: int32
+          minimum: 0
+          default: 365
+          description: Days of uninterrupted sickness insurance before the sick leave (waiting period).
+
+    PregnancySickness:
+      type: object
+      required: [checks, parts, total, netTotal]
+      properties:
+        checks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Check'
+        parts:
+          type: array
+          description: Periods paid differently (sick pay, sickness benefit, rehabilitation benefit), per title.
+          items:
+            $ref: '#/components/schemas/SicknessPayPart'
+        total:
+          $ref: '#/components/schemas/Money'
+        netTotal:
+          $ref: '#/components/schemas/Money'
+
+    SicknessPayPart:
+      type: object
+      required: [title, label, days, rate, amount]
+      properties:
+        title:
+          $ref: '#/components/schemas/InsuranceTitle'
+        label:
+          type: string
+          description: Polish description of the period.
+        days:
+          type: integer
+          format: int32
+        rate:
+          type: number
+          description: Part of the base paid, as a fraction (1 = 100%).
+        amount:
+          $ref: '#/components/schemas/Money'
 
     ProblemDetail:
       type: object

@@ -9,6 +9,7 @@ import com.hn26.zaradniaki.zusbaby.benefits.application.mapper.BenefitParameters
 import com.hn26.zaradniaki.zusbaby.benefits.application.mapper.BenefitsDtoMapper;
 import com.hn26.zaradniaki.zusbaby.benefits.application.query.CalculateBenefitBaseQuery;
 import com.hn26.zaradniaki.zusbaby.benefits.application.query.CalculateLeaveDimensionsQuery;
+import com.hn26.zaradniaki.zusbaby.benefits.application.query.CalculatePregnancySicknessQuery;
 import com.hn26.zaradniaki.zusbaby.benefits.application.query.ResolveInsuranceQuery;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.base.BenefitBaseCalculator;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.base.MonthlyPay;
@@ -21,6 +22,8 @@ import com.hn26.zaradniaki.zusbaby.benefits.domain.leave.LeaveDimensionsPolicy;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.leave.PretermBirth;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.leave.SupplementaryLeavePolicy;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.leave.TakenInChild;
+import com.hn26.zaradniaki.zusbaby.benefits.domain.sickness.PregnancySicknessCalculator;
+import com.hn26.zaradniaki.zusbaby.benefits.domain.sickness.SickLeave;
 import com.hn26.zaradniaki.zusbaby.legalrules.api.model.ParameterKey;
 import com.hn26.zaradniaki.zusbaby.legalrules.application.dto.LegalParametersDto;
 import com.hn26.zaradniaki.zusbaby.legalrules.application.dto.ParameterDto;
@@ -56,7 +59,14 @@ class BenefitsHandlersTest {
             Map.entry(ParameterKey.FOSTER_CHILD_AGE_LIMIT_DEFERRED_SCHOOL, "10"),
             Map.entry(ParameterKey.ADOPTED_CHILD_AGE_LIMIT, "16"),
             Map.entry(ParameterKey.SUPPLEMENTARY_LEAVE_MAX_WEEKS_EXTREME_PRETERM, "15"),
-            Map.entry(ParameterKey.SUPPLEMENTARY_LEAVE_MAX_WEEKS, "8"));
+            Map.entry(ParameterKey.SUPPLEMENTARY_LEAVE_MAX_WEEKS, "8"),
+            Map.entry(ParameterKey.WAITING_PERIOD_MANDATORY_DAYS, "30"),
+            Map.entry(ParameterKey.WAITING_PERIOD_VOLUNTARY_DAYS, "90"),
+            Map.entry(ParameterKey.PREGNANCY_BENEFIT_PERIOD_DAYS, "270"), Map.entry(ParameterKey.SICK_PAY_DAYS, "40"),
+            Map.entry(ParameterKey.SICK_PAY_DAYS_AGE_50, "14"), Map.entry(ParameterKey.PREGNANCY_SICKNESS_RATE, "1"),
+            Map.entry(ParameterKey.PREGNANCY_REHABILITATION_RATE, "1"),
+            Map.entry(ParameterKey.REHABILITATION_MAX_MONTHS, "12"),
+            Map.entry(ParameterKey.INCOME_TAX_ADVANCE_RATE, "0.12"));
 
     private final Pipeline pipeline = new Pipeline() {
         @Override
@@ -129,6 +139,21 @@ class BenefitsHandlersTest {
         assertThat(result.parentalWeeks()).isEqualTo(Weeks.of(65));
         assertThat(result.supplementary().weeks()).isEqualTo(Weeks.of(7));
         assertThat(result.adoption()).isNull();
+    }
+
+    @Test
+    void calculatesSicknessInPregnancyWithTheCurrentSickPayDays() {
+        var handler = new CalculatePregnancySicknessHandler(pipeline, new InsuranceTitleResolver(),
+                new PregnancySicknessCalculator(), parametersMapper, mapper);
+
+        // the changed legal state gives 40 sick-pay days instead of 33
+        var result = handler.handle(new CalculatePregnancySicknessQuery(
+                new InsuranceTitles(new InsuranceTitles.Employment(Money.of(6000), true), null, null, false),
+                new SickLeave(60, 0, false, 365)));
+
+        assertThat(result.parts()).extracting(part -> part.days()).containsExactly(40, 20);
+        assertThat(result.total()).isEqualTo(Money.of(12000));
+        assertThat(result.netTotal()).isEqualTo(Money.of(10560));
     }
 
     private CalculateLeaveDimensionsHandler leaveHandler() {

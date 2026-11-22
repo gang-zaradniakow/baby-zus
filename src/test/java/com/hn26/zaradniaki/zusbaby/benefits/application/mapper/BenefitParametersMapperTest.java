@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 
 import com.hn26.zaradniaki.zusbaby.benefits.domain.BenefitParametersFixtures;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.LeaveParametersFixtures;
+import com.hn26.zaradniaki.zusbaby.benefits.domain.SicknessParametersFixtures;
 import com.hn26.zaradniaki.zusbaby.legalrules.api.model.ParameterKey;
 import com.hn26.zaradniaki.zusbaby.legalrules.application.dto.LegalParametersDto;
 import com.hn26.zaradniaki.zusbaby.legalrules.application.dto.ParameterDto;
@@ -26,6 +27,20 @@ class BenefitParametersMapperTest {
                 parameter(ParameterKey.DEBT_THRESHOLD, "48.06"), parameter(ParameterKey.FUNERAL_GRANT, "7000")));
 
         assertThat(mapper.toBenefitParameters(dto)).isEqualTo(BenefitParametersFixtures.legalState2026());
+    }
+
+    @Test
+    void takesSicknessParametersFromLegalParameters() {
+        var dto = legalParameters(List.of(parameter(ParameterKey.WAITING_PERIOD_MANDATORY_DAYS, "30"),
+                parameter(ParameterKey.WAITING_PERIOD_VOLUNTARY_DAYS, "90"),
+                parameter(ParameterKey.PREGNANCY_BENEFIT_PERIOD_DAYS, "270"),
+                parameter(ParameterKey.SICK_PAY_DAYS, "33"), parameter(ParameterKey.SICK_PAY_DAYS_AGE_50, "14"),
+                parameter(ParameterKey.PREGNANCY_SICKNESS_RATE, "1"),
+                parameter(ParameterKey.PREGNANCY_REHABILITATION_RATE, "1"),
+                parameter(ParameterKey.REHABILITATION_MAX_MONTHS, "12"),
+                parameter(ParameterKey.INCOME_TAX_ADVANCE_RATE, "0.12")));
+
+        assertThat(mapper.toSicknessParameters(dto)).isEqualTo(SicknessParametersFixtures.legalState2026());
     }
 
     @Test

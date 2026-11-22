@@ -2,6 +2,7 @@ package com.hn26.zaradniaki.zusbaby.benefits.application.mapper;
 
 import com.hn26.zaradniaki.zusbaby.benefits.domain.BenefitParameters;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.LeaveParameters;
+import com.hn26.zaradniaki.zusbaby.benefits.domain.SicknessParameters;
 import com.hn26.zaradniaki.zusbaby.legalrules.api.model.ParameterKey;
 import com.hn26.zaradniaki.zusbaby.legalrules.application.dto.LegalParametersDto;
 import com.hn26.zaradniaki.zusbaby.legalrules.application.dto.ParameterDto;
@@ -42,6 +43,21 @@ public class BenefitParametersMapper {
                 value(parameters, ParameterKey.ADOPTED_CHILD_AGE_LIMIT).intValueExact(),
                 weeks(parameters, ParameterKey.SUPPLEMENTARY_LEAVE_MAX_WEEKS_EXTREME_PRETERM),
                 weeks(parameters, ParameterKey.SUPPLEMENTARY_LEAVE_MAX_WEEKS));
+    }
+
+    public SicknessParameters toSicknessParameters(LegalParametersDto parameters) {
+        return new SicknessParameters(whole(parameters, ParameterKey.WAITING_PERIOD_MANDATORY_DAYS),
+                whole(parameters, ParameterKey.WAITING_PERIOD_VOLUNTARY_DAYS),
+                whole(parameters, ParameterKey.PREGNANCY_BENEFIT_PERIOD_DAYS),
+                whole(parameters, ParameterKey.SICK_PAY_DAYS), whole(parameters, ParameterKey.SICK_PAY_DAYS_AGE_50),
+                new Rate(value(parameters, ParameterKey.PREGNANCY_SICKNESS_RATE)),
+                new Rate(value(parameters, ParameterKey.PREGNANCY_REHABILITATION_RATE)),
+                whole(parameters, ParameterKey.REHABILITATION_MAX_MONTHS),
+                new Rate(value(parameters, ParameterKey.INCOME_TAX_ADVANCE_RATE)));
+    }
+
+    private static int whole(LegalParametersDto parameters, ParameterKey key) {
+        return value(parameters, key).intValueExact();
     }
 
     private static Weeks weeks(LegalParametersDto parameters, ParameterKey key) {

@@ -89,6 +89,40 @@ class CalculationsIT {
     }
 
     @Test
+    void calculatesSickLeaveInPregnancyPerTitle() throws Exception {
+        mvc.perform(post("/api/v1/calculations/sickness-in-pregnancy").contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                          "titles": {"employment": {"base": "2000.00", "atLeastMinimumWage": false},
+                                     "selfEmployment": {"base": "4877.11", "voluntarySickness": true}},
+                          "days": 60
+                        }
+                        """))
+                .andExpect(status().isOk()).andExpect(matchesContract())
+                .andExpect(jsonPath("$.parts.length()").value(3))
+                .andExpect(jsonPath("$.parts[0].title").value("EMPLOYMENT"))
+                .andExpect(jsonPath("$.parts[0].label").value("etat — Wynagrodzenie chorobowe (płaci pracodawca)"))
+                .andExpect(jsonPath("$.parts[0].days").value(33)).andExpect(jsonPath("$.parts[2].title")
+                        .value("SELF_EMPLOYMENT"))
+                .andExpect(jsonPath("$.total").value("13754.22")).andExpect(jsonPath("$.netTotal").value("12103.22"));
+    }
+
+    @Test
+    void explainsMissingInsuranceForSickLeave() throws Exception {
+        mvc.perform(post("/api/v1/calculations/sickness-in-pregnancy").contentType(MediaType.APPLICATION_JSON)
+                .content("{\"titles\": {}, \"days\": 30}")).andExpect(status().isOk()).andExpect(matchesContract())
+                .andExpect(jsonPath("$.parts.length()").value(0)).andExpect(jsonPath("$.total").value("0.00"))
+                .andExpect(jsonPath("$.checks[0].level").value("NO"));
+    }
+
+    @Test
+    void rejectsSickLeaveWithoutDays() throws Exception {
+        mvc.perform(post("/api/v1/calculations/sickness-in-pregnancy").contentType(MediaType.APPLICATION_JSON)
+                .content("{\"titles\": {}, \"days\": 0}")).andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("validation-failed"));
+    }
+
+    @Test
     void rejectsEmptyListOfMonths() throws Exception {
         mvc.perform(post("/api/v1/calculations/benefit-base").contentType(MediaType.APPLICATION_JSON)
                 .content("{\"title\": \"EMPLOYMENT\", \"months\": []}")).andExpect(status().isBadRequest())

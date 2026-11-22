@@ -223,6 +223,48 @@ areas.supplementaryLeave = () => {
   };
 };
 
+// ---------------------------------------------------------------------------------------------------------------
+// Sickness benefit in pregnancy (resolvePerson() + chorobowyMulti(), as the calculator screen does)
+// ---------------------------------------------------------------------------------------------------------------
+areas.pregnancySickness = () => {
+  const leave = (days, extra = {}) => ({ days, usedSickPayDays: 0, aged50OrMore: false, insuredDays: 365, ...extra });
+  const inputs = [
+    ['employment, 30 days: sick pay only', titles({ e: employment(5177.4) }), leave(30)],
+    ['employment, 60 days: sick pay then benefit', titles({ e: employment(5177.4) }), leave(60)],
+    ['employment, 20 sick-pay days already used', titles({ e: employment(5177.4) }), leave(60, { usedSickPayDays: 20 })],
+    ['employment, aged 50: 14 days of sick pay', titles({ e: employment(5177.4) }), leave(30, { aged50OrMore: true })],
+    ['employment, all sick-pay days used', titles({ e: employment(5177.4) }), leave(40, { usedSickPayDays: 400 })],
+    ['employment, 300 days: rehabilitation benefit after 270', titles({ e: employment(5177.4) }), leave(300)],
+    ['employment, 700 days: rehabilitation capped at 12 months', titles({ e: employment(5177.4) }), leave(700)],
+    ['employment, waiting period not met', titles({ e: employment(5177.4) }), leave(30, { insuredDays: 20 })],
+    ['own firm, 90 days: benefit from the first day', titles({ j: firm(4877.11) }), leave(90)],
+    ['own firm, waiting period of 90 days not met', titles({ j: firm(4877.11) }), leave(30, { insuredDays: 60 })],
+    ['mandate contract, 45 days', titles({ z: mandate(3883.05) }), leave(45, { insuredDays: 100 })],
+    ['part-time employment and own firm, 60 days', titles({ e: employment(2000, false), j: firm(4877.11) }), leave(60)],
+    ['full-time employment and own firm: only employment', titles({ e: employment(5177.4), j: firm(4877.11) }), leave(60)],
+    ['no insurance title', titles({}), leave(30)],
+    ['own firm with blocking debt', titles({ j: firm(4877.11, true, false, 62.4) }), leave(30)],
+    ['farmer in KRUS', titles({ krus: true }), leave(30)],
+    ['employment without a base', titles({ e: employment(0) }), leave(30)],
+  ];
+  return {
+    source: 'js/calc.js: resolvePerson() + chorobowyMulti(), netto()',
+    cases: inputs.map(([name, t, l]) => {
+      const r = C.chorobowyMulti(C.resolvePerson({ t: mockupTitles(t) }), { dni: l.days, uzyte: l.usedSickPayDays, wiek50: l.aged50OrMore, staz: l.insuredDays });
+      return {
+        name,
+        input: { titles: t, leave: l },
+        expected: {
+          checks: checks(r.checks),
+          parts: r.parts.map((p) => ({ label: p.label, days: p.dni, rate: p.pct, amount: p.kwota })),
+          total: r.total,
+          netTotal: C.netto(r.total),
+        },
+      };
+    }),
+  };
+};
+
 mkdirSync(outDir, { recursive: true });
 for (const [area, build] of Object.entries(areas)) {
   const file = join(outDir, `${area}.json`);

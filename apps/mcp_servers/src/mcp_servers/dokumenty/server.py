@@ -17,6 +17,7 @@ from typing import Annotated, Final
 from mcp.server.mcpserver import MCPServer
 from pydantic import Field
 
+from assistant.guardrails import INSTRUCTION_PATTERNS
 from contracts import MonthlySalary, Profile
 from contracts._base import ContractModel
 from mcp_servers.common.errors import ErrorCode, ToolFailureError, handles_errors
@@ -32,14 +33,6 @@ PROFILE_FIELD: Final = Field(
     default=None, description="Profil sesji (formularz, uzupełnienia); brak – profil z ZUS."
 )
 SALARY_RE: Final = re.compile(r"(\d{4}-\d{2})\s*[:–-]\s*([\d  ]+(?:[.,]\d{1,2})?)\s*(?:zł)?")
-INSTRUCTION_PATTERNS: Final = tuple(
-    re.compile(p, re.IGNORECASE)
-    for p in (
-        r"(zignoruj|pomiń|ignoruj|ignore|disregard).{0,40}(instrukc|polece|zasad|instruction)",
-        r"(jesteś teraz|you are now|system prompt|prompt systemowy)",
-        r"(napisz|odpowiedz|powiedz|write|say)\s*,?\s*że",
-    )
-)
 
 #: Etykiety pól zaświadczenia Z-3 / Z-3a → klucz w ``fields``.
 LABELS: Final = {

@@ -17,6 +17,8 @@ class Settings(BaseSettings):
     """Ile ``/health`` czeka na odpowiedź bazy, zanim zgłosi 503."""
     session_ttl_minutes: int = Field(default=60, gt=0)
     """Ważność tokenu sesji (logowanie symulowane i tryb bez logowania)."""
+    chat_timeout_s: float = Field(default=30.0, gt=0)
+    """Limit czasu odpowiedzi asystenta na ``POST /chat`` (potem 504 + propozycja eskalacji)."""
 
 
 @lru_cache

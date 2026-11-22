@@ -3,6 +3,7 @@
 -e ../../packages/contracts
 -e ../../packages/rules_engine
 -e ../../packages/profile_source
+-e ../assistant
 -e .
 
 fastapi==0.165.0

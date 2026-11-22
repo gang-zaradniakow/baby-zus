@@ -11,6 +11,7 @@ dependencies = [
   "zus-contracts",
   "zus-rules-engine",
   "zus-profile-source",
+  "zus-assistant",  # czat poziomu 2 (orkiestrator, walidator, paczka eskalacyjna)
   "fastapi>=0.165,<1",
   "uvicorn[standard]>=0.54,<1",
   "sqlalchemy[asyncio]>=2.1,<3",

@@ -9,6 +9,7 @@ description = "Poziom 2: orkiestrator LLM (wymienny model), walidator liczb, RAG
 requires-python = ">=3.14"
 dependencies = [
   "zus-contracts",
+  "zus-rules-engine",  # katalog intencji, wyszukiwarka, kalkulator dla orkiestratora
   "openai>=3.57,<4",
   "httpx>=0.28,<1",
   "mcp>=2.3,<3",

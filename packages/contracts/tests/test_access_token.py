@@ -1,10 +1,10 @@
-"""Token dostępu MCP: podpis HMAC, ważność, pseudonim i sesja."""
+"""Token dostępu MCP: podpis HMAC, ważność, pseudonim i sesja (wspólny kontrakt API/MCP)."""
 
 from datetime import UTC, datetime, timedelta
 
 import pytest
 
-from mcp_servers.common.auth import InvalidTokenError, Principal, TokenSigner, _b64
+from contracts.access_token import InvalidTokenError, Principal, TokenSigner, _b64
 
 NOW = datetime(2026, 11, 22, 9, 0, tzinfo=UTC)
 SIGNER = TokenSigner("test-secret-0123456789")

@@ -11,13 +11,25 @@ from contextlib import AsyncExitStack, asynccontextmanager
 from fastapi import FastAPI
 
 from api import __version__
+from api.db.conversation_repository import SqlConversationRepository
 from api.db.engine import create_engine, create_sessionmaker
+from api.db.escalation_repository import SqlEscalationRepository
 from api.db.session_repository import SqlSessionRepository
 from api.deps import Clock, utc_now
 from api.errors import ErrorResponse, install_error_handlers
-from api.routers import answers, auth, health, intents, me
+from api.routers import answers, auth, chat, escalations, health, intents, me
+from api.services.assistant import (
+    ChatAssistant,
+    build_assistant,
+    build_escalation_sender,
+    build_llm,
+)
+from api.services.conversations import ConversationRepository
+from api.services.escalation_sender import EscalationSender
+from api.services.escalations import EscalationRepository
 from api.services.sessions import SessionRepository
 from api.settings import Settings, get_settings
+from assistant.llm import LLMClient
 from profile_source import ProfileSource, create_profile_source
 
 
@@ -26,6 +38,11 @@ def create_app(
     *,
     profile_source: ProfileSource | None = None,
     sessions: SessionRepository | None = None,
+    conversations: ConversationRepository | None = None,
+    assistant: ChatAssistant | None = None,
+    escalation_repository: EscalationRepository | None = None,
+    llm: LLMClient | None = None,
+    escalation_sender: EscalationSender | None = None,
     clock: Clock = utc_now,
 ) -> FastAPI:
     settings = settings or get_settings()
@@ -38,6 +55,15 @@ def create_app(
             app.state.engine = engine
             app.state.sessionmaker = create_sessionmaker(engine)
             app.state.sessions = sessions or SqlSessionRepository(app.state.sessionmaker)
+            app.state.conversations = conversations or SqlConversationRepository(
+                app.state.sessionmaker
+            )
+            app.state.assistant = assistant or build_assistant(clock)
+            app.state.escalations = escalation_repository or SqlEscalationRepository(
+                app.state.sessionmaker
+            )
+            app.state.llm = llm or build_llm()
+            app.state.escalation_sender = escalation_sender or build_escalation_sender()
             source = profile_source
             if source is None:
                 # Zła konfiguracja (PROFILE_SOURCE, BACKEND_URL…) zatrzymuje start aplikacji.
@@ -63,6 +89,8 @@ def create_app(
     app.include_router(me.router)
     app.include_router(intents.router)
     app.include_router(answers.router)
+    app.include_router(chat.router)
+    app.include_router(escalations.router)
     return app
 
 

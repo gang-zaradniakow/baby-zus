@@ -24,6 +24,8 @@ tags:
     description: Statutory deadlines counted with the Polish calendar of public holidays.
   - name: Calculations
     description: Benefit calculations (insurance titles, benefit base, sickness and maternity benefits).
+  - name: Guide
+    description: Personal guide for parents (timeline of deadlines, alerts).
   - name: Knowledge
     description: Guide for parents ("Wiedza"), chapters and articles based on the ZUS guide for parents.
   - name: Content
@@ -269,6 +271,34 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MaternitySimulation'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/guide/preview:
+    post:
+      tags: [Guide]
+      operationId: previewGuide
+      summary: Guide of a guest, from the survey answers
+      description: |
+        What a parent sees after the survey without logging in: week of pregnancy or age of the child, alerts and
+        the timeline of deadlines and milestones (sorted by date). Deadlines are counted with the Polish calendar as
+        in `/deadlines`; `status` says whether an item is late, due within 30 days, past or ahead today. Nothing is
+        stored.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GuideSurvey'
+      responses:
+        '200':
+          description: The guide.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GuidePreview'
         '400':
           $ref: '#/components/responses/ValidationProblem'
         default:
@@ -982,6 +1012,178 @@ components:
           $ref: '#/components/schemas/Money'
         total:
           $ref: '#/components/schemas/Money'
+
+    GuideSurvey:
+      type: object
+      description: Answers of the guest survey.
+      required: [role, stage, date, children, work, partner]
+      properties:
+        role:
+          type: string
+          enum: [MOTHER, FATHER, GUARDIAN]
+          description: GUARDIAN = adoptive parent or foster family.
+        stage:
+          type: string
+          enum: [PREGNANCY, CHILD, ADOPTION]
+        date:
+          type: string
+          format: date
+          description: Due date (PREGNANCY), birth date (CHILD) or the day the child was taken in (ADOPTION).
+        childBirthDate:
+          type: string
+          format: date
+          description: Birth date of the child taken in; required for ADOPTION, not allowed otherwise.
+        children:
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 5
+        preterm:
+          $ref: '#/components/schemas/GuidePreterm'
+        work:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/WorkForm'
+        partner:
+          type: string
+          enum: [SHOW_PARTNER, ONLY_ME, SINGLE_PARENT]
+          description: SHOW_PARTNER = also the other parent's entitlements; SINGLE_PARENT = raises the child alone.
+
+    GuidePreterm:
+      type: object
+      description: Premature baby or a baby in hospital (not for a pregnancy).
+      required: [gestationWeek, birthWeightGrams, hospitalDays]
+      properties:
+        gestationWeek:
+          type: integer
+          format: int32
+          minimum: 20
+          maximum: 42
+        birthWeightGrams:
+          type: integer
+          format: int32
+          minimum: 1
+        hospitalDays:
+          type: integer
+          format: int32
+          minimum: 0
+
+    WorkForm:
+      type: string
+      description: |
+        EMPLOYMENT = employment contract; SELF_EMPLOYMENT(_WITHOUT_SICKNESS) = own firm with (without) voluntary
+        sickness insurance; MANDATE_CONTRACT(_WITHOUT_SICKNESS) = mandate contract with (without) sickness insurance
+        or a contract for specific work; STARTUP_RELIEF = firm on the startup relief; FARMER = KRUS;
+        NOT_WORKING = not working, studying or unemployed.
+      enum: [EMPLOYMENT, SELF_EMPLOYMENT, SELF_EMPLOYMENT_WITHOUT_SICKNESS, MANDATE_CONTRACT,
+             MANDATE_CONTRACT_WITHOUT_SICKNESS, STARTUP_RELIEF, FARMER, NOT_WORKING]
+
+    GuidePreview:
+      type: object
+      required: [stage, alerts, timeline]
+      properties:
+        stage:
+          $ref: '#/components/schemas/GuideStage'
+        alerts:
+          type: array
+          items:
+            $ref: '#/components/schemas/GuideAlert'
+        timeline:
+          type: array
+          items:
+            $ref: '#/components/schemas/TimelineItem'
+
+    GuideStage:
+      type: object
+      required: [stage]
+      properties:
+        stage:
+          type: string
+          enum: [PREGNANCY, CHILD, ADOPTION]
+        pregnancyWeek:
+          type: integer
+          format: int32
+          description: Week of pregnancy (1–42), only for PREGNANCY.
+        childAgeMonths:
+          type: integer
+          format: int32
+          description: Full months of the child's life, when the birth date is known.
+        childAgeLabel:
+          type: string
+          description: Polish age, e.g. `2 tyg. 3 dni`, `10 mies.`, `2 lata`.
+
+    GuideAlert:
+      type: object
+      required: [level, icon, title, text, href]
+      properties:
+        level:
+          type: string
+          enum: [DANGER, WARNING, INFO]
+        icon:
+          type: string
+          description: Name of the frontend icon.
+        title:
+          type: string
+        text:
+          type: string
+        href:
+          type: string
+          description: Frontend route with more information, e.g. `#/wiedza/a/jdg`.
+
+    TimelineItem:
+      type: object
+      required: [key, title, institution, date, optional, estimate, milestone, due, daysLeft, status]
+      properties:
+        key:
+          type: string
+          description: Stable identifier of the item, e.g. `w81`.
+        title:
+          type: string
+        description:
+          type: string
+        lateNote:
+          type: string
+          description: Shown when the deadline has passed.
+        institution:
+          type: string
+          enum: [ZUS, EMPLOYER, INFO]
+          description: Who handles it (EMPLOYER = employer, HR or payroll; INFO = nobody to apply to).
+        date:
+          type: string
+          format: date
+        deadline:
+          $ref: '#/components/schemas/Deadline'
+        articleId:
+          type: string
+          description: Article of the guide (`/knowledge/articles/{id}`).
+        wizardId:
+          type: string
+          description: Application wizard, e.g. `w-81`.
+        calculator:
+          type: string
+          description: Calculator to open, e.g. `zasilek`.
+        optional:
+          type: boolean
+        estimate:
+          type: boolean
+          description: The date is estimated (e.g. counted from the due date).
+        milestone:
+          type: boolean
+          description: A point in time, nothing to submit.
+        due:
+          type: string
+          format: date
+          description: Day the item is due (the deadline's raw day before an event, legal day after it, otherwise `date`).
+        daysLeft:
+          type: integer
+          format: int32
+          description: Days from today to `due`, negative when passed.
+        status:
+          type: string
+          enum: [LATE, NOW, PAST, FUTURE]
+          description: LATE = the deadline has passed; NOW = due within 30 days; PAST = the day has passed.
 
     KnowledgeChapters:
       type: object

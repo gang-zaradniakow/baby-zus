@@ -7,7 +7,7 @@
 // The mockup works on local dates, so the time zone is fixed to the legal one before any Date is created.
 process.env.TZ = 'Europe/Warsaw';
 
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
@@ -412,6 +412,108 @@ areas.maternityBenefit = () => {
   };
 };
 const WHO_MOCKUP = { MOTHER: 'mama', FATHER: 'tata' };
+
+// ---------------------------------------------------------------------------------------------------------------
+// Guest guide: the survey answers go through finishOnboarding() and ctx(), then buildTimeline() and alerts() of
+// js/app.js. app.js needs a browser, so these functions are cut out of its source and run here with a stubbed state
+// and a fixed "today" (the same FixedDateTimeGenerator day the Java test uses).
+// ---------------------------------------------------------------------------------------------------------------
+const GUIDE_TODAY = '2026-11-22';
+function appFunctions(names) {
+  const lines = readFileSync(resolve(mockupDir, 'js', 'app.js'), 'utf8').split('\n');
+  const top = /^(function |const |let |\/\*|\/\/)/;
+  return names.map((name) => {
+    const start = lines.findIndex((l) => l.startsWith(`function ${name}(`) || l.startsWith(`const ${name} =`));
+    if (start < 0) throw new Error(`app.js: ${name} not found`);
+    let end = start + 1;
+    while (end < lines.length && !top.test(lines[end])) end++;
+    return lines.slice(start, end).join('\n');
+  }).join('\n');
+}
+function withToday(isoDay, run) {
+  const RealDate = Date;
+  const fixed = new RealDate(`${isoDay}T12:00:00`).getTime();
+  globalThis.Date = class extends RealDate {
+    constructor(...args) { super(...(args.length ? args : [fixed])); }
+    static now() { return fixed; }
+  };
+  try { return run(); } finally { globalThis.Date = RealDate; }
+}
+const D = await import(pathToFileURL(resolve(mockupDir, 'js', 'data.js')).href);
+const guideSource = appFunctions(['activeChild', 'ctx', 'finishOnboarding', 'buildTimeline', 'addOlder', 'alerts']);
+const ROLE = { MOTHER: 'mama', FATHER: 'tata', GUARDIAN: 'opiekun' };
+const STAGE = { PREGNANCY: 'ciaza', CHILD: 'dziecko', ADOPTION: 'adopcja' };
+const WORK = {
+  EMPLOYMENT: 'uop', SELF_EMPLOYMENT: 'jdg', SELF_EMPLOYMENT_WITHOUT_SICKNESS: 'jdg_nochor', MANDATE_CONTRACT: 'zlec',
+  MANDATE_CONTRACT_WITHOUT_SICKNESS: 'zlec_nochor', STARTUP_RELIEF: 'ulga', FARMER: 'krus', NOT_WORKING: 'brak',
+};
+const PARTNER = { SHOW_PARTNER: 'track', ONLY_ME: 'notrack', SINGLE_PARENT: 'single' };
+const INSTITUTION = { ZUS: 'ZUS', PRAC: 'EMPLOYER', INFO: 'INFO' };
+const ALERT_LEVEL = { danger: 'DANGER', warn: 'WARNING', info: 'INFO' };
+function guide(survey) {
+  const S = { profile: null, children: [], activeChild: null, tasks: {}, mode: 'normal', settings: {}, authed: false,
+    account: { iban: 'PL00 0000 0000 0000 0000 0000 0000' } };
+  S.onb = { a: {
+    role: ROLE[survey.role], stage: STAGE[survey.stage], date: survey.date, birth2: survey.childBirthDate,
+    count: String(survey.children), special: survey.preterm ? ['preterm'] : [],
+    ptc: survey.preterm?.gestationWeek, pwg: survey.preterm?.birthWeightGrams, pdn: survey.preterm?.hospitalDays,
+    work: survey.work.map((w) => WORK[w]), partner: PARTNER[survey.partner],
+  } };
+  const fns = new Function('C', 'K', 'WORK_OPTIONS', 'S', 'U', 'go', 'runSplash', 'makeDocs', 'save',
+    `${guideSource}\nreturn { finishOnboarding, ctx, buildTimeline, alerts };`)(C, D.K, D.WORK_OPTIONS, S, {}, () => {}, () => {}, () => [], () => {});
+  fns.finishOnboarding();
+  const c = fns.ctx();
+  const dl = (d) => d && { type: d.type === 'before' ? 'BEFORE' : 'AFTER', raw: iso(d.raw), legal: iso(d.legal), shifted: !!d.shifted, reason: d.reason ?? null, safe: iso(d.safe) };
+  return {
+    stage: {
+      pregnancyWeek: c.stage === 'ciaza' ? c.week : null,
+      childAgeMonths: c.child.birth ? c.months : null,
+      childAgeLabel: c.child.birth ? C.ageLabel(C.parseISO(c.child.birth)) : null,
+    },
+    alerts: fns.alerts(c).map((a) => ({ level: ALERT_LEVEL[a.lvl], icon: a.ico, title: a.t, text: a.d, href: a.h })),
+    timeline: fns.buildTimeline(c).map((i) => ({
+      key: i.id, title: i.title, description: i.desc || null, lateNote: i.lateNote ?? null,
+      institution: INSTITUTION[i.inst], date: iso(i.date), deadline: dl(i.dl), articleId: i.art ?? null,
+      wizardId: i.wizard ?? null, calculator: i.calc ?? null, optional: !!i.soft, estimate: !!i.estimate,
+      milestone: !!i.milestone, due: iso(i.due), daysLeft: i.days, status: i.status.toUpperCase(),
+    })),
+  };
+}
+areas.guestGuide = () => {
+  const day = (offset) => withToday(GUIDE_TODAY, () => iso(C.addDays(C.today(), offset)));
+  const survey = (o) => ({ role: 'MOTHER', stage: 'PREGNANCY', date: day(120), childBirthDate: null, children: 1, preterm: null,
+    work: ['EMPLOYMENT'], partner: 'SHOW_PARTNER', ...o });
+  const inputs = [
+    // personas of the prototype (debt and sick leave are profile data, not survey answers)
+    ['Anna: 28th week of pregnancy, employment and a firm without sickness insurance', survey({ date: day(84), work: ['EMPLOYMENT', 'SELF_EMPLOYMENT_WITHOUT_SICKNESS'] })],
+    ['Kasia: self-employed, son 16 days old', survey({ stage: 'CHILD', date: day(-16), work: ['SELF_EMPLOYMENT'] })],
+    ['Ola: single mother of a premature girl', survey({ stage: 'CHILD', date: day(-42), work: ['EMPLOYMENT'], partner: 'SINGLE_PARENT', preterm: { gestationWeek: 27, birthWeightGrams: 950, hospitalDays: 49 } })],
+    ['Marek: father, daughter 10.5 months old', survey({ role: 'FATHER', stage: 'CHILD', date: day(-330) })],
+    ['Ewa: foster family, child taken in 5 days ago', survey({ role: 'GUARDIAN', stage: 'ADOPTION', date: day(-5), childBirthDate: day(-760) })],
+    ['Zofia: daughter 14 months old', survey({ stage: 'CHILD', date: day(-425) })],
+    ['Zofia: second pregnancy', survey({ date: day(150) })],
+    // other answers
+    ['self-employed mother in pregnancy', survey({ work: ['SELF_EMPLOYMENT'] })],
+    ['mother on a mandate contract in pregnancy', survey({ work: ['MANDATE_CONTRACT'], date: day(30) })],
+    ['mother without sickness insurance in pregnancy', survey({ work: ['NOT_WORKING'] })],
+    ['mother on startup relief', survey({ work: ['STARTUP_RELIEF'] })],
+    ['farmer mother after birth', survey({ stage: 'CHILD', date: day(-20), work: ['FARMER'] })],
+    ['mandate contract without sickness insurance', survey({ stage: 'CHILD', date: day(-3), work: ['MANDATE_CONTRACT_WITHOUT_SICKNESS'] })],
+    ['father in pregnancy', survey({ role: 'FATHER' })],
+    ['mother of twins, 81.5% deadline missed', survey({ stage: 'CHILD', date: day(-40), children: 2 })],
+    ['triplets born today, partner hidden', survey({ stage: 'CHILD', date: day(0), children: 3, partner: 'ONLY_ME' })],
+    ['self-employed mother, child 1 year old', survey({ stage: 'CHILD', date: day(-365), work: ['SELF_EMPLOYMENT'] })],
+    ['employment and self-employment, child 19 days old', survey({ stage: 'CHILD', date: '2026-11-03', work: ['EMPLOYMENT', 'SELF_EMPLOYMENT'] })],
+    ['child 3 years old', survey({ stage: 'CHILD', date: day(-1100) })],
+    ['adoption without sickness insurance', survey({ role: 'GUARDIAN', stage: 'ADOPTION', date: day(-30), childBirthDate: day(-400), work: ['NOT_WORKING'] })],
+    ['father without sickness insurance, child 2 months old', survey({ role: 'FATHER', stage: 'CHILD', date: day(-60), work: ['NOT_WORKING'] })],
+    ['premature baby, mother on a mandate contract', survey({ stage: 'CHILD', date: day(-10), work: ['MANDATE_CONTRACT'], preterm: { gestationWeek: 33, birthWeightGrams: 1900, hospitalDays: 12 } })],
+  ];
+  return {
+    source: `js/app.js finishOnboarding(), ctx(), buildTimeline(), alerts() with today = ${GUIDE_TODAY}`,
+    cases: inputs.map(([name, input]) => ({ name, input, expected: withToday(GUIDE_TODAY, () => guide(input)) })),
+  };
+};
 
 mkdirSync(outDir, { recursive: true });
 for (const [area, build] of Object.entries(areas)) {

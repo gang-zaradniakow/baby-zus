@@ -1,0 +1,2868 @@
+{
+  "source": "js/app.js finishOnboarding(), ctx(), buildTimeline(), alerts() with today = 2026-11-22",
+  "cases": [
+    {
+      "name": "Anna: 28th week of pregnancy, employment and a firm without sickness insurance",
+      "input": {
+        "role": "MOTHER",
+        "stage": "PREGNANCY",
+        "date": "2027-02-14",
+        "childBirthDate": null,
+        "children": 1,
+        "preterm": null,
+        "work": [
+          "EMPLOYMENT",
+          "SELF_EMPLOYMENT_WITHOUT_SICKNESS"
+        ],
+        "partner": "SHOW_PARTNER"
+      },
+      "expected": {
+        "stage": {
+          "pregnancyWeek": 28,
+          "childAgeMonths": null,
+          "childAgeLabel": null
+        },
+        "alerts": [],
+        "timeline": [
+          {
+            "key": "mac-przed",
+            "title": "Opcjonalnie: urlop macierzyński przed porodem",
+            "description": "Maks. 6 tygodni przed terminem. Wniosek + zaświadczenie o terminie porodu.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2027-01-03",
+            "deadline": {
+              "type": "BEFORE",
+              "raw": "2026-12-20",
+              "legal": "2026-12-20",
+              "shifted": false,
+              "reason": "niedziela",
+              "safe": "2026-12-18"
+            },
+            "articleId": "mac-przed-porodem",
+            "wizardId": null,
+            "calculator": null,
+            "optional": true,
+            "estimate": false,
+            "milestone": false,
+            "due": "2026-12-20",
+            "daysLeft": 28,
+            "status": "NOW"
+          },
+          {
+            "key": "w81-plan",
+            "title": "Decyzja: 81,5% czy 100% + 70%",
+            "description": "Liczone od faktycznej daty porodu: 21 dni.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2027-03-07",
+            "deadline": {
+              "type": "AFTER",
+              "raw": "2027-03-07",
+              "legal": "2027-03-08",
+              "shifted": true,
+              "reason": "niedziela",
+              "safe": "2027-03-05"
+            },
+            "articleId": "wysokosc-mac",
+            "wizardId": null,
+            "calculator": "zasilek",
+            "optional": false,
+            "estimate": true,
+            "milestone": false,
+            "due": "2027-03-08",
+            "daysLeft": 106,
+            "status": "FUTURE"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Kasia: self-employed, son 16 days old",
+      "input": {
+        "role": "MOTHER",
+        "stage": "CHILD",
+        "date": "2026-11-06",
+        "childBirthDate": null,
+        "children": 1,
+        "preterm": null,
+        "work": [
+          "SELF_EMPLOYMENT"
+        ],
+        "partner": "SHOW_PARTNER"
+      },
+      "expected": {
+        "stage": {
+          "pregnancyWeek": null,
+          "childAgeMonths": 0,
+          "childAgeLabel": "2 tyg. 2 dni"
+        },
+        "alerts": [],
+        "timeline": [
+          {
+            "key": "w81",
+            "title": "Wniosek o 81,5% (pełny wymiar urlopu)",
+            "description": "Bez wniosku: 100% za macierzyński i 70% za rodzicielski.",
+            "lateNote": "Termin minął — zasiłek będzie wypłacany w wariancie 100% + 70%. To nie jest strata, tylko inny rozkład kwot.",
+            "institution": "ZUS",
+            "date": "2026-11-27",
+            "deadline": {
+              "type": "AFTER",
+              "raw": "2026-11-27",
+              "legal": "2026-11-27",
+              "shifted": false,
+              "reason": null,
+              "safe": "2026-11-26"
+            },
+            "articleId": "wysokosc-mac",
+            "wizardId": "w-81",
+            "calculator": "zasilek",
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2026-11-27",
+            "daysLeft": 5,
+            "status": "NOW"
+          },
+          {
+            "key": "mac-end",
+            "title": "Koniec urlopu macierzyńskiego",
+            "description": null,
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2027-03-26",
+            "deadline": null,
+            "articleId": null,
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2027-03-26",
+            "daysLeft": 124,
+            "status": "FUTURE"
+          },
+          {
+            "key": "tata9",
+            "title": "9 tygodni rodzicielskiego dla taty (70%)",
+            "description": "Nieprzenoszalne — przepadną, jeśli nie zostaną wykorzystane. Do końca roku, w którym dziecko kończy 6 lat.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2027-04-23",
+            "deadline": null,
+            "articleId": "rodzicielski",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2027-04-23",
+            "daysLeft": 152,
+            "status": "FUTURE"
+          },
+          {
+            "key": "przedawn",
+            "title": "Wniosek o zasiłek — najpóźniej 6 miesięcy",
+            "description": "Roszczenie o zasiłek przedawnia się po 6 miesiącach od ostatniego dnia okresu, za który przysługuje.",
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2027-05-06",
+            "deadline": null,
+            "articleId": "przedawnienie",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2027-05-06",
+            "daysLeft": 165,
+            "status": "FUTURE"
+          },
+          {
+            "key": "ojcowski",
+            "title": "Urlop ojcowski taty — do 1. urodzin dziecka",
+            "description": "2 tygodnie, 100%. Wniosek 7 dni przed.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2027-10-23",
+            "deadline": {
+              "type": "BEFORE",
+              "raw": "2027-10-16",
+              "legal": "2027-10-16",
+              "shifted": false,
+              "reason": "sobota",
+              "safe": "2027-10-15"
+            },
+            "articleId": "ojcowski",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2027-10-16",
+            "daysLeft": 328,
+            "status": "FUTURE"
+          },
+          {
+            "key": "rodz-1y",
+            "title": "Min. 1 dzień rodzicielskiego przed 1. urodzinami",
+            "description": "Warunek zachowania 81,5% (art. 31 ust. 3g).",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2027-11-05",
+            "deadline": null,
+            "articleId": null,
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2027-11-05",
+            "daysLeft": 348,
+            "status": "FUTURE"
+          },
+          {
+            "key": "zua",
+            "title": "Po zasiłku: ponownie zgłoś się do chorobowego (ZUS ZUA)",
+            "description": "Przy zasiłku macierzyńskim zostajesz automatycznie wyrejestrowana z dobrowolnego chorobowego.",
+            "lateNote": null,
+            "institution": "ZUS",
+            "date": "2027-11-05",
+            "deadline": null,
+            "articleId": null,
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2027-11-05",
+            "daysLeft": 348,
+            "status": "FUTURE"
+          },
+          {
+            "key": "wiek-8",
+            "title": "8. urodziny: koniec zasiłku opiekuńczego na zdrowe dziecko",
+            "description": "Np. przy nagłym zamknięciu żłobka, przedszkola lub szkoły.",
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2034-11-06",
+            "deadline": null,
+            "articleId": "opiekunczy",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2034-11-06",
+            "daysLeft": 2906,
+            "status": "FUTURE"
+          },
+          {
+            "key": "wiek-14",
+            "title": "14. urodziny: koniec zasiłku opiekuńczego na chore dziecko (60 dni w roku)",
+            "description": null,
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2040-11-06",
+            "deadline": null,
+            "articleId": "opiekunczy",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2040-11-06",
+            "daysLeft": 5098,
+            "status": "FUTURE"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Ola: single mother of a premature girl",
+      "input": {
+        "role": "MOTHER",
+        "stage": "CHILD",
+        "date": "2026-10-11",
+        "childBirthDate": null,
+        "children": 1,
+        "preterm": {
+          "gestationWeek": 27,
+          "birthWeightGrams": 950,
+          "hospitalDays": 49
+        },
+        "work": [
+          "EMPLOYMENT"
+        ],
+        "partner": "SINGLE_PARENT"
+      },
+      "expected": {
+        "stage": {
+          "pregnancyWeek": null,
+          "childAgeMonths": 1,
+          "childAgeLabel": "6 tyg. 0 dni"
+        },
+        "alerts": [],
+        "timeline": [
+          {
+            "key": "w81",
+            "title": "Wniosek o 81,5% (pełny wymiar urlopu)",
+            "description": "Bez wniosku: 100% za macierzyński i 70% za rodzicielski.",
+            "lateNote": "Termin minął — zasiłek będzie wypłacany w wariancie 100% + 70%. To nie jest strata, tylko inny rozkład kwot.",
+            "institution": "EMPLOYER",
+            "date": "2026-11-01",
+            "deadline": {
+              "type": "AFTER",
+              "raw": "2026-11-01",
+              "legal": "2026-11-02",
+              "shifted": true,
+              "reason": "Wszystkich Świętych",
+              "safe": "2026-10-30"
+            },
+            "articleId": "wysokosc-mac",
+            "wizardId": "w-81",
+            "calculator": "zasilek",
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2026-11-02",
+            "daysLeft": -20,
+            "status": "LATE"
+          },
+          {
+            "key": "uzup",
+            "title": "Wniosek o uzupełniający urlop macierzyński",
+            "description": "Najpóźniej 21 dni przed końcem macierzyńskiego, z zaświadczeniem ze szpitala.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2027-02-06",
+            "deadline": {
+              "type": "BEFORE",
+              "raw": "2027-02-06",
+              "legal": "2027-02-06",
+              "shifted": false,
+              "reason": "sobota",
+              "safe": "2027-02-05"
+            },
+            "articleId": "uzupelniajacy",
+            "wizardId": "w-uzupelniajacy",
+            "calculator": "zasilek",
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2027-02-06",
+            "daysLeft": 76,
+            "status": "FUTURE"
+          },
+          {
+            "key": "mac-end",
+            "title": "Koniec urlopu macierzyńskiego",
+            "description": null,
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2027-02-28",
+            "deadline": null,
+            "articleId": null,
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2027-02-28",
+            "daysLeft": 98,
+            "status": "FUTURE"
+          },
+          {
+            "key": "przedawn",
+            "title": "Wniosek o zasiłek — najpóźniej 6 miesięcy",
+            "description": "Roszczenie o zasiłek przedawnia się po 6 miesiącach od ostatniego dnia okresu, za który przysługuje.",
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2027-04-11",
+            "deadline": null,
+            "articleId": "przedawnienie",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2027-04-11",
+            "daysLeft": 140,
+            "status": "FUTURE"
+          },
+          {
+            "key": "rodz-1y",
+            "title": "Min. 1 dzień rodzicielskiego przed 1. urodzinami",
+            "description": "Warunek zachowania 81,5% (art. 31 ust. 3g).",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2027-10-10",
+            "deadline": null,
+            "articleId": null,
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2027-10-10",
+            "daysLeft": 322,
+            "status": "FUTURE"
+          },
+          {
+            "key": "urlopy-6",
+            "title": "Ostatni dzień na urlop rodzicielski",
+            "description": "Niewykorzystana część przepada z końcem roku, w którym dziecko kończy 6 lat.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2032-12-31",
+            "deadline": {
+              "type": "AFTER",
+              "raw": "2032-12-31",
+              "legal": "2032-12-31",
+              "shifted": false,
+              "reason": null,
+              "safe": "2032-12-10"
+            },
+            "articleId": "rodzicielski",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2032-12-31",
+            "daysLeft": 2231,
+            "status": "FUTURE"
+          },
+          {
+            "key": "wiek-8",
+            "title": "8. urodziny: koniec zasiłku opiekuńczego na zdrowe dziecko",
+            "description": "Np. przy nagłym zamknięciu żłobka, przedszkola lub szkoły.",
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2034-10-11",
+            "deadline": null,
+            "articleId": "opiekunczy",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2034-10-11",
+            "daysLeft": 2880,
+            "status": "FUTURE"
+          },
+          {
+            "key": "wiek-14",
+            "title": "14. urodziny: koniec zasiłku opiekuńczego na chore dziecko (60 dni w roku)",
+            "description": null,
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2040-10-11",
+            "deadline": null,
+            "articleId": "opiekunczy",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2040-10-11",
+            "daysLeft": 5072,
+            "status": "FUTURE"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Marek: father, daughter 10.5 months old",
+      "input": {
+        "role": "FATHER",
+        "stage": "CHILD",
+        "date": "2025-12-27",
+        "childBirthDate": null,
+        "children": 1,
+        "preterm": null,
+        "work": [
+          "EMPLOYMENT"
+        ],
+        "partner": "SHOW_PARTNER"
+      },
+      "expected": {
+        "stage": {
+          "pregnancyWeek": null,
+          "childAgeMonths": 10,
+          "childAgeLabel": "10 mies."
+        },
+        "alerts": [],
+        "timeline": [
+          {
+            "key": "tata9",
+            "title": "Twoje 9 tygodni rodzicielskiego (70%)",
+            "description": "Nieprzenoszalne — przepadną, jeśli nie zostaną wykorzystane. Do końca roku, w którym dziecko kończy 6 lat.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2026-06-13",
+            "deadline": null,
+            "articleId": "rodzicielski",
+            "wizardId": "w-rodzicielski",
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2026-06-13",
+            "daysLeft": -162,
+            "status": "PAST"
+          },
+          {
+            "key": "przedawn",
+            "title": "Wniosek o zasiłek — najpóźniej 6 miesięcy",
+            "description": "Roszczenie o zasiłek przedawnia się po 6 miesiącach od ostatniego dnia okresu, za który przysługuje.",
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2026-06-27",
+            "deadline": null,
+            "articleId": "przedawnienie",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2026-06-27",
+            "daysLeft": -148,
+            "status": "PAST"
+          },
+          {
+            "key": "ojcowski",
+            "title": "Twój urlop ojcowski — do 1. urodzin dziecka",
+            "description": "2 tygodnie, 100%. Wniosek 7 dni przed.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2026-12-13",
+            "deadline": {
+              "type": "BEFORE",
+              "raw": "2026-12-06",
+              "legal": "2026-12-06",
+              "shifted": false,
+              "reason": "niedziela",
+              "safe": "2026-12-04"
+            },
+            "articleId": "ojcowski",
+            "wizardId": "w-ojcowski",
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2026-12-06",
+            "daysLeft": 14,
+            "status": "NOW"
+          },
+          {
+            "key": "urlopy-6",
+            "title": "Ostatni dzień na urlop rodzicielski",
+            "description": "Niewykorzystana część przepada z końcem roku, w którym dziecko kończy 6 lat.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2031-12-31",
+            "deadline": {
+              "type": "AFTER",
+              "raw": "2031-12-31",
+              "legal": "2031-12-31",
+              "shifted": false,
+              "reason": null,
+              "safe": "2031-12-10"
+            },
+            "articleId": "rodzicielski",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2031-12-31",
+            "daysLeft": 1865,
+            "status": "FUTURE"
+          },
+          {
+            "key": "wiek-8",
+            "title": "8. urodziny: koniec zasiłku opiekuńczego na zdrowe dziecko",
+            "description": "Np. przy nagłym zamknięciu żłobka, przedszkola lub szkoły.",
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2033-12-27",
+            "deadline": null,
+            "articleId": "opiekunczy",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2033-12-27",
+            "daysLeft": 2592,
+            "status": "FUTURE"
+          },
+          {
+            "key": "wiek-14",
+            "title": "14. urodziny: koniec zasiłku opiekuńczego na chore dziecko (60 dni w roku)",
+            "description": null,
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2039-12-27",
+            "deadline": null,
+            "articleId": "opiekunczy",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2039-12-27",
+            "daysLeft": 4783,
+            "status": "FUTURE"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Ewa: foster family, child taken in 5 days ago",
+      "input": {
+        "role": "GUARDIAN",
+        "stage": "ADOPTION",
+        "date": "2026-11-17",
+        "childBirthDate": "2024-10-23",
+        "children": 1,
+        "preterm": null,
+        "work": [
+          "EMPLOYMENT"
+        ],
+        "partner": "SHOW_PARTNER"
+      },
+      "expected": {
+        "stage": {
+          "pregnancyWeek": null,
+          "childAgeMonths": 24,
+          "childAgeLabel": "2 lata"
+        },
+        "alerts": [],
+        "timeline": [
+          {
+            "key": "adop",
+            "title": "Wniosek o urlop na warunkach urlopu macierzyńskiego",
+            "description": "W ciągu 7 dni od przyjęcia dziecka.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2026-11-24",
+            "deadline": {
+              "type": "AFTER",
+              "raw": "2026-11-24",
+              "legal": "2026-11-24",
+              "shifted": false,
+              "reason": null,
+              "safe": "2026-11-23"
+            },
+            "articleId": null,
+            "wizardId": "w-adopcja",
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2026-11-24",
+            "daysLeft": 2,
+            "status": "NOW"
+          },
+          {
+            "key": "adop-start",
+            "title": "Najpóźniejszy początek urlopu (21 dni od przyjęcia)",
+            "description": null,
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2026-12-08",
+            "deadline": null,
+            "articleId": null,
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2026-12-08",
+            "daysLeft": 16,
+            "status": "NOW"
+          },
+          {
+            "key": "w81a",
+            "title": "Opcjonalnie: wariant 81,5% (21 dni od przyjęcia)",
+            "description": null,
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2026-12-08",
+            "deadline": {
+              "type": "AFTER",
+              "raw": "2026-12-08",
+              "legal": "2026-12-08",
+              "shifted": false,
+              "reason": null,
+              "safe": "2026-12-07"
+            },
+            "articleId": "wysokosc-mac",
+            "wizardId": null,
+            "calculator": "zasilek",
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2026-12-08",
+            "daysLeft": 16,
+            "status": "NOW"
+          },
+          {
+            "key": "urlopy-6",
+            "title": "Ostatni dzień na urlop rodzicielski",
+            "description": "Niewykorzystana część przepada z końcem roku, w którym dziecko kończy 6 lat.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2030-12-31",
+            "deadline": {
+              "type": "AFTER",
+              "raw": "2030-12-31",
+              "legal": "2030-12-31",
+              "shifted": false,
+              "reason": null,
+              "safe": "2030-12-10"
+            },
+            "articleId": "rodzicielski",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2030-12-31",
+            "daysLeft": 1500,
+            "status": "FUTURE"
+          },
+          {
+            "key": "wiek-8",
+            "title": "8. urodziny: koniec zasiłku opiekuńczego na zdrowe dziecko",
+            "description": "Np. przy nagłym zamknięciu żłobka, przedszkola lub szkoły.",
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2032-10-23",
+            "deadline": null,
+            "articleId": "opiekunczy",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2032-10-23",
+            "daysLeft": 2162,
+            "status": "FUTURE"
+          },
+          {
+            "key": "wiek-14",
+            "title": "14. urodziny: koniec zasiłku opiekuńczego na chore dziecko (60 dni w roku)",
+            "description": null,
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2038-10-23",
+            "deadline": null,
+            "articleId": "opiekunczy",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2038-10-23",
+            "daysLeft": 4353,
+            "status": "FUTURE"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Zofia: daughter 14 months old",
+      "input": {
+        "role": "MOTHER",
+        "stage": "CHILD",
+        "date": "2025-09-23",
+        "childBirthDate": null,
+        "children": 1,
+        "preterm": null,
+        "work": [
+          "EMPLOYMENT"
+        ],
+        "partner": "SHOW_PARTNER"
+      },
+      "expected": {
+        "stage": {
+          "pregnancyWeek": null,
+          "childAgeMonths": 13,
+          "childAgeLabel": "13 mies."
+        },
+        "alerts": [],
+        "timeline": [
+          {
+            "key": "w81",
+            "title": "Wniosek o 81,5% (pełny wymiar urlopu)",
+            "description": "Bez wniosku: 100% za macierzyński i 70% za rodzicielski.",
+            "lateNote": "Termin minął — zasiłek będzie wypłacany w wariancie 100% + 70%. To nie jest strata, tylko inny rozkład kwot.",
+            "institution": "EMPLOYER",
+            "date": "2025-10-14",
+            "deadline": {
+              "type": "AFTER",
+              "raw": "2025-10-14",
+              "legal": "2025-10-14",
+              "shifted": false,
+              "reason": null,
+              "safe": "2025-10-13"
+            },
+            "articleId": "wysokosc-mac",
+            "wizardId": "w-81",
+            "calculator": "zasilek",
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2025-10-14",
+            "daysLeft": -404,
+            "status": "LATE"
+          },
+          {
+            "key": "mac-end",
+            "title": "Koniec urlopu macierzyńskiego",
+            "description": null,
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2026-02-10",
+            "deadline": null,
+            "articleId": null,
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2026-02-10",
+            "daysLeft": -285,
+            "status": "PAST"
+          },
+          {
+            "key": "tata9",
+            "title": "9 tygodni rodzicielskiego dla taty (70%)",
+            "description": "Nieprzenoszalne — przepadną, jeśli nie zostaną wykorzystane. Do końca roku, w którym dziecko kończy 6 lat.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2026-03-10",
+            "deadline": null,
+            "articleId": "rodzicielski",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2026-03-10",
+            "daysLeft": -257,
+            "status": "PAST"
+          },
+          {
+            "key": "przedawn",
+            "title": "Wniosek o zasiłek — najpóźniej 6 miesięcy",
+            "description": "Roszczenie o zasiłek przedawnia się po 6 miesiącach od ostatniego dnia okresu, za który przysługuje.",
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2026-03-23",
+            "deadline": null,
+            "articleId": "przedawnienie",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2026-03-23",
+            "daysLeft": -244,
+            "status": "PAST"
+          },
+          {
+            "key": "ojcowski",
+            "title": "Urlop ojcowski taty — do 1. urodzin dziecka",
+            "description": "2 tygodnie, 100%. Wniosek 7 dni przed.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2026-09-09",
+            "deadline": {
+              "type": "BEFORE",
+              "raw": "2026-09-02",
+              "legal": "2026-09-02",
+              "shifted": false,
+              "reason": null,
+              "safe": "2026-09-02"
+            },
+            "articleId": "ojcowski",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2026-09-02",
+            "daysLeft": -81,
+            "status": "LATE"
+          },
+          {
+            "key": "rodz-1y",
+            "title": "Min. 1 dzień rodzicielskiego przed 1. urodzinami",
+            "description": "Warunek zachowania 81,5% (art. 31 ust. 3g).",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2026-09-22",
+            "deadline": null,
+            "articleId": null,
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2026-09-22",
+            "daysLeft": -61,
+            "status": "PAST"
+          },
+          {
+            "key": "urlopy-6",
+            "title": "Ostatni dzień na urlop rodzicielski",
+            "description": "Niewykorzystana część przepada z końcem roku, w którym dziecko kończy 6 lat.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2031-12-31",
+            "deadline": {
+              "type": "AFTER",
+              "raw": "2031-12-31",
+              "legal": "2031-12-31",
+              "shifted": false,
+              "reason": null,
+              "safe": "2031-12-10"
+            },
+            "articleId": "rodzicielski",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2031-12-31",
+            "daysLeft": 1865,
+            "status": "FUTURE"
+          },
+          {
+            "key": "wiek-8",
+            "title": "8. urodziny: koniec zasiłku opiekuńczego na zdrowe dziecko",
+            "description": "Np. przy nagłym zamknięciu żłobka, przedszkola lub szkoły.",
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2033-09-23",
+            "deadline": null,
+            "articleId": "opiekunczy",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2033-09-23",
+            "daysLeft": 2497,
+            "status": "FUTURE"
+          },
+          {
+            "key": "wiek-14",
+            "title": "14. urodziny: koniec zasiłku opiekuńczego na chore dziecko (60 dni w roku)",
+            "description": null,
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2039-09-23",
+            "deadline": null,
+            "articleId": "opiekunczy",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2039-09-23",
+            "daysLeft": 4688,
+            "status": "FUTURE"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Zofia: second pregnancy",
+      "input": {
+        "role": "MOTHER",
+        "stage": "PREGNANCY",
+        "date": "2027-04-21",
+        "childBirthDate": null,
+        "children": 1,
+        "preterm": null,
+        "work": [
+          "EMPLOYMENT"
+        ],
+        "partner": "SHOW_PARTNER"
+      },
+      "expected": {
+        "stage": {
+          "pregnancyWeek": 18,
+          "childAgeMonths": null,
+          "childAgeLabel": null
+        },
+        "alerts": [],
+        "timeline": [
+          {
+            "key": "mac-przed",
+            "title": "Opcjonalnie: urlop macierzyński przed porodem",
+            "description": "Maks. 6 tygodni przed terminem. Wniosek + zaświadczenie o terminie porodu.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2027-03-10",
+            "deadline": {
+              "type": "BEFORE",
+              "raw": "2027-02-24",
+              "legal": "2027-02-24",
+              "shifted": false,
+              "reason": null,
+              "safe": "2027-02-24"
+            },
+            "articleId": "mac-przed-porodem",
+            "wizardId": null,
+            "calculator": null,
+            "optional": true,
+            "estimate": false,
+            "milestone": false,
+            "due": "2027-02-24",
+            "daysLeft": 94,
+            "status": "FUTURE"
+          },
+          {
+            "key": "w81-plan",
+            "title": "Decyzja: 81,5% czy 100% + 70%",
+            "description": "Liczone od faktycznej daty porodu: 21 dni.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2027-05-12",
+            "deadline": {
+              "type": "AFTER",
+              "raw": "2027-05-12",
+              "legal": "2027-05-12",
+              "shifted": false,
+              "reason": null,
+              "safe": "2027-05-11"
+            },
+            "articleId": "wysokosc-mac",
+            "wizardId": null,
+            "calculator": "zasilek",
+            "optional": false,
+            "estimate": true,
+            "milestone": false,
+            "due": "2027-05-12",
+            "daysLeft": 171,
+            "status": "FUTURE"
+          }
+        ]
+      }
+    },
+    {
+      "name": "self-employed mother in pregnancy",
+      "input": {
+        "role": "MOTHER",
+        "stage": "PREGNANCY",
+        "date": "2027-03-22",
+        "childBirthDate": null,
+        "children": 1,
+        "preterm": null,
+        "work": [
+          "SELF_EMPLOYMENT"
+        ],
+        "partner": "SHOW_PARTNER"
+      },
+      "expected": {
+        "stage": {
+          "pregnancyWeek": 22,
+          "childAgeMonths": null,
+          "childAgeLabel": null
+        },
+        "alerts": [],
+        "timeline": [
+          {
+            "key": "mac-przed",
+            "title": "Opcjonalnie: urlop macierzyński przed porodem",
+            "description": "Maks. 6 tygodni przed terminem. Wniosek + zaświadczenie o terminie porodu.",
+            "lateNote": null,
+            "institution": "ZUS",
+            "date": "2027-02-08",
+            "deadline": {
+              "type": "BEFORE",
+              "raw": "2027-01-25",
+              "legal": "2027-01-25",
+              "shifted": false,
+              "reason": null,
+              "safe": "2027-01-25"
+            },
+            "articleId": "mac-przed-porodem",
+            "wizardId": null,
+            "calculator": null,
+            "optional": true,
+            "estimate": false,
+            "milestone": false,
+            "due": "2027-01-25",
+            "daysLeft": 64,
+            "status": "FUTURE"
+          },
+          {
+            "key": "w81-plan",
+            "title": "Decyzja: 81,5% czy 100% + 70%",
+            "description": "Liczone od faktycznej daty porodu: 21 dni.",
+            "lateNote": null,
+            "institution": "ZUS",
+            "date": "2027-04-12",
+            "deadline": {
+              "type": "AFTER",
+              "raw": "2027-04-12",
+              "legal": "2027-04-12",
+              "shifted": false,
+              "reason": null,
+              "safe": "2027-04-09"
+            },
+            "articleId": "wysokosc-mac",
+            "wizardId": null,
+            "calculator": "zasilek",
+            "optional": false,
+            "estimate": true,
+            "milestone": false,
+            "due": "2027-04-12",
+            "daysLeft": 141,
+            "status": "FUTURE"
+          }
+        ]
+      }
+    },
+    {
+      "name": "mother on a mandate contract in pregnancy",
+      "input": {
+        "role": "MOTHER",
+        "stage": "PREGNANCY",
+        "date": "2026-12-22",
+        "childBirthDate": null,
+        "children": 1,
+        "preterm": null,
+        "work": [
+          "MANDATE_CONTRACT"
+        ],
+        "partner": "SHOW_PARTNER"
+      },
+      "expected": {
+        "stage": {
+          "pregnancyWeek": 35,
+          "childAgeMonths": null,
+          "childAgeLabel": null
+        },
+        "alerts": [],
+        "timeline": [
+          {
+            "key": "mac-przed",
+            "title": "Opcjonalnie: urlop macierzyński przed porodem",
+            "description": "Maks. 6 tygodni przed terminem. Wniosek + zaświadczenie o terminie porodu.",
+            "lateNote": null,
+            "institution": "ZUS",
+            "date": "2026-11-10",
+            "deadline": {
+              "type": "BEFORE",
+              "raw": "2026-10-27",
+              "legal": "2026-10-27",
+              "shifted": false,
+              "reason": null,
+              "safe": "2026-10-27"
+            },
+            "articleId": "mac-przed-porodem",
+            "wizardId": null,
+            "calculator": null,
+            "optional": true,
+            "estimate": false,
+            "milestone": false,
+            "due": "2026-10-27",
+            "daysLeft": -26,
+            "status": "LATE"
+          },
+          {
+            "key": "w81-plan",
+            "title": "Decyzja: 81,5% czy 100% + 70%",
+            "description": "Liczone od faktycznej daty porodu: 21 dni.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2027-01-12",
+            "deadline": {
+              "type": "AFTER",
+              "raw": "2027-01-12",
+              "legal": "2027-01-12",
+              "shifted": false,
+              "reason": null,
+              "safe": "2027-01-11"
+            },
+            "articleId": "wysokosc-mac",
+            "wizardId": null,
+            "calculator": "zasilek",
+            "optional": false,
+            "estimate": true,
+            "milestone": false,
+            "due": "2027-01-12",
+            "daysLeft": 51,
+            "status": "FUTURE"
+          }
+        ]
+      }
+    },
+    {
+      "name": "mother without sickness insurance in pregnancy",
+      "input": {
+        "role": "MOTHER",
+        "stage": "PREGNANCY",
+        "date": "2027-03-22",
+        "childBirthDate": null,
+        "children": 1,
+        "preterm": null,
+        "work": [
+          "NOT_WORKING"
+        ],
+        "partner": "SHOW_PARTNER"
+      },
+      "expected": {
+        "stage": {
+          "pregnancyWeek": 22,
+          "childAgeMonths": null,
+          "childAgeLabel": null
+        },
+        "alerts": [
+          {
+            "level": "INFO",
+            "icon": "info",
+            "title": "Nie masz ubezpieczenia chorobowego",
+            "text": "Zasiłki z ZUS wymagają ubezpieczenia chorobowego. Bez niego przysługuje świadczenie rodzicielskie z gminy (Poradnik, s. 35).",
+            "href": "#/wiedza/a/wazne-mac"
+          }
+        ],
+        "timeline": [
+          {
+            "key": "chor-brak",
+            "title": "Nie masz ubezpieczenia chorobowego",
+            "description": "Zasiłek macierzyński z ZUS wymaga ubezpieczenia chorobowego w dniu porodu. Przedsiębiorca lub zleceniobiorca może zgłosić się do niego dobrowolnie (ZUS ZUA) — nie wstecz.",
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2026-11-22",
+            "deadline": null,
+            "articleId": "zleceniobiorcy",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2026-11-22",
+            "daysLeft": 0,
+            "status": "NOW"
+          }
+        ]
+      }
+    },
+    {
+      "name": "mother on startup relief",
+      "input": {
+        "role": "MOTHER",
+        "stage": "PREGNANCY",
+        "date": "2027-03-22",
+        "childBirthDate": null,
+        "children": 1,
+        "preterm": null,
+        "work": [
+          "STARTUP_RELIEF"
+        ],
+        "partner": "SHOW_PARTNER"
+      },
+      "expected": {
+        "stage": {
+          "pregnancyWeek": 22,
+          "childAgeMonths": null,
+          "childAgeLabel": null
+        },
+        "alerts": [
+          {
+            "level": "INFO",
+            "icon": "info",
+            "title": "Nie masz ubezpieczenia chorobowego",
+            "text": "Zasiłki z ZUS wymagają ubezpieczenia chorobowego. Bez niego przysługuje świadczenie rodzicielskie z gminy (Poradnik, s. 35).",
+            "href": "#/wiedza/a/wazne-mac"
+          },
+          {
+            "level": "WARNING",
+            "icon": "alert",
+            "title": "Ulga na start = brak ubezpieczenia chorobowego",
+            "text": "Przez 6 miesięcy ulgi nie podlegasz ubezpieczeniom społecznym, więc nie masz prawa do zasiłków. Możesz zrezygnować z ulgi wcześniej.",
+            "href": "#/wiedza/a/jdg"
+          }
+        ],
+        "timeline": [
+          {
+            "key": "chor-brak",
+            "title": "Nie masz ubezpieczenia chorobowego",
+            "description": "Zasiłek macierzyński z ZUS wymaga ubezpieczenia chorobowego w dniu porodu. Przedsiębiorca lub zleceniobiorca może zgłosić się do niego dobrowolnie (ZUS ZUA) — nie wstecz.",
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2026-11-22",
+            "deadline": null,
+            "articleId": "zleceniobiorcy",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2026-11-22",
+            "daysLeft": 0,
+            "status": "NOW"
+          }
+        ]
+      }
+    },
+    {
+      "name": "farmer mother after birth",
+      "input": {
+        "role": "MOTHER",
+        "stage": "CHILD",
+        "date": "2026-11-02",
+        "childBirthDate": null,
+        "children": 1,
+        "preterm": null,
+        "work": [
+          "FARMER"
+        ],
+        "partner": "SHOW_PARTNER"
+      },
+      "expected": {
+        "stage": {
+          "pregnancyWeek": null,
+          "childAgeMonths": 0,
+          "childAgeLabel": "2 tyg. 6 dni"
+        },
+        "alerts": [
+          {
+            "level": "INFO",
+            "icon": "info",
+            "title": "Jesteś w KRUS",
+            "text": "Zasiłek macierzyński dla rolników wypłaca KRUS, nie ZUS.",
+            "href": "#/wiedza"
+          }
+        ],
+        "timeline": [
+          {
+            "key": "tata9",
+            "title": "9 tygodni rodzicielskiego dla taty (70%)",
+            "description": "Nieprzenoszalne — przepadną, jeśli nie zostaną wykorzystane. Do końca roku, w którym dziecko kończy 6 lat.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2027-04-19",
+            "deadline": null,
+            "articleId": "rodzicielski",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2027-04-19",
+            "daysLeft": 148,
+            "status": "FUTURE"
+          },
+          {
+            "key": "ojcowski",
+            "title": "Urlop ojcowski taty — do 1. urodzin dziecka",
+            "description": "2 tygodnie, 100%. Wniosek 7 dni przed.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2027-10-19",
+            "deadline": {
+              "type": "BEFORE",
+              "raw": "2027-10-12",
+              "legal": "2027-10-12",
+              "shifted": false,
+              "reason": null,
+              "safe": "2027-10-12"
+            },
+            "articleId": "ojcowski",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2027-10-12",
+            "daysLeft": 324,
+            "status": "FUTURE"
+          }
+        ]
+      }
+    },
+    {
+      "name": "mandate contract without sickness insurance",
+      "input": {
+        "role": "MOTHER",
+        "stage": "CHILD",
+        "date": "2026-11-19",
+        "childBirthDate": null,
+        "children": 1,
+        "preterm": null,
+        "work": [
+          "MANDATE_CONTRACT_WITHOUT_SICKNESS"
+        ],
+        "partner": "SHOW_PARTNER"
+      },
+      "expected": {
+        "stage": {
+          "pregnancyWeek": null,
+          "childAgeMonths": 0,
+          "childAgeLabel": "0 tyg. 3 dni"
+        },
+        "alerts": [
+          {
+            "level": "INFO",
+            "icon": "info",
+            "title": "Nie masz ubezpieczenia chorobowego",
+            "text": "Zasiłki z ZUS wymagają ubezpieczenia chorobowego. Bez niego przysługuje świadczenie rodzicielskie z gminy (Poradnik, s. 35).",
+            "href": "#/wiedza/a/wazne-mac"
+          }
+        ],
+        "timeline": [
+          {
+            "key": "tata9",
+            "title": "9 tygodni rodzicielskiego dla taty (70%)",
+            "description": "Nieprzenoszalne — przepadną, jeśli nie zostaną wykorzystane. Do końca roku, w którym dziecko kończy 6 lat.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2027-05-06",
+            "deadline": null,
+            "articleId": "rodzicielski",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2027-05-06",
+            "daysLeft": 165,
+            "status": "FUTURE"
+          },
+          {
+            "key": "ojcowski",
+            "title": "Urlop ojcowski taty — do 1. urodzin dziecka",
+            "description": "2 tygodnie, 100%. Wniosek 7 dni przed.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2027-11-05",
+            "deadline": {
+              "type": "BEFORE",
+              "raw": "2027-10-29",
+              "legal": "2027-10-29",
+              "shifted": false,
+              "reason": null,
+              "safe": "2027-10-29"
+            },
+            "articleId": "ojcowski",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2027-10-29",
+            "daysLeft": 341,
+            "status": "FUTURE"
+          }
+        ]
+      }
+    },
+    {
+      "name": "father in pregnancy",
+      "input": {
+        "role": "FATHER",
+        "stage": "PREGNANCY",
+        "date": "2027-03-22",
+        "childBirthDate": null,
+        "children": 1,
+        "preterm": null,
+        "work": [
+          "EMPLOYMENT"
+        ],
+        "partner": "SHOW_PARTNER"
+      },
+      "expected": {
+        "stage": {
+          "pregnancyWeek": 22,
+          "childAgeMonths": null,
+          "childAgeLabel": null
+        },
+        "alerts": [],
+        "timeline": []
+      }
+    },
+    {
+      "name": "mother of twins, 81.5% deadline missed",
+      "input": {
+        "role": "MOTHER",
+        "stage": "CHILD",
+        "date": "2026-10-13",
+        "childBirthDate": null,
+        "children": 2,
+        "preterm": null,
+        "work": [
+          "EMPLOYMENT"
+        ],
+        "partner": "SHOW_PARTNER"
+      },
+      "expected": {
+        "stage": {
+          "pregnancyWeek": null,
+          "childAgeMonths": 1,
+          "childAgeLabel": "5 tyg. 5 dni"
+        },
+        "alerts": [],
+        "timeline": [
+          {
+            "key": "w81",
+            "title": "Wniosek o 81,5% (pełny wymiar urlopu)",
+            "description": "Bez wniosku: 100% za macierzyński i 70% za rodzicielski.",
+            "lateNote": "Termin minął — zasiłek będzie wypłacany w wariancie 100% + 70%. To nie jest strata, tylko inny rozkład kwot.",
+            "institution": "EMPLOYER",
+            "date": "2026-11-03",
+            "deadline": {
+              "type": "AFTER",
+              "raw": "2026-11-03",
+              "legal": "2026-11-03",
+              "shifted": false,
+              "reason": null,
+              "safe": "2026-11-02"
+            },
+            "articleId": "wysokosc-mac",
+            "wizardId": "w-81",
+            "calculator": "zasilek",
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2026-11-03",
+            "daysLeft": -19,
+            "status": "LATE"
+          },
+          {
+            "key": "przedawn",
+            "title": "Wniosek o zasiłek — najpóźniej 6 miesięcy",
+            "description": "Roszczenie o zasiłek przedawnia się po 6 miesiącach od ostatniego dnia okresu, za który przysługuje.",
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2027-04-13",
+            "deadline": null,
+            "articleId": "przedawnienie",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2027-04-13",
+            "daysLeft": 142,
+            "status": "FUTURE"
+          },
+          {
+            "key": "mac-end",
+            "title": "Koniec urlopu macierzyńskiego",
+            "description": null,
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2027-05-18",
+            "deadline": null,
+            "articleId": null,
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2027-05-18",
+            "daysLeft": 177,
+            "status": "FUTURE"
+          },
+          {
+            "key": "tata9",
+            "title": "9 tygodni rodzicielskiego dla taty (70%)",
+            "description": "Nieprzenoszalne — przepadną, jeśli nie zostaną wykorzystane. Do końca roku, w którym dziecko kończy 6 lat.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2027-06-15",
+            "deadline": null,
+            "articleId": "rodzicielski",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2027-06-15",
+            "daysLeft": 205,
+            "status": "FUTURE"
+          },
+          {
+            "key": "ojcowski",
+            "title": "Urlop ojcowski taty — do 1. urodzin dziecka",
+            "description": "2 tygodnie, 100%. Wniosek 7 dni przed.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2027-09-29",
+            "deadline": {
+              "type": "BEFORE",
+              "raw": "2027-09-22",
+              "legal": "2027-09-22",
+              "shifted": false,
+              "reason": null,
+              "safe": "2027-09-22"
+            },
+            "articleId": "ojcowski",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2027-09-22",
+            "daysLeft": 304,
+            "status": "FUTURE"
+          },
+          {
+            "key": "rodz-1y",
+            "title": "Min. 1 dzień rodzicielskiego przed 1. urodzinami",
+            "description": "Warunek zachowania 81,5% (art. 31 ust. 3g).",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2027-10-12",
+            "deadline": null,
+            "articleId": null,
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2027-10-12",
+            "daysLeft": 324,
+            "status": "FUTURE"
+          },
+          {
+            "key": "urlopy-6",
+            "title": "Ostatni dzień na urlop rodzicielski",
+            "description": "Niewykorzystana część przepada z końcem roku, w którym dziecko kończy 6 lat.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2032-12-31",
+            "deadline": {
+              "type": "AFTER",
+              "raw": "2032-12-31",
+              "legal": "2032-12-31",
+              "shifted": false,
+              "reason": null,
+              "safe": "2032-12-10"
+            },
+            "articleId": "rodzicielski",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2032-12-31",
+            "daysLeft": 2231,
+            "status": "FUTURE"
+          },
+          {
+            "key": "wiek-8",
+            "title": "8. urodziny: koniec zasiłku opiekuńczego na zdrowe dziecko",
+            "description": "Np. przy nagłym zamknięciu żłobka, przedszkola lub szkoły.",
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2034-10-13",
+            "deadline": null,
+            "articleId": "opiekunczy",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2034-10-13",
+            "daysLeft": 2882,
+            "status": "FUTURE"
+          },
+          {
+            "key": "wiek-14",
+            "title": "14. urodziny: koniec zasiłku opiekuńczego na chore dziecko (60 dni w roku)",
+            "description": null,
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2040-10-13",
+            "deadline": null,
+            "articleId": "opiekunczy",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2040-10-13",
+            "daysLeft": 5074,
+            "status": "FUTURE"
+          }
+        ]
+      }
+    },
+    {
+      "name": "triplets born today, partner hidden",
+      "input": {
+        "role": "MOTHER",
+        "stage": "CHILD",
+        "date": "2026-11-22",
+        "childBirthDate": null,
+        "children": 3,
+        "preterm": null,
+        "work": [
+          "EMPLOYMENT"
+        ],
+        "partner": "ONLY_ME"
+      },
+      "expected": {
+        "stage": {
+          "pregnancyWeek": null,
+          "childAgeMonths": 0,
+          "childAgeLabel": "0 tyg. 0 dni"
+        },
+        "alerts": [],
+        "timeline": [
+          {
+            "key": "w81",
+            "title": "Wniosek o 81,5% (pełny wymiar urlopu)",
+            "description": "Bez wniosku: 100% za macierzyński i 70% za rodzicielski.",
+            "lateNote": "Termin minął — zasiłek będzie wypłacany w wariancie 100% + 70%. To nie jest strata, tylko inny rozkład kwot.",
+            "institution": "EMPLOYER",
+            "date": "2026-12-13",
+            "deadline": {
+              "type": "AFTER",
+              "raw": "2026-12-13",
+              "legal": "2026-12-14",
+              "shifted": true,
+              "reason": "niedziela",
+              "safe": "2026-12-11"
+            },
+            "articleId": "wysokosc-mac",
+            "wizardId": "w-81",
+            "calculator": "zasilek",
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2026-12-14",
+            "daysLeft": 22,
+            "status": "NOW"
+          },
+          {
+            "key": "przedawn",
+            "title": "Wniosek o zasiłek — najpóźniej 6 miesięcy",
+            "description": "Roszczenie o zasiłek przedawnia się po 6 miesiącach od ostatniego dnia okresu, za który przysługuje.",
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2027-05-22",
+            "deadline": null,
+            "articleId": "przedawnienie",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2027-05-22",
+            "daysLeft": 181,
+            "status": "FUTURE"
+          },
+          {
+            "key": "mac-end",
+            "title": "Koniec urlopu macierzyńskiego",
+            "description": null,
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2027-07-11",
+            "deadline": null,
+            "articleId": null,
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2027-07-11",
+            "daysLeft": 231,
+            "status": "FUTURE"
+          },
+          {
+            "key": "rodz-1y",
+            "title": "Min. 1 dzień rodzicielskiego przed 1. urodzinami",
+            "description": "Warunek zachowania 81,5% (art. 31 ust. 3g).",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2027-11-21",
+            "deadline": null,
+            "articleId": null,
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2027-11-21",
+            "daysLeft": 364,
+            "status": "FUTURE"
+          },
+          {
+            "key": "urlopy-6",
+            "title": "Ostatni dzień na urlop rodzicielski",
+            "description": "Niewykorzystana część przepada z końcem roku, w którym dziecko kończy 6 lat.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2032-12-31",
+            "deadline": {
+              "type": "AFTER",
+              "raw": "2032-12-31",
+              "legal": "2032-12-31",
+              "shifted": false,
+              "reason": null,
+              "safe": "2032-12-10"
+            },
+            "articleId": "rodzicielski",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2032-12-31",
+            "daysLeft": 2231,
+            "status": "FUTURE"
+          },
+          {
+            "key": "wiek-8",
+            "title": "8. urodziny: koniec zasiłku opiekuńczego na zdrowe dziecko",
+            "description": "Np. przy nagłym zamknięciu żłobka, przedszkola lub szkoły.",
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2034-11-22",
+            "deadline": null,
+            "articleId": "opiekunczy",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2034-11-22",
+            "daysLeft": 2922,
+            "status": "FUTURE"
+          },
+          {
+            "key": "wiek-14",
+            "title": "14. urodziny: koniec zasiłku opiekuńczego na chore dziecko (60 dni w roku)",
+            "description": null,
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2040-11-22",
+            "deadline": null,
+            "articleId": "opiekunczy",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2040-11-22",
+            "daysLeft": 5114,
+            "status": "FUTURE"
+          }
+        ]
+      }
+    },
+    {
+      "name": "self-employed mother, child 1 year old",
+      "input": {
+        "role": "MOTHER",
+        "stage": "CHILD",
+        "date": "2025-11-22",
+        "childBirthDate": null,
+        "children": 1,
+        "preterm": null,
+        "work": [
+          "SELF_EMPLOYMENT"
+        ],
+        "partner": "SHOW_PARTNER"
+      },
+      "expected": {
+        "stage": {
+          "pregnancyWeek": null,
+          "childAgeMonths": 12,
+          "childAgeLabel": "12 mies."
+        },
+        "alerts": [],
+        "timeline": [
+          {
+            "key": "w81",
+            "title": "Wniosek o 81,5% (pełny wymiar urlopu)",
+            "description": "Bez wniosku: 100% za macierzyński i 70% za rodzicielski.",
+            "lateNote": "Termin minął — zasiłek będzie wypłacany w wariancie 100% + 70%. To nie jest strata, tylko inny rozkład kwot.",
+            "institution": "ZUS",
+            "date": "2025-12-13",
+            "deadline": {
+              "type": "AFTER",
+              "raw": "2025-12-13",
+              "legal": "2025-12-15",
+              "shifted": true,
+              "reason": "sobota",
+              "safe": "2025-12-12"
+            },
+            "articleId": "wysokosc-mac",
+            "wizardId": "w-81",
+            "calculator": "zasilek",
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2025-12-15",
+            "daysLeft": -342,
+            "status": "LATE"
+          },
+          {
+            "key": "mac-end",
+            "title": "Koniec urlopu macierzyńskiego",
+            "description": null,
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2026-04-11",
+            "deadline": null,
+            "articleId": null,
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2026-04-11",
+            "daysLeft": -225,
+            "status": "PAST"
+          },
+          {
+            "key": "tata9",
+            "title": "9 tygodni rodzicielskiego dla taty (70%)",
+            "description": "Nieprzenoszalne — przepadną, jeśli nie zostaną wykorzystane. Do końca roku, w którym dziecko kończy 6 lat.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2026-05-09",
+            "deadline": null,
+            "articleId": "rodzicielski",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2026-05-09",
+            "daysLeft": -197,
+            "status": "PAST"
+          },
+          {
+            "key": "przedawn",
+            "title": "Wniosek o zasiłek — najpóźniej 6 miesięcy",
+            "description": "Roszczenie o zasiłek przedawnia się po 6 miesiącach od ostatniego dnia okresu, za który przysługuje.",
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2026-05-22",
+            "deadline": null,
+            "articleId": "przedawnienie",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2026-05-22",
+            "daysLeft": -184,
+            "status": "PAST"
+          },
+          {
+            "key": "ojcowski",
+            "title": "Urlop ojcowski taty — do 1. urodzin dziecka",
+            "description": "2 tygodnie, 100%. Wniosek 7 dni przed.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2026-11-08",
+            "deadline": {
+              "type": "BEFORE",
+              "raw": "2026-11-01",
+              "legal": "2026-11-01",
+              "shifted": false,
+              "reason": "Wszystkich Świętych",
+              "safe": "2026-10-30"
+            },
+            "articleId": "ojcowski",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2026-11-01",
+            "daysLeft": -21,
+            "status": "LATE"
+          },
+          {
+            "key": "rodz-1y",
+            "title": "Min. 1 dzień rodzicielskiego przed 1. urodzinami",
+            "description": "Warunek zachowania 81,5% (art. 31 ust. 3g).",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2026-11-21",
+            "deadline": null,
+            "articleId": null,
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2026-11-21",
+            "daysLeft": -1,
+            "status": "PAST"
+          },
+          {
+            "key": "zua",
+            "title": "Po zasiłku: ponownie zgłoś się do chorobowego (ZUS ZUA)",
+            "description": "Przy zasiłku macierzyńskim zostajesz automatycznie wyrejestrowana z dobrowolnego chorobowego.",
+            "lateNote": null,
+            "institution": "ZUS",
+            "date": "2026-11-21",
+            "deadline": null,
+            "articleId": null,
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2026-11-21",
+            "daysLeft": -1,
+            "status": "PAST"
+          },
+          {
+            "key": "wiek-8",
+            "title": "8. urodziny: koniec zasiłku opiekuńczego na zdrowe dziecko",
+            "description": "Np. przy nagłym zamknięciu żłobka, przedszkola lub szkoły.",
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2033-11-22",
+            "deadline": null,
+            "articleId": "opiekunczy",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2033-11-22",
+            "daysLeft": 2557,
+            "status": "FUTURE"
+          },
+          {
+            "key": "wiek-14",
+            "title": "14. urodziny: koniec zasiłku opiekuńczego na chore dziecko (60 dni w roku)",
+            "description": null,
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2039-11-22",
+            "deadline": null,
+            "articleId": "opiekunczy",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2039-11-22",
+            "daysLeft": 4748,
+            "status": "FUTURE"
+          }
+        ]
+      }
+    },
+    {
+      "name": "employment and self-employment, child 19 days old",
+      "input": {
+        "role": "MOTHER",
+        "stage": "CHILD",
+        "date": "2026-11-03",
+        "childBirthDate": null,
+        "children": 1,
+        "preterm": null,
+        "work": [
+          "EMPLOYMENT",
+          "SELF_EMPLOYMENT"
+        ],
+        "partner": "SHOW_PARTNER"
+      },
+      "expected": {
+        "stage": {
+          "pregnancyWeek": null,
+          "childAgeMonths": 0,
+          "childAgeLabel": "2 tyg. 5 dni"
+        },
+        "alerts": [],
+        "timeline": [
+          {
+            "key": "w81",
+            "title": "Wniosek o 81,5% (pełny wymiar urlopu)",
+            "description": "Bez wniosku: 100% za macierzyński i 70% za rodzicielski.",
+            "lateNote": "Termin minął — zasiłek będzie wypłacany w wariancie 100% + 70%. To nie jest strata, tylko inny rozkład kwot.",
+            "institution": "EMPLOYER",
+            "date": "2026-11-24",
+            "deadline": {
+              "type": "AFTER",
+              "raw": "2026-11-24",
+              "legal": "2026-11-24",
+              "shifted": false,
+              "reason": null,
+              "safe": "2026-11-23"
+            },
+            "articleId": "wysokosc-mac",
+            "wizardId": "w-81",
+            "calculator": "zasilek",
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2026-11-24",
+            "daysLeft": 2,
+            "status": "NOW"
+          },
+          {
+            "key": "mac-end",
+            "title": "Koniec urlopu macierzyńskiego",
+            "description": null,
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2027-03-23",
+            "deadline": null,
+            "articleId": null,
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2027-03-23",
+            "daysLeft": 121,
+            "status": "FUTURE"
+          },
+          {
+            "key": "tata9",
+            "title": "9 tygodni rodzicielskiego dla taty (70%)",
+            "description": "Nieprzenoszalne — przepadną, jeśli nie zostaną wykorzystane. Do końca roku, w którym dziecko kończy 6 lat.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2027-04-20",
+            "deadline": null,
+            "articleId": "rodzicielski",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2027-04-20",
+            "daysLeft": 149,
+            "status": "FUTURE"
+          },
+          {
+            "key": "przedawn",
+            "title": "Wniosek o zasiłek — najpóźniej 6 miesięcy",
+            "description": "Roszczenie o zasiłek przedawnia się po 6 miesiącach od ostatniego dnia okresu, za który przysługuje.",
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2027-05-03",
+            "deadline": null,
+            "articleId": "przedawnienie",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2027-05-03",
+            "daysLeft": 162,
+            "status": "FUTURE"
+          },
+          {
+            "key": "ojcowski",
+            "title": "Urlop ojcowski taty — do 1. urodzin dziecka",
+            "description": "2 tygodnie, 100%. Wniosek 7 dni przed.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2027-10-20",
+            "deadline": {
+              "type": "BEFORE",
+              "raw": "2027-10-13",
+              "legal": "2027-10-13",
+              "shifted": false,
+              "reason": null,
+              "safe": "2027-10-13"
+            },
+            "articleId": "ojcowski",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2027-10-13",
+            "daysLeft": 325,
+            "status": "FUTURE"
+          },
+          {
+            "key": "rodz-1y",
+            "title": "Min. 1 dzień rodzicielskiego przed 1. urodzinami",
+            "description": "Warunek zachowania 81,5% (art. 31 ust. 3g).",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2027-11-02",
+            "deadline": null,
+            "articleId": null,
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2027-11-02",
+            "daysLeft": 345,
+            "status": "FUTURE"
+          },
+          {
+            "key": "zua",
+            "title": "Po zasiłku: ponownie zgłoś się do chorobowego (ZUS ZUA)",
+            "description": "Przy zasiłku macierzyńskim zostajesz automatycznie wyrejestrowana z dobrowolnego chorobowego.",
+            "lateNote": null,
+            "institution": "ZUS",
+            "date": "2027-11-02",
+            "deadline": null,
+            "articleId": null,
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2027-11-02",
+            "daysLeft": 345,
+            "status": "FUTURE"
+          },
+          {
+            "key": "urlopy-6",
+            "title": "Ostatni dzień na urlop rodzicielski",
+            "description": "Niewykorzystana część przepada z końcem roku, w którym dziecko kończy 6 lat.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2032-12-31",
+            "deadline": {
+              "type": "AFTER",
+              "raw": "2032-12-31",
+              "legal": "2032-12-31",
+              "shifted": false,
+              "reason": null,
+              "safe": "2032-12-10"
+            },
+            "articleId": "rodzicielski",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2032-12-31",
+            "daysLeft": 2231,
+            "status": "FUTURE"
+          },
+          {
+            "key": "wiek-8",
+            "title": "8. urodziny: koniec zasiłku opiekuńczego na zdrowe dziecko",
+            "description": "Np. przy nagłym zamknięciu żłobka, przedszkola lub szkoły.",
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2034-11-03",
+            "deadline": null,
+            "articleId": "opiekunczy",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2034-11-03",
+            "daysLeft": 2903,
+            "status": "FUTURE"
+          },
+          {
+            "key": "wiek-14",
+            "title": "14. urodziny: koniec zasiłku opiekuńczego na chore dziecko (60 dni w roku)",
+            "description": null,
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2040-11-03",
+            "deadline": null,
+            "articleId": "opiekunczy",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2040-11-03",
+            "daysLeft": 5095,
+            "status": "FUTURE"
+          }
+        ]
+      }
+    },
+    {
+      "name": "child 3 years old",
+      "input": {
+        "role": "MOTHER",
+        "stage": "CHILD",
+        "date": "2023-11-18",
+        "childBirthDate": null,
+        "children": 1,
+        "preterm": null,
+        "work": [
+          "EMPLOYMENT"
+        ],
+        "partner": "SHOW_PARTNER"
+      },
+      "expected": {
+        "stage": {
+          "pregnancyWeek": null,
+          "childAgeMonths": 36,
+          "childAgeLabel": "3 lata"
+        },
+        "alerts": [],
+        "timeline": [
+          {
+            "key": "w81",
+            "title": "Wniosek o 81,5% (pełny wymiar urlopu)",
+            "description": "Bez wniosku: 100% za macierzyński i 70% za rodzicielski.",
+            "lateNote": "Termin minął — zasiłek będzie wypłacany w wariancie 100% + 70%. To nie jest strata, tylko inny rozkład kwot.",
+            "institution": "EMPLOYER",
+            "date": "2023-12-09",
+            "deadline": {
+              "type": "AFTER",
+              "raw": "2023-12-09",
+              "legal": "2023-12-11",
+              "shifted": true,
+              "reason": "sobota",
+              "safe": "2023-12-08"
+            },
+            "articleId": "wysokosc-mac",
+            "wizardId": "w-81",
+            "calculator": "zasilek",
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2023-12-11",
+            "daysLeft": -1077,
+            "status": "LATE"
+          },
+          {
+            "key": "mac-end",
+            "title": "Koniec urlopu macierzyńskiego",
+            "description": null,
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2024-04-06",
+            "deadline": null,
+            "articleId": null,
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2024-04-06",
+            "daysLeft": -960,
+            "status": "PAST"
+          },
+          {
+            "key": "tata9",
+            "title": "9 tygodni rodzicielskiego dla taty (70%)",
+            "description": "Nieprzenoszalne — przepadną, jeśli nie zostaną wykorzystane. Do końca roku, w którym dziecko kończy 6 lat.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2024-05-04",
+            "deadline": null,
+            "articleId": "rodzicielski",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2024-05-04",
+            "daysLeft": -932,
+            "status": "PAST"
+          },
+          {
+            "key": "przedawn",
+            "title": "Wniosek o zasiłek — najpóźniej 6 miesięcy",
+            "description": "Roszczenie o zasiłek przedawnia się po 6 miesiącach od ostatniego dnia okresu, za który przysługuje.",
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2024-05-18",
+            "deadline": null,
+            "articleId": "przedawnienie",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2024-05-18",
+            "daysLeft": -918,
+            "status": "PAST"
+          },
+          {
+            "key": "ojcowski",
+            "title": "Urlop ojcowski taty — do 1. urodzin dziecka",
+            "description": "2 tygodnie, 100%. Wniosek 7 dni przed.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2024-11-04",
+            "deadline": {
+              "type": "BEFORE",
+              "raw": "2024-10-28",
+              "legal": "2024-10-28",
+              "shifted": false,
+              "reason": null,
+              "safe": "2024-10-28"
+            },
+            "articleId": "ojcowski",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2024-10-28",
+            "daysLeft": -755,
+            "status": "LATE"
+          },
+          {
+            "key": "rodz-1y",
+            "title": "Min. 1 dzień rodzicielskiego przed 1. urodzinami",
+            "description": "Warunek zachowania 81,5% (art. 31 ust. 3g).",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2024-11-17",
+            "deadline": null,
+            "articleId": null,
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2024-11-17",
+            "daysLeft": -735,
+            "status": "PAST"
+          },
+          {
+            "key": "urlopy-6",
+            "title": "Ostatni dzień na urlop rodzicielski",
+            "description": "Niewykorzystana część przepada z końcem roku, w którym dziecko kończy 6 lat.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2029-12-31",
+            "deadline": {
+              "type": "AFTER",
+              "raw": "2029-12-31",
+              "legal": "2029-12-31",
+              "shifted": false,
+              "reason": null,
+              "safe": "2029-12-10"
+            },
+            "articleId": "rodzicielski",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2029-12-31",
+            "daysLeft": 1135,
+            "status": "FUTURE"
+          },
+          {
+            "key": "wiek-8",
+            "title": "8. urodziny: koniec zasiłku opiekuńczego na zdrowe dziecko",
+            "description": "Np. przy nagłym zamknięciu żłobka, przedszkola lub szkoły.",
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2031-11-18",
+            "deadline": null,
+            "articleId": "opiekunczy",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2031-11-18",
+            "daysLeft": 1822,
+            "status": "FUTURE"
+          },
+          {
+            "key": "wiek-14",
+            "title": "14. urodziny: koniec zasiłku opiekuńczego na chore dziecko (60 dni w roku)",
+            "description": null,
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2037-11-18",
+            "deadline": null,
+            "articleId": "opiekunczy",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2037-11-18",
+            "daysLeft": 4014,
+            "status": "FUTURE"
+          }
+        ]
+      }
+    },
+    {
+      "name": "adoption without sickness insurance",
+      "input": {
+        "role": "GUARDIAN",
+        "stage": "ADOPTION",
+        "date": "2026-10-23",
+        "childBirthDate": "2025-10-18",
+        "children": 1,
+        "preterm": null,
+        "work": [
+          "NOT_WORKING"
+        ],
+        "partner": "SHOW_PARTNER"
+      },
+      "expected": {
+        "stage": {
+          "pregnancyWeek": null,
+          "childAgeMonths": 13,
+          "childAgeLabel": "13 mies."
+        },
+        "alerts": [
+          {
+            "level": "INFO",
+            "icon": "info",
+            "title": "Nie masz ubezpieczenia chorobowego",
+            "text": "Zasiłki z ZUS wymagają ubezpieczenia chorobowego. Bez niego przysługuje świadczenie rodzicielskie z gminy (Poradnik, s. 35).",
+            "href": "#/wiedza/a/wazne-mac"
+          }
+        ],
+        "timeline": [
+          {
+            "key": "adop",
+            "title": "Wniosek o urlop na warunkach urlopu macierzyńskiego",
+            "description": "W ciągu 7 dni od przyjęcia dziecka.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2026-10-30",
+            "deadline": {
+              "type": "AFTER",
+              "raw": "2026-10-30",
+              "legal": "2026-10-30",
+              "shifted": false,
+              "reason": null,
+              "safe": "2026-10-29"
+            },
+            "articleId": null,
+            "wizardId": "w-adopcja",
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2026-10-30",
+            "daysLeft": -23,
+            "status": "LATE"
+          },
+          {
+            "key": "adop-start",
+            "title": "Najpóźniejszy początek urlopu (21 dni od przyjęcia)",
+            "description": null,
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2026-11-13",
+            "deadline": null,
+            "articleId": null,
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2026-11-13",
+            "daysLeft": -9,
+            "status": "PAST"
+          }
+        ]
+      }
+    },
+    {
+      "name": "father without sickness insurance, child 2 months old",
+      "input": {
+        "role": "FATHER",
+        "stage": "CHILD",
+        "date": "2026-09-23",
+        "childBirthDate": null,
+        "children": 1,
+        "preterm": null,
+        "work": [
+          "NOT_WORKING"
+        ],
+        "partner": "SHOW_PARTNER"
+      },
+      "expected": {
+        "stage": {
+          "pregnancyWeek": null,
+          "childAgeMonths": 1,
+          "childAgeLabel": "1 mies."
+        },
+        "alerts": [
+          {
+            "level": "INFO",
+            "icon": "info",
+            "title": "Nie masz ubezpieczenia chorobowego",
+            "text": "Zasiłki z ZUS wymagają ubezpieczenia chorobowego. Bez niego przysługuje świadczenie rodzicielskie z gminy (Poradnik, s. 35).",
+            "href": "#/wiedza/a/wazne-mac"
+          }
+        ],
+        "timeline": [
+          {
+            "key": "tata9",
+            "title": "Twoje 9 tygodni rodzicielskiego (70%)",
+            "description": "Nieprzenoszalne — przepadną, jeśli nie zostaną wykorzystane. Do końca roku, w którym dziecko kończy 6 lat.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2027-03-10",
+            "deadline": null,
+            "articleId": "rodzicielski",
+            "wizardId": "w-rodzicielski",
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2027-03-10",
+            "daysLeft": 108,
+            "status": "FUTURE"
+          },
+          {
+            "key": "ojcowski",
+            "title": "Twój urlop ojcowski — do 1. urodzin dziecka",
+            "description": "2 tygodnie, 100%. Wniosek 7 dni przed.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2027-09-09",
+            "deadline": {
+              "type": "BEFORE",
+              "raw": "2027-09-02",
+              "legal": "2027-09-02",
+              "shifted": false,
+              "reason": null,
+              "safe": "2027-09-02"
+            },
+            "articleId": "ojcowski",
+            "wizardId": "w-ojcowski",
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2027-09-02",
+            "daysLeft": 284,
+            "status": "FUTURE"
+          }
+        ]
+      }
+    },
+    {
+      "name": "premature baby, mother on a mandate contract",
+      "input": {
+        "role": "MOTHER",
+        "stage": "CHILD",
+        "date": "2026-11-12",
+        "childBirthDate": null,
+        "children": 1,
+        "preterm": {
+          "gestationWeek": 33,
+          "birthWeightGrams": 1900,
+          "hospitalDays": 12
+        },
+        "work": [
+          "MANDATE_CONTRACT"
+        ],
+        "partner": "SHOW_PARTNER"
+      },
+      "expected": {
+        "stage": {
+          "pregnancyWeek": null,
+          "childAgeMonths": 0,
+          "childAgeLabel": "1 tyg. 3 dni"
+        },
+        "alerts": [],
+        "timeline": [
+          {
+            "key": "w81",
+            "title": "Wniosek o 81,5% (pełny wymiar urlopu)",
+            "description": "Bez wniosku: 100% za macierzyński i 70% za rodzicielski.",
+            "lateNote": "Termin minął — zasiłek będzie wypłacany w wariancie 100% + 70%. To nie jest strata, tylko inny rozkład kwot.",
+            "institution": "EMPLOYER",
+            "date": "2026-12-03",
+            "deadline": {
+              "type": "AFTER",
+              "raw": "2026-12-03",
+              "legal": "2026-12-03",
+              "shifted": false,
+              "reason": null,
+              "safe": "2026-12-02"
+            },
+            "articleId": "wysokosc-mac",
+            "wizardId": "w-81",
+            "calculator": "zasilek",
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2026-12-03",
+            "daysLeft": 11,
+            "status": "NOW"
+          },
+          {
+            "key": "uzup",
+            "title": "Wniosek o uzupełniający urlop macierzyński",
+            "description": "Najpóźniej 21 dni przed końcem macierzyńskiego, z zaświadczeniem ze szpitala.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2027-03-10",
+            "deadline": {
+              "type": "BEFORE",
+              "raw": "2027-03-10",
+              "legal": "2027-03-10",
+              "shifted": false,
+              "reason": null,
+              "safe": "2027-03-10"
+            },
+            "articleId": "uzupelniajacy",
+            "wizardId": "w-uzupelniajacy",
+            "calculator": "zasilek",
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2027-03-10",
+            "daysLeft": 108,
+            "status": "FUTURE"
+          },
+          {
+            "key": "mac-end",
+            "title": "Koniec urlopu macierzyńskiego",
+            "description": null,
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2027-04-01",
+            "deadline": null,
+            "articleId": null,
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2027-04-01",
+            "daysLeft": 130,
+            "status": "FUTURE"
+          },
+          {
+            "key": "tata9",
+            "title": "9 tygodni rodzicielskiego dla taty (70%)",
+            "description": "Nieprzenoszalne — przepadną, jeśli nie zostaną wykorzystane. Do końca roku, w którym dziecko kończy 6 lat.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2027-04-29",
+            "deadline": null,
+            "articleId": "rodzicielski",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2027-04-29",
+            "daysLeft": 158,
+            "status": "FUTURE"
+          },
+          {
+            "key": "przedawn",
+            "title": "Wniosek o zasiłek — najpóźniej 6 miesięcy",
+            "description": "Roszczenie o zasiłek przedawnia się po 6 miesiącach od ostatniego dnia okresu, za który przysługuje.",
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2027-05-12",
+            "deadline": null,
+            "articleId": "przedawnienie",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2027-05-12",
+            "daysLeft": 171,
+            "status": "FUTURE"
+          },
+          {
+            "key": "ojcowski",
+            "title": "Urlop ojcowski taty — do 1. urodzin dziecka",
+            "description": "2 tygodnie, 100%. Wniosek 7 dni przed.",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2027-10-29",
+            "deadline": {
+              "type": "BEFORE",
+              "raw": "2027-10-22",
+              "legal": "2027-10-22",
+              "shifted": false,
+              "reason": null,
+              "safe": "2027-10-22"
+            },
+            "articleId": "ojcowski",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2027-10-22",
+            "daysLeft": 334,
+            "status": "FUTURE"
+          },
+          {
+            "key": "rodz-1y",
+            "title": "Min. 1 dzień rodzicielskiego przed 1. urodzinami",
+            "description": "Warunek zachowania 81,5% (art. 31 ust. 3g).",
+            "lateNote": null,
+            "institution": "EMPLOYER",
+            "date": "2027-11-11",
+            "deadline": null,
+            "articleId": null,
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": false,
+            "due": "2027-11-11",
+            "daysLeft": 354,
+            "status": "FUTURE"
+          },
+          {
+            "key": "wiek-8",
+            "title": "8. urodziny: koniec zasiłku opiekuńczego na zdrowe dziecko",
+            "description": "Np. przy nagłym zamknięciu żłobka, przedszkola lub szkoły.",
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2034-11-12",
+            "deadline": null,
+            "articleId": "opiekunczy",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2034-11-12",
+            "daysLeft": 2912,
+            "status": "FUTURE"
+          },
+          {
+            "key": "wiek-14",
+            "title": "14. urodziny: koniec zasiłku opiekuńczego na chore dziecko (60 dni w roku)",
+            "description": null,
+            "lateNote": null,
+            "institution": "INFO",
+            "date": "2040-11-12",
+            "deadline": null,
+            "articleId": "opiekunczy",
+            "wizardId": null,
+            "calculator": null,
+            "optional": false,
+            "estimate": false,
+            "milestone": true,
+            "due": "2040-11-12",
+            "daysLeft": 5104,
+            "status": "FUTURE"
+          }
+        ]
+      }
+    }
+  ]
+}

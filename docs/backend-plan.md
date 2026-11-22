@@ -448,7 +448,8 @@ Od PR 05 każdy PR z endpointem zaczyna się od wpisu w `openapi.yaml` (patrz 2.
 |---|---|---|---|---|
 | 14 | Treści: Wiedza | Eksport `wiedza.js` → `content/knowledge.json` (`tools/content/export-content.mjs`), port `KnowledgeCatalog` z adapterem JSON, `GET /knowledge/chapters`, `GET /knowledge/articles/{id}`, `GET /knowledge/search?q=` (normalizacja jak `normTxt()`) | Jednostkowe normalizacji i wyszukiwania, IT | P1 |
 | 15 | Treści: słowniki | Formularze, ciekawostki, karty tygodnia, organizacje, telefony, linki (`content/dictionaries.json`, port `DictionaryCatalog`), `GET /content/forms`, `/content/facts`, `/content/support`, `/content/week-cards`. Katalog świadczeń przechodzi do PR 16, bo ma reguły uprawnień (`eligible`) | Jednostkowe, IT | P1 |
-| 16 | Przewodnik gościa | `Survey`, `TimelinePolicy`, `AlertPolicy`, `BenefitPlanPolicy` (z katalogiem świadczeń z `BENEFITS`), `WeekCardPolicy`, `PreviewGuide`, `POST /guide/preview` | Snapshot osi czasu dla każdej persony (`FixedDateTimeGenerator`), IT | P0 |
+| 16 | Przewodnik gościa, cz. 1: oś terminów | `Survey` (odpowiedzi ankiety), `TimelinePolicy` (terminy przez zapytanie `calendar`, statusy), `AlertPolicy`, `StagePolicy` (tydzień ciąży, wiek dziecka), `GuidePreviewer`, `PreviewGuideQuery`, `POST /guide/preview`. Pozycje i alerty o zaległości oraz L4 dochodzą w PR 19 (dane profilu) | Golden `buildTimeline()` / `alerts()` dla person i wariantów ankiety (`FixedDateTimeGenerator`), IT | P0 |
+| 16b | Przewodnik gościa, cz. 2: plan świadczeń | `BenefitPlanPolicy` (plan „Co Ci przysługuje”, katalog świadczeń z `BENEFITS` i reguły `eligible`), `WeekCardPolicy`; rozszerzenie `POST /guide/preview` | Golden `planHtml()` / `eligible`, IT | P0 |
 
 ### Faza 4 — logowanie i eZUS
 | # | PR | Zawartość | Testy | P |
@@ -478,7 +479,7 @@ Od PR 05 każdy PR z endpointem zaczyna się od wpisu w `openapi.yaml` (patrz 2.
 | 27 | Wdrożenie | Obraz Docker, `compose` z frontendem (nginx) i Postgresem, workflow release | P1, gdy jest hosting |
 | 28 | Kontakt | e-Wizyta (sloty z `calendar`), mama@zus.pl (zaślepka) | P3 |
 
-**Ścieżka minimalna (MVP na demo):** 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12, 13, 16, 17, 18, 19, 22, 23, czyli 19 PR-ów.
+**Ścieżka minimalna (MVP na demo):** 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12, 13, 16, 16b, 17, 18, 19, 22, 23, czyli 20 PR-ów.
 
 ## 8. Integracja z frontendem i serwisem asystenta
 

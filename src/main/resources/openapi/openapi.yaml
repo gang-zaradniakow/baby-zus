@@ -236,6 +236,35 @@ paths:
         default:
           $ref: '#/components/responses/Problem'
 
+  /api/v1/calculations/maternity:
+    post:
+      tags: [Calculations]
+      operationId: simulateMaternityBenefit
+      summary: Maternity benefit simulator for both parents
+      description: |
+        Splits maternity and parental leave between the mother and the father and lays the leaves out on a
+        timeline: the first 14 weeks of maternity leave are the mother's, the father may take over the rest; each
+        parent has 9 non-transferable weeks of parental leave; supplementary leave for a premature baby follows the
+        maternity leave; paternity leave (2 weeks) starts on the day of birth. Insurance titles of each parent are
+        resolved as in `/calculations/insurance`.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MaternitySimulationRequest'
+      responses:
+        '200':
+          description: Leave split and timeline.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MaternitySimulation'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        default:
+          $ref: '#/components/responses/Problem'
+
 components:
   responses:
     ValidationProblem:
@@ -617,6 +646,131 @@ components:
           description: Part of the base paid, as a fraction (1 = 100%).
         amount:
           $ref: '#/components/schemas/Money'
+
+    MaternitySimulationRequest:
+      type: object
+      required: [situation, startDate, children, mother, father]
+      properties:
+        situation:
+          type: string
+          enum: [BIRTH, ADOPTION]
+        startDate:
+          type: string
+          format: date
+          description: Day of birth (or planned birth), or the day the child was taken in.
+        children:
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 10
+        zaZyciem:
+          type: boolean
+          default: false
+        variant:
+          type: string
+          enum: [STANDARD, AVERAGED]
+          default: STANDARD
+          description: STANDARD = 100% maternity + 70% parental; AVERAGED = 81.5% for the whole leave.
+        preterm:
+          $ref: '#/components/schemas/PretermDetails'
+        adoption:
+          $ref: '#/components/schemas/AdoptionDetails'
+        mother:
+          $ref: '#/components/schemas/InsuranceTitlesRequest'
+        father:
+          $ref: '#/components/schemas/FatherLeaveRequest'
+
+    FatherLeaveRequest:
+      type: object
+      required: [titles]
+      properties:
+        titles:
+          $ref: '#/components/schemas/InsuranceTitlesRequest'
+        paternityLeave:
+          type: boolean
+          default: true
+        parentalWeeks:
+          type: integer
+          format: int32
+          minimum: 0
+          default: 9
+          description: Weeks of parental leave the father takes (his 9 are non-transferable).
+        maternityWeeksTaken:
+          type: integer
+          format: int32
+          minimum: 0
+          default: 0
+          description: Weeks of the mother's maternity leave the father takes over (after her first 14 weeks).
+
+    MaternitySimulation:
+      type: object
+      required: [maternityWeeks, parentalWeeks, supplementaryWeeks, mother, father, averagedVariant, segments,
+                 checks, notes]
+      properties:
+        maternityWeeks:
+          type: integer
+          format: int32
+        parentalWeeks:
+          type: integer
+          format: int32
+        supplementaryWeeks:
+          type: integer
+          format: int32
+        mother:
+          $ref: '#/components/schemas/ParentLeaveShare'
+        father:
+          $ref: '#/components/schemas/ParentLeaveShare'
+        averagedVariant:
+          type: boolean
+          description: Whether the 81.5% variant applies.
+        segments:
+          type: array
+          items:
+            $ref: '#/components/schemas/LeaveSegment'
+        checks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Check'
+        notes:
+          type: array
+          items:
+            type: string
+
+    ParentLeaveShare:
+      type: object
+      required: [maternityWeeks, parentalWeeks]
+      properties:
+        maternityWeeks:
+          type: integer
+          format: int32
+        parentalWeeks:
+          type: integer
+          format: int32
+
+    LeaveSegment:
+      type: object
+      required: [parent, label, weeks, rate, workFactor, from, to]
+      properties:
+        parent:
+          type: string
+          enum: [MOTHER, FATHER]
+        label:
+          type: string
+        weeks:
+          type: number
+          description: Length in weeks, rounded to 0.1.
+        rate:
+          type: number
+          description: Benefit rate as a fraction of the base (0.7 = 70%).
+        workFactor:
+          type: number
+          description: Part of the benefit kept while working part-time (1 = not working).
+        from:
+          type: string
+          format: date
+        to:
+          type: string
+          format: date
 
     ProblemDetail:
       type: object

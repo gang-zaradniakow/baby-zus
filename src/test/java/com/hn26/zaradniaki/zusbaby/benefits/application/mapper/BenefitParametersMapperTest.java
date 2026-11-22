@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 
 import com.hn26.zaradniaki.zusbaby.benefits.domain.BenefitParametersFixtures;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.LeaveParametersFixtures;
+import com.hn26.zaradniaki.zusbaby.benefits.domain.MaternityParametersFixtures;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.SicknessParametersFixtures;
 import com.hn26.zaradniaki.zusbaby.legalrules.api.model.ParameterKey;
 import com.hn26.zaradniaki.zusbaby.legalrules.application.dto.LegalParametersDto;
@@ -41,6 +42,19 @@ class BenefitParametersMapperTest {
                 parameter(ParameterKey.INCOME_TAX_ADVANCE_RATE, "0.12")));
 
         assertThat(mapper.toSicknessParameters(dto)).isEqualTo(SicknessParametersFixtures.legalState2026());
+    }
+
+    @Test
+    void takesMaternityParametersFromLegalParameters() {
+        var dto = legalParameters(List.of(parameter(ParameterKey.MATERNITY_LEAVE_RATE, "1"),
+                parameter(ParameterKey.PARENTAL_LEAVE_RATE, "0.7"), parameter(ParameterKey.AVERAGED_RATE, "0.815"),
+                parameter(ParameterKey.SUPPLEMENTARY_LEAVE_RATE, "1"), parameter(ParameterKey.PATERNITY_LEAVE_RATE, "1"),
+                parameter(ParameterKey.NON_TRANSFERABLE_PARENTAL_WEEKS, "9"),
+                parameter(ParameterKey.PATERNITY_LEAVE_WEEKS, "2"),
+                parameter(ParameterKey.MOTHER_ONLY_MATERNITY_WEEKS, "14"),
+                parameter(ParameterKey.DEBT_THRESHOLD, "48.06")));
+
+        assertThat(mapper.toMaternityParameters(dto)).isEqualTo(MaternityParametersFixtures.legalState2026());
     }
 
     @Test

@@ -265,6 +265,83 @@ areas.pregnancySickness = () => {
   };
 };
 
+// ---------------------------------------------------------------------------------------------------------------
+// Maternity benefit simulator: leave split between parents and timeline segments (simulate(), without work)
+// ---------------------------------------------------------------------------------------------------------------
+// Parents are given as resolved insurance (output of resolvePerson()): mainTitle, base, blockingDebt, agricultural.
+const parent = (mainTitle, base, blockingDebt = 0, agriculturalInsurance = false) => ({ mainTitle, base, blockingDebt, agriculturalInsurance });
+const MOCKUP_TYTUL = { EMPLOYMENT: 'prac', MANDATE_CONTRACT: 'zlec', SELF_EMPLOYMENT: 'jdg', NONE: 'brak' };
+const insured = parent('EMPLOYMENT', 6000);
+const father = (insurance = insured, choices = {}) => ({ insurance, paternityLeave: true, parentalWeeks: 9, maternityWeeksTaken: 0, ...choices });
+const simulation = (o) => ({
+  situation: 'BIRTH', startDate: '2026-03-02', children: 1, zaZyciem: false, preterm: null, adoption: null,
+  variant: 'STANDARD', mother: insured, father: father(), ...o,
+});
+function mockupSimulation(input) {
+  const person = (p) => ({ tytul: MOCKUP_TYTUL[p.mainTitle], podstawa: p.base, debt: p.blockingDebt, krus: p.agriculturalInsurance });
+  return {
+    sit: input.situation === 'BIRTH' ? 'birth' : 'adopt',
+    date: input.startDate, n: input.children, zz: input.zaZyciem,
+    preterm: input.preterm ? { on: true, tc: input.preterm.gestationWeek, waga: input.preterm.birthWeightGrams, dni: input.preterm.hospitalDays } : { on: false },
+    adopt: input.adoption ? { typ: input.adoption.type === 'ADOPTION' ? 'przysp' : 'rz', wiek: input.adoption.childAge, odr: input.adoption.deferredSchool } : { typ: 'przysp', wiek: 0, odr: false },
+    variant: input.variant === 'AVERAGED' ? 'A' : 'B',
+    mama: person(input.mother),
+    tata: { ...person(input.father.insurance), ojc: input.father.paternityLeave, rodz: input.father.parentalWeeks, macPrzejecie: input.father.maternityWeeksTaken },
+    praca: { kto: 'none', f: 0.5, weeks: 8 },
+  };
+}
+const preterm = (gestationWeek, birthWeightGrams, hospitalDays) => ({ gestationWeek, birthWeightGrams, hospitalDays, hospitalStartDay: 5 });
+const adoption = (type, childAge, deferredSchool = false) => ({ type, childAge, deferredSchool });
+
+areas.maternitySegments = () => {
+  const inputs = [
+    ['birth, one child, both parents employed', simulation({})],
+    ['averaged variant 81.5%', simulation({ variant: 'AVERAGED' })],
+    ['twins', simulation({ children: 2 })],
+    ['Za zyciem certificate', simulation({ zaZyciem: true })],
+    ['triplets with Za zyciem, averaged variant', simulation({ children: 3, zaZyciem: true, variant: 'AVERAGED' })],
+    ['father takes 6 weeks of maternity leave', simulation({ father: father(insured, { maternityWeeksTaken: 6 }) })],
+    ['father asks for more maternity leave than allowed', simulation({ father: father(insured, { maternityWeeksTaken: 10 }) })],
+    ['father takes 15 weeks of parental leave', simulation({ father: father(insured, { parentalWeeks: 15 }) })],
+    ['father does not use his 9 weeks', simulation({ father: father(insured, { parentalWeeks: 0 }) })],
+    ['father without paternity leave', simulation({ father: father(insured, { paternityLeave: false }) })],
+    ['father not insured', simulation({ father: father(parent('NONE', 0)) })],
+    ['father in KRUS', simulation({ father: father(parent('NONE', 0, 0, true)) })],
+    ['father with blocking debt', simulation({ father: father(parent('SELF_EMPLOYMENT', 0, 62.4)) })],
+    ['mother not insured, father insured', simulation({ mother: parent('NONE', 0) })],
+    ['mother in KRUS', simulation({ mother: parent('NONE', 0, 0, true) })],
+    ['mother with blocking debt', simulation({ mother: parent('SELF_EMPLOYMENT', 0, 62.4) })],
+    ['mother self-employed with voluntary insurance', simulation({ mother: parent('SELF_EMPLOYMENT', 4877.11) })],
+    ['averaged variant but mother not insured', simulation({ variant: 'AVERAGED', mother: parent('NONE', 0) })],
+    ['premature baby: supplementary leave for the mother', simulation({ preterm: preterm(27, 950, 49) })],
+    ['premature baby, mother not insured: supplementary for the father', simulation({ preterm: preterm(30, 1500, 40), mother: parent('NONE', 0) })],
+    ['adoption of a 1-year-old', simulation({ situation: 'ADOPTION', adoption: adoption('ADOPTION', 1) })],
+    ['foster family close to the age limit, father takes 5 weeks', simulation({ situation: 'ADOPTION', adoption: adoption('FOSTER_FAMILY', 6.9), father: father(insured, { maternityWeeksTaken: 5 }) })],
+    ['adoption of a child over the age limit', simulation({ situation: 'ADOPTION', adoption: adoption('ADOPTION', 14) })],
+    ['nobody insured', simulation({ mother: parent('NONE', 0), father: father(parent('NONE', 0)) })],
+  ];
+  const WHO = { mama: 'MOTHER', tata: 'FATHER' };
+  return {
+    source: 'js/calc.js: simulate() (leave split and segments; no work, amounts not compared)',
+    cases: inputs.map(([name, input]) => {
+      const r = C.simulate(mockupSimulation(input));
+      return {
+        name,
+        input,
+        expected: {
+          maternityWeeks: r.M, parentalWeeks: r.R, supplementaryWeeks: r.U,
+          motherMaternityWeeks: r.mMac ?? 0, fatherMaternityWeeks: r.tMac ?? 0,
+          motherParentalWeeks: r.mR ?? 0, fatherParentalWeeks: r.tR ?? 0,
+          averagedVariant: !!r.A,
+          segments: r.segs.map((s) => ({ parent: WHO[s.who], label: s.label, weeks: s.weeks, rate: s.pct, workFactor: s.factor, from: iso(s.from), to: iso(s.to) })),
+          checks: checks(r.checks),
+          notes: r.notes,
+        },
+      };
+    }),
+  };
+};
+
 mkdirSync(outDir, { recursive: true });
 for (const [area, build] of Object.entries(areas)) {
   const file = join(outDir, `${area}.json`);

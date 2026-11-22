@@ -123,6 +123,35 @@ class CalculationsIT {
     }
 
     @Test
+    void simulatesLeaveSplitBetweenParents() throws Exception {
+        mvc.perform(post("/api/v1/calculations/maternity").contentType(MediaType.APPLICATION_JSON).content("""
+                {
+                  "situation": "BIRTH", "startDate": "2026-03-02", "children": 1,
+                  "mother": {"employment": {"base": "5177.40"}},
+                  "father": {"titles": {"employment": {"base": "6000.00"}}, "maternityWeeksTaken": 6}
+                }
+                """)).andExpect(status().isOk()).andExpect(matchesContract())
+                .andExpect(jsonPath("$.maternityWeeks").value(20)).andExpect(jsonPath("$.mother.maternityWeeks").value(14))
+                .andExpect(jsonPath("$.father.maternityWeeks").value(6))
+                .andExpect(jsonPath("$.segments[1].parent").value("FATHER"))
+                .andExpect(jsonPath("$.segments[1].label").value("Część urlopu macierzyńskiego (przejęta)"))
+                .andExpect(jsonPath("$.segments[1].from").value("2026-06-08"))
+                .andExpect(jsonPath("$.segments[2].rate").value(0.7))
+                .andExpect(jsonPath("$.checks[0].level").value("OK"));
+    }
+
+    @Test
+    void rejectsTakenInChildWithoutAdoptionDetails() throws Exception {
+        mvc.perform(post("/api/v1/calculations/maternity").contentType(MediaType.APPLICATION_JSON).content("""
+                {
+                  "situation": "ADOPTION", "startDate": "2026-03-02", "children": 1,
+                  "mother": {}, "father": {"titles": {}}
+                }
+                """)).andExpect(status().isBadRequest()).andExpect(matchesContract())
+                .andExpect(jsonPath("$.code").value("validation-failed"));
+    }
+
+    @Test
     void rejectsEmptyListOfMonths() throws Exception {
         mvc.perform(post("/api/v1/calculations/benefit-base").contentType(MediaType.APPLICATION_JSON)
                 .content("{\"title\": \"EMPLOYMENT\", \"months\": []}")).andExpect(status().isBadRequest())

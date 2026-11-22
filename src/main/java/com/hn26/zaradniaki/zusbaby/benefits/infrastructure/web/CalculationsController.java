@@ -8,6 +8,8 @@ import com.hn26.zaradniaki.zusbaby.api.model.InsuranceResolutionDto;
 import com.hn26.zaradniaki.zusbaby.api.model.InsuranceTitlesRequestDto;
 import com.hn26.zaradniaki.zusbaby.api.model.LeaveDimensionsDto;
 import com.hn26.zaradniaki.zusbaby.api.model.LeaveDimensionsRequestDto;
+import com.hn26.zaradniaki.zusbaby.api.model.MaternitySimulationDto;
+import com.hn26.zaradniaki.zusbaby.api.model.MaternitySimulationRequestDto;
 import com.hn26.zaradniaki.zusbaby.api.model.PregnancySicknessDto;
 import com.hn26.zaradniaki.zusbaby.api.model.PregnancySicknessRequestDto;
 import com.hn26.zaradniaki.zusbaby.benefits.application.query.ResolveInsuranceQuery;
@@ -35,6 +37,11 @@ class CalculationsController implements CalculationsApi {
 
     @Override
     public ResponseEntity<PregnancySicknessDto> calculatePregnancySickness(PregnancySicknessRequestDto request) {
+        return ResponseEntity.ok(mapper.toResponse(pipeline.send(mapper.toQuery(request))));
+    }
+
+    @Override
+    public ResponseEntity<MaternitySimulationDto> simulateMaternityBenefit(MaternitySimulationRequestDto request) {
         return ResponseEntity.ok(mapper.toResponse(pipeline.send(mapper.toQuery(request))));
     }
 

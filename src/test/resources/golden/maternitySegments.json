@@ -1,0 +1,1971 @@
+{
+  "source": "js/calc.js: simulate() (leave split and segments; no work, amounts not compared)",
+  "cases": [
+    {
+      "name": "birth, one child, both parents employed",
+      "input": {
+        "situation": "BIRTH",
+        "startDate": "2026-03-02",
+        "children": 1,
+        "zaZyciem": false,
+        "preterm": null,
+        "adoption": null,
+        "variant": "STANDARD",
+        "mother": {
+          "mainTitle": "EMPLOYMENT",
+          "base": 6000,
+          "blockingDebt": 0,
+          "agriculturalInsurance": false
+        },
+        "father": {
+          "insurance": {
+            "mainTitle": "EMPLOYMENT",
+            "base": 6000,
+            "blockingDebt": 0,
+            "agriculturalInsurance": false
+          },
+          "paternityLeave": true,
+          "parentalWeeks": 9,
+          "maternityWeeksTaken": 0
+        }
+      },
+      "expected": {
+        "maternityWeeks": 20,
+        "parentalWeeks": 41,
+        "supplementaryWeeks": 0,
+        "motherMaternityWeeks": 20,
+        "fatherMaternityWeeks": 0,
+        "motherParentalWeeks": 32,
+        "fatherParentalWeeks": 9,
+        "averagedVariant": false,
+        "segments": [
+          {
+            "parent": "MOTHER",
+            "label": "Urlop macierzyński",
+            "weeks": 20,
+            "rate": 1,
+            "workFactor": 1,
+            "from": "2026-03-02",
+            "to": "2026-07-19"
+          },
+          {
+            "parent": "MOTHER",
+            "label": "Urlop rodzicielski",
+            "weeks": 32,
+            "rate": 0.7,
+            "workFactor": 1,
+            "from": "2026-07-20",
+            "to": "2027-02-28"
+          },
+          {
+            "parent": "FATHER",
+            "label": "Urlop rodzicielski",
+            "weeks": 9,
+            "rate": 0.7,
+            "workFactor": 1,
+            "from": "2027-03-01",
+            "to": "2027-05-02"
+          },
+          {
+            "parent": "FATHER",
+            "label": "Urlop ojcowski",
+            "weeks": 2,
+            "rate": 1,
+            "workFactor": 1,
+            "from": "2026-03-02",
+            "to": "2026-03-15"
+          }
+        ],
+        "checks": [
+          {
+            "level": "OK",
+            "message": "Mama: ubezpieczenie chorobowe obowiązkowe (pracownica) — zasiłek przysługuje (bez okresu wyczekiwania)."
+          },
+          {
+            "level": "OK",
+            "message": "Tata: ubezpieczony — może wziąć urlop ojcowski, swoje 9 tygodni i część urlopu mamy."
+          }
+        ],
+        "notes": []
+      }
+    },
+    {
+      "name": "averaged variant 81.5%",
+      "input": {
+        "situation": "BIRTH",
+        "startDate": "2026-03-02",
+        "children": 1,
+        "zaZyciem": false,
+        "preterm": null,
+        "adoption": null,
+        "variant": "AVERAGED",
+        "mother": {
+          "mainTitle": "EMPLOYMENT",
+          "base": 6000,
+          "blockingDebt": 0,
+          "agriculturalInsurance": false
+        },
+        "father": {
+          "insurance": {
+            "mainTitle": "EMPLOYMENT",
+            "base": 6000,
+            "blockingDebt": 0,
+            "agriculturalInsurance": false
+          },
+          "paternityLeave": true,
+          "parentalWeeks": 9,
+          "maternityWeeksTaken": 0
+        }
+      },
+      "expected": {
+        "maternityWeeks": 20,
+        "parentalWeeks": 41,
+        "supplementaryWeeks": 0,
+        "motherMaternityWeeks": 20,
+        "fatherMaternityWeeks": 0,
+        "motherParentalWeeks": 32,
+        "fatherParentalWeeks": 9,
+        "averagedVariant": true,
+        "segments": [
+          {
+            "parent": "MOTHER",
+            "label": "Urlop macierzyński",
+            "weeks": 20,
+            "rate": 0.815,
+            "workFactor": 1,
+            "from": "2026-03-02",
+            "to": "2026-07-19"
+          },
+          {
+            "parent": "MOTHER",
+            "label": "Urlop rodzicielski",
+            "weeks": 32,
+            "rate": 0.815,
+            "workFactor": 1,
+            "from": "2026-07-20",
+            "to": "2027-02-28"
+          },
+          {
+            "parent": "FATHER",
+            "label": "Urlop rodzicielski",
+            "weeks": 9,
+            "rate": 0.7,
+            "workFactor": 1,
+            "from": "2027-03-01",
+            "to": "2027-05-02"
+          },
+          {
+            "parent": "FATHER",
+            "label": "Urlop ojcowski",
+            "weeks": 2,
+            "rate": 1,
+            "workFactor": 1,
+            "from": "2026-03-02",
+            "to": "2026-03-15"
+          }
+        ],
+        "checks": [
+          {
+            "level": "OK",
+            "message": "Mama: ubezpieczenie chorobowe obowiązkowe (pracownica) — zasiłek przysługuje (bez okresu wyczekiwania)."
+          },
+          {
+            "level": "OK",
+            "message": "Tata: ubezpieczony — może wziąć urlop ojcowski, swoje 9 tygodni i część urlopu mamy."
+          }
+        ],
+        "notes": [
+          "Warunek 81,5%: co najmniej 1 dzień urlopu rodzicielskiego musi przypaść w 1. roku życia dziecka; 9 tygodni taty zawsze 70%."
+        ]
+      }
+    },
+    {
+      "name": "twins",
+      "input": {
+        "situation": "BIRTH",
+        "startDate": "2026-03-02",
+        "children": 2,
+        "zaZyciem": false,
+        "preterm": null,
+        "adoption": null,
+        "variant": "STANDARD",
+        "mother": {
+          "mainTitle": "EMPLOYMENT",
+          "base": 6000,
+          "blockingDebt": 0,
+          "agriculturalInsurance": false
+        },
+        "father": {
+          "insurance": {
+            "mainTitle": "EMPLOYMENT",
+            "base": 6000,
+            "blockingDebt": 0,
+            "agriculturalInsurance": false
+          },
+          "paternityLeave": true,
+          "parentalWeeks": 9,
+          "maternityWeeksTaken": 0
+        }
+      },
+      "expected": {
+        "maternityWeeks": 31,
+        "parentalWeeks": 43,
+        "supplementaryWeeks": 0,
+        "motherMaternityWeeks": 31,
+        "fatherMaternityWeeks": 0,
+        "motherParentalWeeks": 34,
+        "fatherParentalWeeks": 9,
+        "averagedVariant": false,
+        "segments": [
+          {
+            "parent": "MOTHER",
+            "label": "Urlop macierzyński",
+            "weeks": 31,
+            "rate": 1,
+            "workFactor": 1,
+            "from": "2026-03-02",
+            "to": "2026-10-04"
+          },
+          {
+            "parent": "MOTHER",
+            "label": "Urlop rodzicielski",
+            "weeks": 34,
+            "rate": 0.7,
+            "workFactor": 1,
+            "from": "2026-10-05",
+            "to": "2027-05-30"
+          },
+          {
+            "parent": "FATHER",
+            "label": "Urlop rodzicielski",
+            "weeks": 9,
+            "rate": 0.7,
+            "workFactor": 1,
+            "from": "2027-05-31",
+            "to": "2027-08-01"
+          },
+          {
+            "parent": "FATHER",
+            "label": "Urlop ojcowski",
+            "weeks": 2,
+            "rate": 1,
+            "workFactor": 1,
+            "from": "2026-03-02",
+            "to": "2026-03-15"
+          }
+        ],
+        "checks": [
+          {
+            "level": "OK",
+            "message": "Mama: ubezpieczenie chorobowe obowiązkowe (pracownica) — zasiłek przysługuje (bez okresu wyczekiwania)."
+          },
+          {
+            "level": "OK",
+            "message": "Tata: ubezpieczony — może wziąć urlop ojcowski, swoje 9 tygodni i część urlopu mamy."
+          }
+        ],
+        "notes": []
+      }
+    },
+    {
+      "name": "Za zyciem certificate",
+      "input": {
+        "situation": "BIRTH",
+        "startDate": "2026-03-02",
+        "children": 1,
+        "zaZyciem": true,
+        "preterm": null,
+        "adoption": null,
+        "variant": "STANDARD",
+        "mother": {
+          "mainTitle": "EMPLOYMENT",
+          "base": 6000,
+          "blockingDebt": 0,
+          "agriculturalInsurance": false
+        },
+        "father": {
+          "insurance": {
+            "mainTitle": "EMPLOYMENT",
+            "base": 6000,
+            "blockingDebt": 0,
+            "agriculturalInsurance": false
+          },
+          "paternityLeave": true,
+          "parentalWeeks": 9,
+          "maternityWeeksTaken": 0
+        }
+      },
+      "expected": {
+        "maternityWeeks": 20,
+        "parentalWeeks": 65,
+        "supplementaryWeeks": 0,
+        "motherMaternityWeeks": 20,
+        "fatherMaternityWeeks": 0,
+        "motherParentalWeeks": 56,
+        "fatherParentalWeeks": 9,
+        "averagedVariant": false,
+        "segments": [
+          {
+            "parent": "MOTHER",
+            "label": "Urlop macierzyński",
+            "weeks": 20,
+            "rate": 1,
+            "workFactor": 1,
+            "from": "2026-03-02",
+            "to": "2026-07-19"
+          },
+          {
+            "parent": "MOTHER",
+            "label": "Urlop rodzicielski",
+            "weeks": 56,
+            "rate": 0.7,
+            "workFactor": 1,
+            "from": "2026-07-20",
+            "to": "2027-08-15"
+          },
+          {
+            "parent": "FATHER",
+            "label": "Urlop rodzicielski",
+            "weeks": 9,
+            "rate": 0.7,
+            "workFactor": 1,
+            "from": "2027-08-16",
+            "to": "2027-10-17"
+          },
+          {
+            "parent": "FATHER",
+            "label": "Urlop ojcowski",
+            "weeks": 2,
+            "rate": 1,
+            "workFactor": 1,
+            "from": "2026-03-02",
+            "to": "2026-03-15"
+          }
+        ],
+        "checks": [
+          {
+            "level": "OK",
+            "message": "Mama: ubezpieczenie chorobowe obowiązkowe (pracownica) — zasiłek przysługuje (bez okresu wyczekiwania)."
+          },
+          {
+            "level": "OK",
+            "message": "Tata: ubezpieczony — może wziąć urlop ojcowski, swoje 9 tygodni i część urlopu mamy."
+          }
+        ],
+        "notes": []
+      }
+    },
+    {
+      "name": "triplets with Za zyciem, averaged variant",
+      "input": {
+        "situation": "BIRTH",
+        "startDate": "2026-03-02",
+        "children": 3,
+        "zaZyciem": true,
+        "preterm": null,
+        "adoption": null,
+        "variant": "AVERAGED",
+        "mother": {
+          "mainTitle": "EMPLOYMENT",
+          "base": 6000,
+          "blockingDebt": 0,
+          "agriculturalInsurance": false
+        },
+        "father": {
+          "insurance": {
+            "mainTitle": "EMPLOYMENT",
+            "base": 6000,
+            "blockingDebt": 0,
+            "agriculturalInsurance": false
+          },
+          "paternityLeave": true,
+          "parentalWeeks": 9,
+          "maternityWeeksTaken": 0
+        }
+      },
+      "expected": {
+        "maternityWeeks": 33,
+        "parentalWeeks": 67,
+        "supplementaryWeeks": 0,
+        "motherMaternityWeeks": 33,
+        "fatherMaternityWeeks": 0,
+        "motherParentalWeeks": 58,
+        "fatherParentalWeeks": 9,
+        "averagedVariant": true,
+        "segments": [
+          {
+            "parent": "MOTHER",
+            "label": "Urlop macierzyński",
+            "weeks": 33,
+            "rate": 0.815,
+            "workFactor": 1,
+            "from": "2026-03-02",
+            "to": "2026-10-18"
+          },
+          {
+            "parent": "MOTHER",
+            "label": "Urlop rodzicielski",
+            "weeks": 58,
+            "rate": 0.815,
+            "workFactor": 1,
+            "from": "2026-10-19",
+            "to": "2027-11-28"
+          },
+          {
+            "parent": "FATHER",
+            "label": "Urlop rodzicielski",
+            "weeks": 9,
+            "rate": 0.7,
+            "workFactor": 1,
+            "from": "2027-11-29",
+            "to": "2028-01-30"
+          },
+          {
+            "parent": "FATHER",
+            "label": "Urlop ojcowski",
+            "weeks": 2,
+            "rate": 1,
+            "workFactor": 1,
+            "from": "2026-03-02",
+            "to": "2026-03-15"
+          }
+        ],
+        "checks": [
+          {
+            "level": "OK",
+            "message": "Mama: ubezpieczenie chorobowe obowiązkowe (pracownica) — zasiłek przysługuje (bez okresu wyczekiwania)."
+          },
+          {
+            "level": "OK",
+            "message": "Tata: ubezpieczony — może wziąć urlop ojcowski, swoje 9 tygodni i część urlopu mamy."
+          }
+        ],
+        "notes": [
+          "Warunek 81,5%: co najmniej 1 dzień urlopu rodzicielskiego musi przypaść w 1. roku życia dziecka; 9 tygodni taty zawsze 70%."
+        ]
+      }
+    },
+    {
+      "name": "father takes 6 weeks of maternity leave",
+      "input": {
+        "situation": "BIRTH",
+        "startDate": "2026-03-02",
+        "children": 1,
+        "zaZyciem": false,
+        "preterm": null,
+        "adoption": null,
+        "variant": "STANDARD",
+        "mother": {
+          "mainTitle": "EMPLOYMENT",
+          "base": 6000,
+          "blockingDebt": 0,
+          "agriculturalInsurance": false
+        },
+        "father": {
+          "insurance": {
+            "mainTitle": "EMPLOYMENT",
+            "base": 6000,
+            "blockingDebt": 0,
+            "agriculturalInsurance": false
+          },
+          "paternityLeave": true,
+          "parentalWeeks": 9,
+          "maternityWeeksTaken": 6
+        }
+      },
+      "expected": {
+        "maternityWeeks": 20,
+        "parentalWeeks": 41,
+        "supplementaryWeeks": 0,
+        "motherMaternityWeeks": 14,
+        "fatherMaternityWeeks": 6,
+        "motherParentalWeeks": 32,
+        "fatherParentalWeeks": 9,
+        "averagedVariant": false,
+        "segments": [
+          {
+            "parent": "MOTHER",
+            "label": "Urlop macierzyński",
+            "weeks": 14,
+            "rate": 1,
+            "workFactor": 1,
+            "from": "2026-03-02",
+            "to": "2026-06-07"
+          },
+          {
+            "parent": "FATHER",
+            "label": "Część urlopu macierzyńskiego (przejęta)",
+            "weeks": 6,
+            "rate": 1,
+            "workFactor": 1,
+            "from": "2026-06-08",
+            "to": "2026-07-19"
+          },
+          {
+            "parent": "MOTHER",
+            "label": "Urlop rodzicielski",
+            "weeks": 32,
+            "rate": 0.7,
+            "workFactor": 1,
+            "from": "2026-07-20",
+            "to": "2027-02-28"
+          },
+          {
+            "parent": "FATHER",
+            "label": "Urlop rodzicielski",
+            "weeks": 9,
+            "rate": 0.7,
+            "workFactor": 1,
+            "from": "2027-03-01",
+            "to": "2027-05-02"
+          },
+          {
+            "parent": "FATHER",
+            "label": "Urlop ojcowski",
+            "weeks": 2,
+            "rate": 1,
+            "workFactor": 1,
+            "from": "2026-03-02",
+            "to": "2026-03-15"
+          }
+        ],
+        "checks": [
+          {
+            "level": "OK",
+            "message": "Mama: ubezpieczenie chorobowe obowiązkowe (pracownica) — zasiłek przysługuje (bez okresu wyczekiwania)."
+          },
+          {
+            "level": "OK",
+            "message": "Tata: ubezpieczony — może wziąć urlop ojcowski, swoje 9 tygodni i część urlopu mamy."
+          }
+        ],
+        "notes": []
+      }
+    },
+    {
+      "name": "father asks for more maternity leave than allowed",
+      "input": {
+        "situation": "BIRTH",
+        "startDate": "2026-03-02",
+        "children": 1,
+        "zaZyciem": false,
+        "preterm": null,
+        "adoption": null,
+        "variant": "STANDARD",
+        "mother": {
+          "mainTitle": "EMPLOYMENT",
+          "base": 6000,
+          "blockingDebt": 0,
+          "agriculturalInsurance": false
+        },
+        "father": {
+          "insurance": {
+            "mainTitle": "EMPLOYMENT",
+            "base": 6000,
+            "blockingDebt": 0,
+            "agriculturalInsurance": false
+          },
+          "paternityLeave": true,
+          "parentalWeeks": 9,
+          "maternityWeeksTaken": 10
+        }
+      },
+      "expected": {
+        "maternityWeeks": 20,
+        "parentalWeeks": 41,
+        "supplementaryWeeks": 0,
+        "motherMaternityWeeks": 14,
+        "fatherMaternityWeeks": 6,
+        "motherParentalWeeks": 32,
+        "fatherParentalWeeks": 9,
+        "averagedVariant": false,
+        "segments": [
+          {
+            "parent": "MOTHER",
+            "label": "Urlop macierzyński",
+            "weeks": 14,
+            "rate": 1,
+            "workFactor": 1,
+            "from": "2026-03-02",
+            "to": "2026-06-07"
+          },
+          {
+            "parent": "FATHER",
+            "label": "Część urlopu macierzyńskiego (przejęta)",
+            "weeks": 6,
+            "rate": 1,
+            "workFactor": 1,
+            "from": "2026-06-08",
+            "to": "2026-07-19"
+          },
+          {
+            "parent": "MOTHER",
+            "label": "Urlop rodzicielski",
+            "weeks": 32,
+            "rate": 0.7,
+            "workFactor": 1,
+            "from": "2026-07-20",
+            "to": "2027-02-28"
+          },
+          {
+            "parent": "FATHER",
+            "label": "Urlop rodzicielski",
+            "weeks": 9,
+            "rate": 0.7,
+            "workFactor": 1,
+            "from": "2027-03-01",
+            "to": "2027-05-02"
+          },
+          {
+            "parent": "FATHER",
+            "label": "Urlop ojcowski",
+            "weeks": 2,
+            "rate": 1,
+            "workFactor": 1,
+            "from": "2026-03-02",
+            "to": "2026-03-15"
+          }
+        ],
+        "checks": [
+          {
+            "level": "OK",
+            "message": "Mama: ubezpieczenie chorobowe obowiązkowe (pracownica) — zasiłek przysługuje (bez okresu wyczekiwania)."
+          },
+          {
+            "level": "OK",
+            "message": "Tata: ubezpieczony — może wziąć urlop ojcowski, swoje 9 tygodni i część urlopu mamy."
+          }
+        ],
+        "notes": []
+      }
+    },
+    {
+      "name": "father takes 15 weeks of parental leave",
+      "input": {
+        "situation": "BIRTH",
+        "startDate": "2026-03-02",
+        "children": 1,
+        "zaZyciem": false,
+        "preterm": null,
+        "adoption": null,
+        "variant": "STANDARD",
+        "mother": {
+          "mainTitle": "EMPLOYMENT",
+          "base": 6000,
+          "blockingDebt": 0,
+          "agriculturalInsurance": false
+        },
+        "father": {
+          "insurance": {
+            "mainTitle": "EMPLOYMENT",
+            "base": 6000,
+            "blockingDebt": 0,
+            "agriculturalInsurance": false
+          },
+          "paternityLeave": true,
+          "parentalWeeks": 15,
+          "maternityWeeksTaken": 0
+        }
+      },
+      "expected": {
+        "maternityWeeks": 20,
+        "parentalWeeks": 41,
+        "supplementaryWeeks": 0,
+        "motherMaternityWeeks": 20,
+        "fatherMaternityWeeks": 0,
+        "motherParentalWeeks": 26,
+        "fatherParentalWeeks": 15,
+        "averagedVariant": false,
+        "segments": [
+          {
+            "parent": "MOTHER",
+            "label": "Urlop macierzyński",
+            "weeks": 20,
+            "rate": 1,
+            "workFactor": 1,
+            "from": "2026-03-02",
+            "to": "2026-07-19"
+          },
+          {
+            "parent": "MOTHER",
+            "label": "Urlop rodzicielski",
+            "weeks": 26,
+            "rate": 0.7,
+            "workFactor": 1,
+            "from": "2026-07-20",
+            "to": "2027-01-17"
+          },
+          {
+            "parent": "FATHER",
+            "label": "Urlop rodzicielski",
+            "weeks": 9,
+            "rate": 0.7,
+            "workFactor": 1,
+            "from": "2027-01-18",
+            "to": "2027-03-21"
+          },
+          {
+            "parent": "FATHER",
+            "label": "Urlop rodzicielski",
+            "weeks": 6,
+            "rate": 0.7,
+            "workFactor": 1,
+            "from": "2027-03-22",
+            "to": "2027-05-02"
+          },
+          {
+            "parent": "FATHER",
+            "label": "Urlop ojcowski",
+            "weeks": 2,
+            "rate": 1,
+            "workFactor": 1,
+            "from": "2026-03-02",
+            "to": "2026-03-15"
+          }
+        ],
+        "checks": [
+          {
+            "level": "OK",
+            "message": "Mama: ubezpieczenie chorobowe obowiązkowe (pracownica) — zasiłek przysługuje (bez okresu wyczekiwania)."
+          },
+          {
+            "level": "OK",
+            "message": "Tata: ubezpieczony — może wziąć urlop ojcowski, swoje 9 tygodni i część urlopu mamy."
+          }
+        ],
+        "notes": []
+      }
+    },
+    {
+      "name": "father does not use his 9 weeks",
+      "input": {
+        "situation": "BIRTH",
+        "startDate": "2026-03-02",
+        "children": 1,
+        "zaZyciem": false,
+        "preterm": null,
+        "adoption": null,
+        "variant": "STANDARD",
+        "mother": {
+          "mainTitle": "EMPLOYMENT",
+          "base": 6000,
+          "blockingDebt": 0,
+          "agriculturalInsurance": false
+        },
+        "father": {
+          "insurance": {
+            "mainTitle": "EMPLOYMENT",
+            "base": 6000,
+            "blockingDebt": 0,
+            "agriculturalInsurance": false
+          },
+          "paternityLeave": true,
+          "parentalWeeks": 0,
+          "maternityWeeksTaken": 0
+        }
+      },
+      "expected": {
+        "maternityWeeks": 20,
+        "parentalWeeks": 41,
+        "supplementaryWeeks": 0,
+        "motherMaternityWeeks": 20,
+        "fatherMaternityWeeks": 0,
+        "motherParentalWeeks": 32,
+        "fatherParentalWeeks": 0,
+        "averagedVariant": false,
+        "segments": [
+          {
+            "parent": "MOTHER",
+            "label": "Urlop macierzyński",
+            "weeks": 20,
+            "rate": 1,
+            "workFactor": 1,
+            "from": "2026-03-02",
+            "to": "2026-07-19"
+          },
+          {
+            "parent": "MOTHER",
+            "label": "Urlop rodzicielski",
+            "weeks": 32,
+            "rate": 0.7,
+            "workFactor": 1,
+            "from": "2026-07-20",
+            "to": "2027-02-28"
+          },
+          {
+            "parent": "FATHER",
+            "label": "Urlop ojcowski",
+            "weeks": 2,
+            "rate": 1,
+            "workFactor": 1,
+            "from": "2026-03-02",
+            "to": "2026-03-15"
+          }
+        ],
+        "checks": [
+          {
+            "level": "OK",
+            "message": "Mama: ubezpieczenie chorobowe obowiązkowe (pracownica) — zasiłek przysługuje (bez okresu wyczekiwania)."
+          },
+          {
+            "level": "OK",
+            "message": "Tata: ubezpieczony — może wziąć urlop ojcowski, swoje 9 tygodni i część urlopu mamy."
+          }
+        ],
+        "notes": [
+          "Tata wykorzystuje 0 z 9 nieprzenoszalnych tygodni — 9 tyg. przepadnie."
+        ]
+      }
+    },
+    {
+      "name": "father without paternity leave",
+      "input": {
+        "situation": "BIRTH",
+        "startDate": "2026-03-02",
+        "children": 1,
+        "zaZyciem": false,
+        "preterm": null,
+        "adoption": null,
+        "variant": "STANDARD",
+        "mother": {
+          "mainTitle": "EMPLOYMENT",
+          "base": 6000,
+          "blockingDebt": 0,
+          "agriculturalInsurance": false
+        },
+        "father": {
+          "insurance": {
+            "mainTitle": "EMPLOYMENT",
+            "base": 6000,
+            "blockingDebt": 0,
+            "agriculturalInsurance": false
+          },
+          "paternityLeave": false,
+          "parentalWeeks": 9,
+          "maternityWeeksTaken": 0
+        }
+      },
+      "expected": {
+        "maternityWeeks": 20,
+        "parentalWeeks": 41,
+        "supplementaryWeeks": 0,
+        "motherMaternityWeeks": 20,
+        "fatherMaternityWeeks": 0,
+        "motherParentalWeeks": 32,
+        "fatherParentalWeeks": 9,
+        "averagedVariant": false,
+        "segments": [
+          {
+            "parent": "MOTHER",
+            "label": "Urlop macierzyński",
+            "weeks": 20,
+            "rate": 1,
+            "workFactor": 1,
+            "from": "2026-03-02",
+            "to": "2026-07-19"
+          },
+          {
+            "parent": "MOTHER",
+            "label": "Urlop rodzicielski",
+            "weeks": 32,
+            "rate": 0.7,
+            "workFactor": 1,
+            "from": "2026-07-20",
+            "to": "2027-02-28"
+          },
+          {
+            "parent": "FATHER",
+            "label": "Urlop rodzicielski",
+            "weeks": 9,
+            "rate": 0.7,
+            "workFactor": 1,
+            "from": "2027-03-01",
+            "to": "2027-05-02"
+          }
+        ],
+        "checks": [
+          {
+            "level": "OK",
+            "message": "Mama: ubezpieczenie chorobowe obowiązkowe (pracownica) — zasiłek przysługuje (bez okresu wyczekiwania)."
+          },
+          {
+            "level": "OK",
+            "message": "Tata: ubezpieczony — może wziąć urlop ojcowski, swoje 9 tygodni i część urlopu mamy."
+          }
+        ],
+        "notes": []
+      }
+    },
+    {
+      "name": "father not insured",
+      "input": {
+        "situation": "BIRTH",
+        "startDate": "2026-03-02",
+        "children": 1,
+        "zaZyciem": false,
+        "preterm": null,
+        "adoption": null,
+        "variant": "STANDARD",
+        "mother": {
+          "mainTitle": "EMPLOYMENT",
+          "base": 6000,
+          "blockingDebt": 0,
+          "agriculturalInsurance": false
+        },
+        "father": {
+          "insurance": {
+            "mainTitle": "NONE",
+            "base": 0,
+            "blockingDebt": 0,
+            "agriculturalInsurance": false
+          },
+          "paternityLeave": true,
+          "parentalWeeks": 9,
+          "maternityWeeksTaken": 0
+        }
+      },
+      "expected": {
+        "maternityWeeks": 20,
+        "parentalWeeks": 41,
+        "supplementaryWeeks": 0,
+        "motherMaternityWeeks": 20,
+        "fatherMaternityWeeks": 0,
+        "motherParentalWeeks": 32,
+        "fatherParentalWeeks": 0,
+        "averagedVariant": false,
+        "segments": [
+          {
+            "parent": "MOTHER",
+            "label": "Urlop macierzyński",
+            "weeks": 20,
+            "rate": 1,
+            "workFactor": 1,
+            "from": "2026-03-02",
+            "to": "2026-07-19"
+          },
+          {
+            "parent": "MOTHER",
+            "label": "Urlop rodzicielski",
+            "weeks": 32,
+            "rate": 0.7,
+            "workFactor": 1,
+            "from": "2026-07-20",
+            "to": "2027-02-28"
+          }
+        ],
+        "checks": [
+          {
+            "level": "OK",
+            "message": "Mama: ubezpieczenie chorobowe obowiązkowe (pracownica) — zasiłek przysługuje (bez okresu wyczekiwania)."
+          },
+          {
+            "level": "INFO",
+            "message": "Tata: bez ubezpieczenia chorobowego — nie pobiera zasiłku (urlop ojcowski i 9 tygodni przepadają)."
+          }
+        ],
+        "notes": []
+      }
+    },
+    {
+      "name": "father in KRUS",
+      "input": {
+        "situation": "BIRTH",
+        "startDate": "2026-03-02",
+        "children": 1,
+        "zaZyciem": false,
+        "preterm": null,
+        "adoption": null,
+        "variant": "STANDARD",
+        "mother": {
+          "mainTitle": "EMPLOYMENT",
+          "base": 6000,
+          "blockingDebt": 0,
+          "agriculturalInsurance": false
+        },
+        "father": {
+          "insurance": {
+            "mainTitle": "NONE",
+            "base": 0,
+            "blockingDebt": 0,
+            "agriculturalInsurance": true
+          },
+          "paternityLeave": true,
+          "parentalWeeks": 9,
+          "maternityWeeksTaken": 0
+        }
+      },
+      "expected": {
+        "maternityWeeks": 20,
+        "parentalWeeks": 41,
+        "supplementaryWeeks": 0,
+        "motherMaternityWeeks": 20,
+        "fatherMaternityWeeks": 0,
+        "motherParentalWeeks": 32,
+        "fatherParentalWeeks": 0,
+        "averagedVariant": false,
+        "segments": [
+          {
+            "parent": "MOTHER",
+            "label": "Urlop macierzyński",
+            "weeks": 20,
+            "rate": 1,
+            "workFactor": 1,
+            "from": "2026-03-02",
+            "to": "2026-07-19"
+          },
+          {
+            "parent": "MOTHER",
+            "label": "Urlop rodzicielski",
+            "weeks": 32,
+            "rate": 0.7,
+            "workFactor": 1,
+            "from": "2026-07-20",
+            "to": "2027-02-28"
+          }
+        ],
+        "checks": [
+          {
+            "level": "OK",
+            "message": "Mama: ubezpieczenie chorobowe obowiązkowe (pracownica) — zasiłek przysługuje (bez okresu wyczekiwania)."
+          },
+          {
+            "level": "INFO",
+            "message": "Tata: KRUS — zasiłek za urlop ojcowski / rodzicielski nie z ZUS."
+          }
+        ],
+        "notes": []
+      }
+    },
+    {
+      "name": "father with blocking debt",
+      "input": {
+        "situation": "BIRTH",
+        "startDate": "2026-03-02",
+        "children": 1,
+        "zaZyciem": false,
+        "preterm": null,
+        "adoption": null,
+        "variant": "STANDARD",
+        "mother": {
+          "mainTitle": "EMPLOYMENT",
+          "base": 6000,
+          "blockingDebt": 0,
+          "agriculturalInsurance": false
+        },
+        "father": {
+          "insurance": {
+            "mainTitle": "SELF_EMPLOYMENT",
+            "base": 0,
+            "blockingDebt": 62.4,
+            "agriculturalInsurance": false
+          },
+          "paternityLeave": true,
+          "parentalWeeks": 9,
+          "maternityWeeksTaken": 0
+        }
+      },
+      "expected": {
+        "maternityWeeks": 20,
+        "parentalWeeks": 41,
+        "supplementaryWeeks": 0,
+        "motherMaternityWeeks": 20,
+        "fatherMaternityWeeks": 0,
+        "motherParentalWeeks": 32,
+        "fatherParentalWeeks": 0,
+        "averagedVariant": false,
+        "segments": [
+          {
+            "parent": "MOTHER",
+            "label": "Urlop macierzyński",
+            "weeks": 20,
+            "rate": 1,
+            "workFactor": 1,
+            "from": "2026-03-02",
+            "to": "2026-07-19"
+          },
+          {
+            "parent": "MOTHER",
+            "label": "Urlop rodzicielski",
+            "weeks": 32,
+            "rate": 0.7,
+            "workFactor": 1,
+            "from": "2026-07-20",
+            "to": "2027-02-28"
+          }
+        ],
+        "checks": [
+          {
+            "level": "OK",
+            "message": "Mama: ubezpieczenie chorobowe obowiązkowe (pracownica) — zasiłek przysługuje (bez okresu wyczekiwania)."
+          },
+          {
+            "level": "NO",
+            "message": "Tata: zaległość w składkach 62,40 zł — zasiłek wstrzymany do spłaty."
+          }
+        ],
+        "notes": []
+      }
+    },
+    {
+      "name": "mother not insured, father insured",
+      "input": {
+        "situation": "BIRTH",
+        "startDate": "2026-03-02",
+        "children": 1,
+        "zaZyciem": false,
+        "preterm": null,
+        "adoption": null,
+        "variant": "STANDARD",
+        "mother": {
+          "mainTitle": "NONE",
+          "base": 0,
+          "blockingDebt": 0,
+          "agriculturalInsurance": false
+        },
+        "father": {
+          "insurance": {
+            "mainTitle": "EMPLOYMENT",
+            "base": 6000,
+            "blockingDebt": 0,
+            "agriculturalInsurance": false
+          },
+          "paternityLeave": true,
+          "parentalWeeks": 9,
+          "maternityWeeksTaken": 0
+        }
+      },
+      "expected": {
+        "maternityWeeks": 20,
+        "parentalWeeks": 41,
+        "supplementaryWeeks": 0,
+        "motherMaternityWeeks": 0,
+        "fatherMaternityWeeks": 0,
+        "motherParentalWeeks": 0,
+        "fatherParentalWeeks": 9,
+        "averagedVariant": false,
+        "segments": [
+          {
+            "parent": "FATHER",
+            "label": "Urlop rodzicielski",
+            "weeks": 9,
+            "rate": 0.7,
+            "workFactor": 1,
+            "from": "2026-03-02",
+            "to": "2026-05-03"
+          },
+          {
+            "parent": "FATHER",
+            "label": "Urlop ojcowski",
+            "weeks": 2,
+            "rate": 1,
+            "workFactor": 1,
+            "from": "2026-03-02",
+            "to": "2026-03-15"
+          }
+        ],
+        "checks": [
+          {
+            "level": "NO",
+            "message": "Mama: brak ubezpieczenia chorobowego w dniu porodu/przyjęcia — zasiłek macierzyński z ZUS nie przysługuje (zamiast niego: świadczenie rodzicielskie z gminy)."
+          },
+          {
+            "level": "OK",
+            "message": "Tata: ubezpieczony — może wziąć urlop ojcowski, swoje 9 tygodni i część urlopu mamy."
+          }
+        ],
+        "notes": []
+      }
+    },
+    {
+      "name": "mother in KRUS",
+      "input": {
+        "situation": "BIRTH",
+        "startDate": "2026-03-02",
+        "children": 1,
+        "zaZyciem": false,
+        "preterm": null,
+        "adoption": null,
+        "variant": "STANDARD",
+        "mother": {
+          "mainTitle": "NONE",
+          "base": 0,
+          "blockingDebt": 0,
+          "agriculturalInsurance": true
+        },
+        "father": {
+          "insurance": {
+            "mainTitle": "EMPLOYMENT",
+            "base": 6000,
+            "blockingDebt": 0,
+            "agriculturalInsurance": false
+          },
+          "paternityLeave": true,
+          "parentalWeeks": 9,
+          "maternityWeeksTaken": 0
+        }
+      },
+      "expected": {
+        "maternityWeeks": 20,
+        "parentalWeeks": 41,
+        "supplementaryWeeks": 0,
+        "motherMaternityWeeks": 0,
+        "fatherMaternityWeeks": 0,
+        "motherParentalWeeks": 0,
+        "fatherParentalWeeks": 9,
+        "averagedVariant": false,
+        "segments": [
+          {
+            "parent": "FATHER",
+            "label": "Urlop rodzicielski",
+            "weeks": 9,
+            "rate": 0.7,
+            "workFactor": 1,
+            "from": "2026-03-02",
+            "to": "2026-05-03"
+          },
+          {
+            "parent": "FATHER",
+            "label": "Urlop ojcowski",
+            "weeks": 2,
+            "rate": 1,
+            "workFactor": 1,
+            "from": "2026-03-02",
+            "to": "2026-03-15"
+          }
+        ],
+        "checks": [
+          {
+            "level": "NO",
+            "message": "Mama: ubezpieczenie w KRUS — zasiłek macierzyński wypłaca KRUS, nie ZUS."
+          },
+          {
+            "level": "OK",
+            "message": "Tata: ubezpieczony — może wziąć urlop ojcowski, swoje 9 tygodni i część urlopu mamy."
+          }
+        ],
+        "notes": []
+      }
+    },
+    {
+      "name": "mother with blocking debt",
+      "input": {
+        "situation": "BIRTH",
+        "startDate": "2026-03-02",
+        "children": 1,
+        "zaZyciem": false,
+        "preterm": null,
+        "adoption": null,
+        "variant": "STANDARD",
+        "mother": {
+          "mainTitle": "SELF_EMPLOYMENT",
+          "base": 0,
+          "blockingDebt": 62.4,
+          "agriculturalInsurance": false
+        },
+        "father": {
+          "insurance": {
+            "mainTitle": "EMPLOYMENT",
+            "base": 6000,
+            "blockingDebt": 0,
+            "agriculturalInsurance": false
+          },
+          "paternityLeave": true,
+          "parentalWeeks": 9,
+          "maternityWeeksTaken": 0
+        }
+      },
+      "expected": {
+        "maternityWeeks": 20,
+        "parentalWeeks": 41,
+        "supplementaryWeeks": 0,
+        "motherMaternityWeeks": 0,
+        "fatherMaternityWeeks": 0,
+        "motherParentalWeeks": 0,
+        "fatherParentalWeeks": 9,
+        "averagedVariant": false,
+        "segments": [
+          {
+            "parent": "FATHER",
+            "label": "Urlop rodzicielski",
+            "weeks": 9,
+            "rate": 0.7,
+            "workFactor": 1,
+            "from": "2026-03-02",
+            "to": "2026-05-03"
+          },
+          {
+            "parent": "FATHER",
+            "label": "Urlop ojcowski",
+            "weeks": 2,
+            "rate": 1,
+            "workFactor": 1,
+            "from": "2026-03-02",
+            "to": "2026-03-15"
+          }
+        ],
+        "checks": [
+          {
+            "level": "NO",
+            "message": "Mama: zaległość w składkach 62,40 zł > 48,06 zł — zasiłek wstrzymany do spłaty całości; brak spłaty w 6 mies. = utrata prawa."
+          },
+          {
+            "level": "OK",
+            "message": "Tata: ubezpieczony — może wziąć urlop ojcowski, swoje 9 tygodni i część urlopu mamy."
+          }
+        ],
+        "notes": []
+      }
+    },
+    {
+      "name": "mother self-employed with voluntary insurance",
+      "input": {
+        "situation": "BIRTH",
+        "startDate": "2026-03-02",
+        "children": 1,
+        "zaZyciem": false,
+        "preterm": null,
+        "adoption": null,
+        "variant": "STANDARD",
+        "mother": {
+          "mainTitle": "SELF_EMPLOYMENT",
+          "base": 4877.11,
+          "blockingDebt": 0,
+          "agriculturalInsurance": false
+        },
+        "father": {
+          "insurance": {
+            "mainTitle": "EMPLOYMENT",
+            "base": 6000,
+            "blockingDebt": 0,
+            "agriculturalInsurance": false
+          },
+          "paternityLeave": true,
+          "parentalWeeks": 9,
+          "maternityWeeksTaken": 0
+        }
+      },
+      "expected": {
+        "maternityWeeks": 20,
+        "parentalWeeks": 41,
+        "supplementaryWeeks": 0,
+        "motherMaternityWeeks": 20,
+        "fatherMaternityWeeks": 0,
+        "motherParentalWeeks": 32,
+        "fatherParentalWeeks": 9,
+        "averagedVariant": false,
+        "segments": [
+          {
+            "parent": "MOTHER",
+            "label": "Urlop macierzyński",
+            "weeks": 20,
+            "rate": 1,
+            "workFactor": 1,
+            "from": "2026-03-02",
+            "to": "2026-07-19"
+          },
+          {
+            "parent": "MOTHER",
+            "label": "Urlop rodzicielski",
+            "weeks": 32,
+            "rate": 0.7,
+            "workFactor": 1,
+            "from": "2026-07-20",
+            "to": "2027-02-28"
+          },
+          {
+            "parent": "FATHER",
+            "label": "Urlop rodzicielski",
+            "weeks": 9,
+            "rate": 0.7,
+            "workFactor": 1,
+            "from": "2027-03-01",
+            "to": "2027-05-02"
+          },
+          {
+            "parent": "FATHER",
+            "label": "Urlop ojcowski",
+            "weeks": 2,
+            "rate": 1,
+            "workFactor": 1,
+            "from": "2026-03-02",
+            "to": "2026-03-15"
+          }
+        ],
+        "checks": [
+          {
+            "level": "OK",
+            "message": "Mama: ubezpieczenie chorobowe dobrowolne — zasiłek przysługuje (bez okresu wyczekiwania)."
+          },
+          {
+            "level": "OK",
+            "message": "Tata: ubezpieczony — może wziąć urlop ojcowski, swoje 9 tygodni i część urlopu mamy."
+          }
+        ],
+        "notes": []
+      }
+    },
+    {
+      "name": "averaged variant but mother not insured",
+      "input": {
+        "situation": "BIRTH",
+        "startDate": "2026-03-02",
+        "children": 1,
+        "zaZyciem": false,
+        "preterm": null,
+        "adoption": null,
+        "variant": "AVERAGED",
+        "mother": {
+          "mainTitle": "NONE",
+          "base": 0,
+          "blockingDebt": 0,
+          "agriculturalInsurance": false
+        },
+        "father": {
+          "insurance": {
+            "mainTitle": "EMPLOYMENT",
+            "base": 6000,
+            "blockingDebt": 0,
+            "agriculturalInsurance": false
+          },
+          "paternityLeave": true,
+          "parentalWeeks": 9,
+          "maternityWeeksTaken": 0
+        }
+      },
+      "expected": {
+        "maternityWeeks": 20,
+        "parentalWeeks": 41,
+        "supplementaryWeeks": 0,
+        "motherMaternityWeeks": 0,
+        "fatherMaternityWeeks": 0,
+        "motherParentalWeeks": 0,
+        "fatherParentalWeeks": 9,
+        "averagedVariant": false,
+        "segments": [
+          {
+            "parent": "FATHER",
+            "label": "Urlop rodzicielski",
+            "weeks": 9,
+            "rate": 0.7,
+            "workFactor": 1,
+            "from": "2026-03-02",
+            "to": "2026-05-03"
+          },
+          {
+            "parent": "FATHER",
+            "label": "Urlop ojcowski",
+            "weeks": 2,
+            "rate": 1,
+            "workFactor": 1,
+            "from": "2026-03-02",
+            "to": "2026-03-15"
+          }
+        ],
+        "checks": [
+          {
+            "level": "NO",
+            "message": "Mama: brak ubezpieczenia chorobowego w dniu porodu/przyjęcia — zasiłek macierzyński z ZUS nie przysługuje (zamiast niego: świadczenie rodzicielskie z gminy)."
+          },
+          {
+            "level": "OK",
+            "message": "Tata: ubezpieczony — może wziąć urlop ojcowski, swoje 9 tygodni i część urlopu mamy."
+          }
+        ],
+        "notes": [
+          "Wariant 81,5% wymaga wniosku ubezpieczonej mamy — liczymy wariant 100% + 70%."
+        ]
+      }
+    },
+    {
+      "name": "premature baby: supplementary leave for the mother",
+      "input": {
+        "situation": "BIRTH",
+        "startDate": "2026-03-02",
+        "children": 1,
+        "zaZyciem": false,
+        "preterm": {
+          "gestationWeek": 27,
+          "birthWeightGrams": 950,
+          "hospitalDays": 49,
+          "hospitalStartDay": 5
+        },
+        "adoption": null,
+        "variant": "STANDARD",
+        "mother": {
+          "mainTitle": "EMPLOYMENT",
+          "base": 6000,
+          "blockingDebt": 0,
+          "agriculturalInsurance": false
+        },
+        "father": {
+          "insurance": {
+            "mainTitle": "EMPLOYMENT",
+            "base": 6000,
+            "blockingDebt": 0,
+            "agriculturalInsurance": false
+          },
+          "paternityLeave": true,
+          "parentalWeeks": 9,
+          "maternityWeeksTaken": 0
+        }
+      },
+      "expected": {
+        "maternityWeeks": 20,
+        "parentalWeeks": 41,
+        "supplementaryWeeks": 7,
+        "motherMaternityWeeks": 20,
+        "fatherMaternityWeeks": 0,
+        "motherParentalWeeks": 32,
+        "fatherParentalWeeks": 9,
+        "averagedVariant": false,
+        "segments": [
+          {
+            "parent": "MOTHER",
+            "label": "Urlop macierzyński",
+            "weeks": 20,
+            "rate": 1,
+            "workFactor": 1,
+            "from": "2026-03-02",
+            "to": "2026-07-19"
+          },
+          {
+            "parent": "MOTHER",
+            "label": "Uzupełniający urlop macierzyński",
+            "weeks": 7,
+            "rate": 1,
+            "workFactor": 1,
+            "from": "2026-07-20",
+            "to": "2026-09-06"
+          },
+          {
+            "parent": "MOTHER",
+            "label": "Urlop rodzicielski",
+            "weeks": 32,
+            "rate": 0.7,
+            "workFactor": 1,
+            "from": "2026-09-07",
+            "to": "2027-04-18"
+          },
+          {
+            "parent": "FATHER",
+            "label": "Urlop rodzicielski",
+            "weeks": 9,
+            "rate": 0.7,
+            "workFactor": 1,
+            "from": "2027-04-19",
+            "to": "2027-06-20"
+          },
+          {
+            "parent": "FATHER",
+            "label": "Urlop ojcowski",
+            "weeks": 2,
+            "rate": 1,
+            "workFactor": 1,
+            "from": "2026-03-02",
+            "to": "2026-03-15"
+          }
+        ],
+        "checks": [
+          {
+            "level": "OK",
+            "message": "Mama: ubezpieczenie chorobowe obowiązkowe (pracownica) — zasiłek przysługuje (bez okresu wyczekiwania)."
+          },
+          {
+            "level": "OK",
+            "message": "Tata: ubezpieczony — może wziąć urlop ojcowski, swoje 9 tygodni i część urlopu mamy."
+          }
+        ],
+        "notes": []
+      }
+    },
+    {
+      "name": "premature baby, mother not insured: supplementary for the father",
+      "input": {
+        "situation": "BIRTH",
+        "startDate": "2026-03-02",
+        "children": 1,
+        "zaZyciem": false,
+        "preterm": {
+          "gestationWeek": 30,
+          "birthWeightGrams": 1500,
+          "hospitalDays": 40,
+          "hospitalStartDay": 5
+        },
+        "adoption": null,
+        "variant": "STANDARD",
+        "mother": {
+          "mainTitle": "NONE",
+          "base": 0,
+          "blockingDebt": 0,
+          "agriculturalInsurance": false
+        },
+        "father": {
+          "insurance": {
+            "mainTitle": "EMPLOYMENT",
+            "base": 6000,
+            "blockingDebt": 0,
+            "agriculturalInsurance": false
+          },
+          "paternityLeave": true,
+          "parentalWeeks": 9,
+          "maternityWeeksTaken": 0
+        }
+      },
+      "expected": {
+        "maternityWeeks": 20,
+        "parentalWeeks": 41,
+        "supplementaryWeeks": 6,
+        "motherMaternityWeeks": 0,
+        "fatherMaternityWeeks": 0,
+        "motherParentalWeeks": 0,
+        "fatherParentalWeeks": 9,
+        "averagedVariant": false,
+        "segments": [
+          {
+            "parent": "FATHER",
+            "label": "Uzupełniający urlop macierzyński",
+            "weeks": 6,
+            "rate": 1,
+            "workFactor": 1,
+            "from": "2026-03-02",
+            "to": "2026-04-12"
+          },
+          {
+            "parent": "FATHER",
+            "label": "Urlop rodzicielski",
+            "weeks": 9,
+            "rate": 0.7,
+            "workFactor": 1,
+            "from": "2026-04-13",
+            "to": "2026-06-14"
+          },
+          {
+            "parent": "FATHER",
+            "label": "Urlop ojcowski",
+            "weeks": 2,
+            "rate": 1,
+            "workFactor": 1,
+            "from": "2026-03-02",
+            "to": "2026-03-15"
+          }
+        ],
+        "checks": [
+          {
+            "level": "NO",
+            "message": "Mama: brak ubezpieczenia chorobowego w dniu porodu/przyjęcia — zasiłek macierzyński z ZUS nie przysługuje (zamiast niego: świadczenie rodzicielskie z gminy)."
+          },
+          {
+            "level": "OK",
+            "message": "Tata: ubezpieczony — może wziąć urlop ojcowski, swoje 9 tygodni i część urlopu mamy."
+          }
+        ],
+        "notes": []
+      }
+    },
+    {
+      "name": "adoption of a 1-year-old",
+      "input": {
+        "situation": "ADOPTION",
+        "startDate": "2026-03-02",
+        "children": 1,
+        "zaZyciem": false,
+        "preterm": null,
+        "adoption": {
+          "type": "ADOPTION",
+          "childAge": 1,
+          "deferredSchool": false
+        },
+        "variant": "STANDARD",
+        "mother": {
+          "mainTitle": "EMPLOYMENT",
+          "base": 6000,
+          "blockingDebt": 0,
+          "agriculturalInsurance": false
+        },
+        "father": {
+          "insurance": {
+            "mainTitle": "EMPLOYMENT",
+            "base": 6000,
+            "blockingDebt": 0,
+            "agriculturalInsurance": false
+          },
+          "paternityLeave": true,
+          "parentalWeeks": 9,
+          "maternityWeeksTaken": 0
+        }
+      },
+      "expected": {
+        "maternityWeeks": 20,
+        "parentalWeeks": 41,
+        "supplementaryWeeks": 0,
+        "motherMaternityWeeks": 20,
+        "fatherMaternityWeeks": 0,
+        "motherParentalWeeks": 32,
+        "fatherParentalWeeks": 9,
+        "averagedVariant": false,
+        "segments": [
+          {
+            "parent": "MOTHER",
+            "label": "Urlop na warunkach macierzyńskiego",
+            "weeks": 20,
+            "rate": 1,
+            "workFactor": 1,
+            "from": "2026-03-02",
+            "to": "2026-07-19"
+          },
+          {
+            "parent": "MOTHER",
+            "label": "Urlop rodzicielski",
+            "weeks": 32,
+            "rate": 0.7,
+            "workFactor": 1,
+            "from": "2026-07-20",
+            "to": "2027-02-28"
+          },
+          {
+            "parent": "FATHER",
+            "label": "Urlop rodzicielski",
+            "weeks": 9,
+            "rate": 0.7,
+            "workFactor": 1,
+            "from": "2027-03-01",
+            "to": "2027-05-02"
+          },
+          {
+            "parent": "FATHER",
+            "label": "Urlop ojcowski",
+            "weeks": 2,
+            "rate": 1,
+            "workFactor": 1,
+            "from": "2026-03-02",
+            "to": "2026-03-15"
+          }
+        ],
+        "checks": [
+          {
+            "level": "OK",
+            "message": "Mama: ubezpieczenie chorobowe obowiązkowe (pracownica) — zasiłek przysługuje (bez okresu wyczekiwania)."
+          },
+          {
+            "level": "OK",
+            "message": "Tata: ubezpieczony — może wziąć urlop ojcowski, swoje 9 tygodni i część urlopu mamy."
+          }
+        ],
+        "notes": [
+          "Pełny wymiar: 20 tyg. + rodzicielski 41 tyg. (limit wieku: 14 lat)."
+        ]
+      }
+    },
+    {
+      "name": "foster family close to the age limit, father takes 5 weeks",
+      "input": {
+        "situation": "ADOPTION",
+        "startDate": "2026-03-02",
+        "children": 1,
+        "zaZyciem": false,
+        "preterm": null,
+        "adoption": {
+          "type": "FOSTER_FAMILY",
+          "childAge": 6.9,
+          "deferredSchool": false
+        },
+        "variant": "STANDARD",
+        "mother": {
+          "mainTitle": "EMPLOYMENT",
+          "base": 6000,
+          "blockingDebt": 0,
+          "agriculturalInsurance": false
+        },
+        "father": {
+          "insurance": {
+            "mainTitle": "EMPLOYMENT",
+            "base": 6000,
+            "blockingDebt": 0,
+            "agriculturalInsurance": false
+          },
+          "paternityLeave": true,
+          "parentalWeeks": 9,
+          "maternityWeeksTaken": 5
+        }
+      },
+      "expected": {
+        "maternityWeeks": 9,
+        "parentalWeeks": 38,
+        "supplementaryWeeks": 0,
+        "motherMaternityWeeks": 4,
+        "fatherMaternityWeeks": 5,
+        "motherParentalWeeks": 29,
+        "fatherParentalWeeks": 9,
+        "averagedVariant": false,
+        "segments": [
+          {
+            "parent": "MOTHER",
+            "label": "Urlop na warunkach macierzyńskiego",
+            "weeks": 4,
+            "rate": 1,
+            "workFactor": 1,
+            "from": "2026-03-02",
+            "to": "2026-03-29"
+          },
+          {
+            "parent": "FATHER",
+            "label": "Część urlopu macierzyńskiego (przejęta)",
+            "weeks": 5,
+            "rate": 1,
+            "workFactor": 1,
+            "from": "2026-03-30",
+            "to": "2026-05-03"
+          },
+          {
+            "parent": "MOTHER",
+            "label": "Urlop rodzicielski",
+            "weeks": 29,
+            "rate": 0.7,
+            "workFactor": 1,
+            "from": "2026-05-04",
+            "to": "2026-11-22"
+          },
+          {
+            "parent": "FATHER",
+            "label": "Urlop rodzicielski",
+            "weeks": 9,
+            "rate": 0.7,
+            "workFactor": 1,
+            "from": "2026-11-23",
+            "to": "2027-01-24"
+          },
+          {
+            "parent": "FATHER",
+            "label": "Urlop ojcowski",
+            "weeks": 2,
+            "rate": 1,
+            "workFactor": 1,
+            "from": "2026-03-02",
+            "to": "2026-03-15"
+          }
+        ],
+        "checks": [
+          {
+            "level": "OK",
+            "message": "Mama: ubezpieczenie chorobowe obowiązkowe (pracownica) — zasiłek przysługuje (bez okresu wyczekiwania)."
+          },
+          {
+            "level": "OK",
+            "message": "Tata: ubezpieczony — może wziąć urlop ojcowski, swoje 9 tygodni i część urlopu mamy."
+          }
+        ],
+        "notes": [
+          "Dziecko zbliża się do limitu wieku (7 lat): urlop trwa do tego wieku, ale nie krócej niż 9 tyg.; rodzicielski 38 tyg. (art. 183 § 3 i § 4 KP)."
+        ]
+      }
+    },
+    {
+      "name": "adoption of a child over the age limit",
+      "input": {
+        "situation": "ADOPTION",
+        "startDate": "2026-03-02",
+        "children": 1,
+        "zaZyciem": false,
+        "preterm": null,
+        "adoption": {
+          "type": "ADOPTION",
+          "childAge": 14,
+          "deferredSchool": false
+        },
+        "variant": "STANDARD",
+        "mother": {
+          "mainTitle": "EMPLOYMENT",
+          "base": 6000,
+          "blockingDebt": 0,
+          "agriculturalInsurance": false
+        },
+        "father": {
+          "insurance": {
+            "mainTitle": "EMPLOYMENT",
+            "base": 6000,
+            "blockingDebt": 0,
+            "agriculturalInsurance": false
+          },
+          "paternityLeave": true,
+          "parentalWeeks": 9,
+          "maternityWeeksTaken": 0
+        }
+      },
+      "expected": {
+        "maternityWeeks": 0,
+        "parentalWeeks": 0,
+        "supplementaryWeeks": 0,
+        "motherMaternityWeeks": 0,
+        "fatherMaternityWeeks": 0,
+        "motherParentalWeeks": 0,
+        "fatherParentalWeeks": 0,
+        "averagedVariant": false,
+        "segments": [],
+        "checks": [
+          {
+            "level": "OK",
+            "message": "Mama: ubezpieczenie chorobowe obowiązkowe (pracownica) — zasiłek przysługuje (bez okresu wyczekiwania)."
+          },
+          {
+            "level": "OK",
+            "message": "Tata: ubezpieczony — może wziąć urlop ojcowski, swoje 9 tygodni i część urlopu mamy."
+          }
+        ],
+        "notes": [
+          "Dziecko ma już 14 lat — urlop na warunkach urlopu macierzyńskiego nie przysługuje."
+        ]
+      }
+    },
+    {
+      "name": "nobody insured",
+      "input": {
+        "situation": "BIRTH",
+        "startDate": "2026-03-02",
+        "children": 1,
+        "zaZyciem": false,
+        "preterm": null,
+        "adoption": null,
+        "variant": "STANDARD",
+        "mother": {
+          "mainTitle": "NONE",
+          "base": 0,
+          "blockingDebt": 0,
+          "agriculturalInsurance": false
+        },
+        "father": {
+          "insurance": {
+            "mainTitle": "NONE",
+            "base": 0,
+            "blockingDebt": 0,
+            "agriculturalInsurance": false
+          },
+          "paternityLeave": true,
+          "parentalWeeks": 9,
+          "maternityWeeksTaken": 0
+        }
+      },
+      "expected": {
+        "maternityWeeks": 20,
+        "parentalWeeks": 41,
+        "supplementaryWeeks": 0,
+        "motherMaternityWeeks": 0,
+        "fatherMaternityWeeks": 0,
+        "motherParentalWeeks": 0,
+        "fatherParentalWeeks": 0,
+        "averagedVariant": false,
+        "segments": [],
+        "checks": [
+          {
+            "level": "NO",
+            "message": "Mama: brak ubezpieczenia chorobowego w dniu porodu/przyjęcia — zasiłek macierzyński z ZUS nie przysługuje (zamiast niego: świadczenie rodzicielskie z gminy)."
+          },
+          {
+            "level": "INFO",
+            "message": "Tata: bez ubezpieczenia chorobowego — nie pobiera zasiłku (urlop ojcowski i 9 tygodni przepadają)."
+          }
+        ],
+        "notes": []
+      }
+    }
+  ]
+}

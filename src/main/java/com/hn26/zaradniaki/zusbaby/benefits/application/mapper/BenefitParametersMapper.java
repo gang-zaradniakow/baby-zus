@@ -2,6 +2,7 @@ package com.hn26.zaradniaki.zusbaby.benefits.application.mapper;
 
 import com.hn26.zaradniaki.zusbaby.benefits.domain.BenefitParameters;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.LeaveParameters;
+import com.hn26.zaradniaki.zusbaby.benefits.domain.MaternityParameters;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.SicknessParameters;
 import com.hn26.zaradniaki.zusbaby.legalrules.api.model.ParameterKey;
 import com.hn26.zaradniaki.zusbaby.legalrules.application.dto.LegalParametersDto;
@@ -54,6 +55,21 @@ public class BenefitParametersMapper {
                 new Rate(value(parameters, ParameterKey.PREGNANCY_REHABILITATION_RATE)),
                 whole(parameters, ParameterKey.REHABILITATION_MAX_MONTHS),
                 new Rate(value(parameters, ParameterKey.INCOME_TAX_ADVANCE_RATE)));
+    }
+
+    public MaternityParameters toMaternityParameters(LegalParametersDto parameters) {
+        return new MaternityParameters(rate(parameters, ParameterKey.MATERNITY_LEAVE_RATE),
+                rate(parameters, ParameterKey.PARENTAL_LEAVE_RATE), rate(parameters, ParameterKey.AVERAGED_RATE),
+                rate(parameters, ParameterKey.SUPPLEMENTARY_LEAVE_RATE),
+                rate(parameters, ParameterKey.PATERNITY_LEAVE_RATE),
+                weeks(parameters, ParameterKey.NON_TRANSFERABLE_PARENTAL_WEEKS),
+                weeks(parameters, ParameterKey.PATERNITY_LEAVE_WEEKS),
+                weeks(parameters, ParameterKey.MOTHER_ONLY_MATERNITY_WEEKS),
+                new Money(value(parameters, ParameterKey.DEBT_THRESHOLD)));
+    }
+
+    private static Rate rate(LegalParametersDto parameters, ParameterKey key) {
+        return new Rate(value(parameters, key));
     }
 
     private static int whole(LegalParametersDto parameters, ParameterKey key) {

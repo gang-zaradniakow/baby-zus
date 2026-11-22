@@ -24,6 +24,10 @@ tags:
     description: Statutory deadlines counted with the Polish calendar of public holidays.
   - name: Calculations
     description: Benefit calculations (insurance titles, benefit base, sickness and maternity benefits).
+  - name: Identity
+    description: |
+      Mocked login with mObywatel (authorization-code flow like OIDC), tokens and the logged-in user. The mock login
+      page itself (`/api/v1/mock/mobywatel/login`, HTML) is the identity provider's screen and is not part of this API.
   - name: Guide
     description: Personal guide for parents (timeline of deadlines, alerts).
   - name: Knowledge
@@ -276,6 +280,143 @@ paths:
         default:
           $ref: '#/components/responses/Problem'
 
+  /api/v1/auth/mobywatel/authorize:
+    get:
+      tags: [Identity]
+      operationId: authorizeWithMObywatel
+      summary: Start the mObywatel login
+      description: |
+        Redirects the browser to the mock mObywatel login page. After choosing a persona (or a new user) the page
+        redirects back to `redirect_uri` with `code` and the unchanged `state`; the frontend checks `state` and
+        exchanges `code` at `/auth/token`. `redirect_uri` must be on the configured list.
+      parameters:
+        - name: redirect_uri
+          in: query
+          required: true
+          schema:
+            type: string
+          example: http://localhost:8765/
+        - name: state
+          in: query
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 200
+          description: Opaque value of the frontend, returned unchanged.
+      responses:
+        '302':
+          description: Redirect to the mock login page.
+          headers:
+            Location:
+              schema:
+                type: string
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/auth/token:
+    post:
+      tags: [Identity]
+      operationId: exchangeAuthorizationCode
+      summary: Exchange the login code for tokens
+      description: |
+        The code is valid once, for 2 minutes, and only with the `redirectUri` it was issued for. The first login of
+        an identity creates the user account.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRequest'
+      responses:
+        '200':
+          description: Access and refresh token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tokens'
+        '400':
+          description: Invalid, used or expired code (`code` = `invalid-grant`), or invalid request.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/auth/refresh:
+    post:
+      tags: [Identity]
+      operationId: refreshTokens
+      summary: New tokens for a refresh token
+      description: The refresh token is rotated, the old one stops working.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshRequest'
+      responses:
+        '200':
+          description: New access and refresh token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tokens'
+        '400':
+          description: Unknown, revoked or expired refresh token (`code` = `invalid-grant`), or invalid request.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/auth/logout:
+    post:
+      tags: [Identity]
+      operationId: logout
+      summary: Log out
+      description: Revokes the refresh token. Logging out with an unknown or revoked token also succeeds.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshRequest'
+      responses:
+        '204':
+          description: Logged out.
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/me:
+    get:
+      tags: [Identity]
+      operationId: getCurrentUser
+      summary: The logged-in user
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: The user of the access token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrentUser'
+        '401':
+          description: Missing, invalid or expired access token (`code` = `unauthorized`).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        default:
+          $ref: '#/components/responses/Problem'
+
   /api/v1/guide/preview:
     post:
       tags: [Guide]
@@ -443,6 +584,12 @@ paths:
           $ref: '#/components/responses/Problem'
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access token from `/auth/token` or `/auth/refresh`.
   responses:
     ValidationProblem:
       description: Invalid request (`code` = `validation-failed` or `bad-request`).
@@ -1013,6 +1160,66 @@ components:
           $ref: '#/components/schemas/Money'
         total:
           $ref: '#/components/schemas/Money'
+
+    TokenRequest:
+      type: object
+      required: [code, redirectUri]
+      properties:
+        code:
+          type: string
+          minLength: 1
+        redirectUri:
+          type: string
+          minLength: 1
+          description: The same `redirect_uri` the login was started with.
+
+    RefreshRequest:
+      type: object
+      required: [refreshToken]
+      properties:
+        refreshToken:
+          type: string
+          minLength: 1
+
+    Tokens:
+      type: object
+      required: [accessToken, tokenType, expiresIn, refreshToken, refreshExpiresIn]
+      properties:
+        accessToken:
+          type: string
+          description: 'JWT for the `Authorization: Bearer` header.'
+        tokenType:
+          type: string
+          enum: [Bearer]
+        expiresIn:
+          type: integer
+          format: int64
+          description: Seconds until the access token expires.
+        refreshToken:
+          type: string
+        refreshExpiresIn:
+          type: integer
+          format: int64
+          description: Seconds until the refresh token expires.
+
+    CurrentUser:
+      type: object
+      required: [id, roles]
+      properties:
+        id:
+          type: string
+          format: uuid
+        personaId:
+          type: string
+          description: Demo persona of the identity (e.g. `kasia`); left out for a new user.
+        displayName:
+          type: string
+          description: First name, when known.
+        roles:
+          type: array
+          items:
+            type: string
+            enum: [USER]
 
     GuideSurvey:
       type: object

@@ -3,6 +3,7 @@ package com.hn26.zaradniaki.zusbaby.shared.web;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.hn26.zaradniaki.zusbaby.shared.domain.DomainException;
+import com.hn26.zaradniaki.zusbaby.shared.domain.InvalidRequestException;
 import com.hn26.zaradniaki.zusbaby.shared.domain.NotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
@@ -10,6 +11,7 @@ import jakarta.validation.Validation;
 import jakarta.validation.constraints.NotBlank;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
@@ -20,12 +22,22 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+// only the error handling is tested here, not the security rules (see IdentityIT)
 @WebMvcTest(controllers = GlobalExceptionHandlerTest.FailingController.class)
+@AutoConfigureMockMvc(addFilters = false)
 @Import(GlobalExceptionHandlerTest.FailingController.class)
 class GlobalExceptionHandlerTest {
 
     @Autowired
     private MockMvcTester mvc;
+
+    @Test
+    void mapsInvalidRequestTo400WithGentleMessage() {
+        assertThat(mvc.get().uri("/test/invalid-request")).hasStatus(HttpStatus.BAD_REQUEST).bodyJson()
+                .hasPathSatisfying("$.code", code -> code.assertThat().isEqualTo("invalid-grant"))
+                .hasPathSatisfying("$.gentleMessage",
+                        message -> message.assertThat().isEqualTo("Logowanie wygasło. Zaloguj się jeszcze raz."));
+    }
 
     @Test
     void mapsDomainExceptionTo422WithGentleMessage() {
@@ -90,6 +102,11 @@ class GlobalExceptionHandlerTest {
         @GetMapping("/test/domain")
         void domain() {
             throw new DomainException("debt-blocks-benefit", "Zaległość w składkach wstrzymuje zasiłek.");
+        }
+
+        @GetMapping("/test/invalid-request")
+        void invalidRequest() {
+            throw new InvalidRequestException("invalid-grant", "Logowanie wygasło. Zaloguj się jeszcze raz.");
         }
 
         @GetMapping("/test/missing")

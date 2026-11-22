@@ -1,6 +1,7 @@
 package com.hn26.zaradniaki.zusbaby.shared.web;
 
 import com.hn26.zaradniaki.zusbaby.shared.domain.DomainException;
+import com.hn26.zaradniaki.zusbaby.shared.domain.InvalidRequestException;
 import com.hn26.zaradniaki.zusbaby.shared.domain.NotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import java.util.Map;
@@ -41,6 +42,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(NotFoundException.class)
     ProblemDetail handleNotFound(NotFoundException ex) {
         return problem(HttpStatus.NOT_FOUND, ex.code(), ex.gentleMessage());
+    }
+
+    @ExceptionHandler(InvalidRequestException.class)
+    ProblemDetail handleInvalidRequest(InvalidRequestException ex) {
+        return problem(HttpStatus.BAD_REQUEST, ex.code(), ex.gentleMessage());
     }
 
     @ExceptionHandler(DomainException.class)

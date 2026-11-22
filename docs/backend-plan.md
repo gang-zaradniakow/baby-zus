@@ -454,13 +454,13 @@ Od PR 05 każdy PR z endpointem zaczyna się od wpisu w `openapi.yaml` (patrz 2.
 ### Faza 4 — logowanie i eZUS
 | # | PR | Zawartość | Testy | P |
 |---|---|---|---|---|
-| 17 | Mock mObywatel + JWT | Przepływ authorize → strona mock → code → token, refresh, logout, `GET /me`, persony jako tożsamości, `UserRegistered` | IT pełnego przepływu (code jednorazowy, wygasły, zły `state`) | P0 |
+| 17 | Mock mObywatel + JWT | Przepływ authorize → strona mock (Thymeleaf, `/api/v1/mock/mobywatel/login`: 6 person + „Nowy użytkownik”) → code (jednorazowy, 2 min) → `POST /auth/token` (JWT HS256 15 min + refresh 30 dni z rotacją), `POST /auth/refresh`, `POST /auth/logout`, `GET /me`; `UserAccount` przy pierwszym logowaniu; Spring Security: publiczne wszystko poza `/me/**`. Zdarzenie `UserRegistered` dochodzi w PR 19 razem z jego odbiorcą | IT pełnego przepływu (code jednorazowy, wygasły, zły `redirect_uri`, rotacja i unieważnienie refresh tokenu, wygasły access token) | P0 |
 | 18 | Mock eZUS | `EzusGateway` + mock, przegląd ubezpieczenia, e-ZLA, saldo, prefill kalkulatora (MapStruct → `InsuranceTitles`) | Jednostkowe mapowania, IT z JWT | P0 |
 
 ### Faza 5 — profil zalogowanego
 | # | PR | Zawartość | Testy | P |
 |---|---|---|---|---|
-| 19 | Profil i dzieci | `ParentProfile`, `Child`, encje i mapery, bootstrap z persony po `UserRegistered`, `CompleteSurvey`, `AddChild`, `SelectActiveChild`, `GET /me/guide` | Jednostkowe agregatów, `@ApplicationModuleTest`, IT | P0 |
+| 19 | Profil i dzieci | `ParentProfile`, `Child`, encje i mapery, zdarzenie `UserRegistered` (identity) i bootstrap z persony po nim, `CompleteSurvey`, `AddChild`, `SelectActiveChild`, `GET /me/guide` | Jednostkowe agregatów, `@ApplicationModuleTest`, IT | P0 |
 | 20 | Zadania i tryb wsparcia | `CompleteTask`, `EnterSupportMode`, `ExitSupportMode`, demo `RegisterBirth`, `RegisterChildDeath` | Jednostkowe, IT | P1 |
 
 ### Faza 6 — korespondencja i wnioski

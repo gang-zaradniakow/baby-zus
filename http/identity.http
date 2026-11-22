@@ -1,0 +1,24 @@
+### 1. Start the login (open in a browser: redirects to the mock mObywatel page)
+GET {{baseUrl}}/api/v1/auth/mobywatel/authorize?redirect_uri=http://localhost:8765/&state=demo-state
+
+### 2. Exchange the code from the redirect (…/?code=…&state=demo-state)
+POST {{baseUrl}}/api/v1/auth/token
+Content-Type: application/json
+
+{"code": "<code from the redirect>", "redirectUri": "http://localhost:8765/"}
+
+### 3. The logged-in user
+GET {{baseUrl}}/api/v1/me
+Authorization: Bearer <accessToken>
+
+### 4. New tokens (the refresh token is rotated)
+POST {{baseUrl}}/api/v1/auth/refresh
+Content-Type: application/json
+
+{"refreshToken": "<refreshToken>"}
+
+### 5. Log out
+POST {{baseUrl}}/api/v1/auth/logout
+Content-Type: application/json
+
+{"refreshToken": "<refreshToken>"}

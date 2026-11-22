@@ -59,6 +59,36 @@ class CalculationsIT {
     }
 
     @Test
+    void calculatesLeaveForPrematureTwins() throws Exception {
+        mvc.perform(post("/api/v1/calculations/leave-dimensions").contentType(MediaType.APPLICATION_JSON).content("""
+                {"children": 2, "preterm": {"gestationWeek": 27, "birthWeightGrams": 950, "hospitalDays": 49}}
+                """)).andExpect(status().isOk()).andExpect(matchesContract())
+                .andExpect(jsonPath("$.maternityWeeks").value(31)).andExpect(jsonPath("$.parentalWeeks").value(43))
+                .andExpect(jsonPath("$.supplementary.weeks").value(7))
+                .andExpect(jsonPath("$.supplementary.limit").value(15))
+                .andExpect(jsonPath("$.adoption").doesNotExist());
+    }
+
+    @Test
+    void calculatesLeaveForChildTakenInCloseToTheAgeLimit() throws Exception {
+        mvc.perform(post("/api/v1/calculations/leave-dimensions").contentType(MediaType.APPLICATION_JSON).content("""
+                {"children": 1, "adoption": {"type": "FOSTER_FAMILY", "childAge": 6.9}}
+                """)).andExpect(status().isOk()).andExpect(matchesContract())
+                .andExpect(jsonPath("$.maternityWeeks").value(9)).andExpect(jsonPath("$.parentalWeeks").value(38))
+                .andExpect(jsonPath("$.adoption.ageLimit").value(7))
+                .andExpect(jsonPath("$.supplementary").doesNotExist());
+    }
+
+    @Test
+    void rejectsAdoptionTogetherWithPrematureBirth() throws Exception {
+        mvc.perform(post("/api/v1/calculations/leave-dimensions").contentType(MediaType.APPLICATION_JSON).content("""
+                {"children": 1, "adoption": {"type": "ADOPTION", "childAge": 1},
+                 "preterm": {"gestationWeek": 30, "birthWeightGrams": 1500, "hospitalDays": 10}}
+                """)).andExpect(status().isBadRequest()).andExpect(matchesContract())
+                .andExpect(jsonPath("$.code").value("validation-failed"));
+    }
+
+    @Test
     void rejectsEmptyListOfMonths() throws Exception {
         mvc.perform(post("/api/v1/calculations/benefit-base").contentType(MediaType.APPLICATION_JSON)
                 .content("{\"title\": \"EMPLOYMENT\", \"months\": []}")).andExpect(status().isBadRequest())

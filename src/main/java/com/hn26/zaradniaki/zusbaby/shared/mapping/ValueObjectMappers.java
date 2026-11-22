@@ -53,6 +53,11 @@ public final class ValueObjectMappers {
         return value == null ? null : Weeks.of(value);
     }
 
+    /** Whole weeks on the wire (leave dimensions); fails for a fractional value. */
+    public static Integer toInteger(Weeks weeks) {
+        return weeks == null ? null : weeks.value().intValueExact();
+    }
+
     public static BigDecimal toBigDecimal(Weeks weeks) {
         return weeks == null ? null : weeks.value();
     }

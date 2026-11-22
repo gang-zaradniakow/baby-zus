@@ -6,6 +6,8 @@ import com.hn26.zaradniaki.zusbaby.api.model.BenefitBaseDto;
 import com.hn26.zaradniaki.zusbaby.api.model.BenefitBaseRequestDto;
 import com.hn26.zaradniaki.zusbaby.api.model.InsuranceResolutionDto;
 import com.hn26.zaradniaki.zusbaby.api.model.InsuranceTitlesRequestDto;
+import com.hn26.zaradniaki.zusbaby.api.model.LeaveDimensionsDto;
+import com.hn26.zaradniaki.zusbaby.api.model.LeaveDimensionsRequestDto;
 import com.hn26.zaradniaki.zusbaby.benefits.application.query.ResolveInsuranceQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,11 @@ class CalculationsController implements CalculationsApi {
     public ResponseEntity<InsuranceResolutionDto> resolveInsurance(InsuranceTitlesRequestDto request) {
         return ResponseEntity
                 .ok(mapper.toResponse(pipeline.send(new ResolveInsuranceQuery(mapper.toTitles(request)))));
+    }
+
+    @Override
+    public ResponseEntity<LeaveDimensionsDto> calculateLeaveDimensions(LeaveDimensionsRequestDto request) {
+        return ResponseEntity.ok(mapper.toResponse(pipeline.send(mapper.toQuery(request))));
     }
 
     @Override

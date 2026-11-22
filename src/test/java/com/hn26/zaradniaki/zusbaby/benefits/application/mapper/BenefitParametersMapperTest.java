@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 
 import com.hn26.zaradniaki.zusbaby.benefits.domain.BenefitParametersFixtures;
+import com.hn26.zaradniaki.zusbaby.benefits.domain.LeaveParametersFixtures;
 import com.hn26.zaradniaki.zusbaby.legalrules.api.model.ParameterKey;
 import com.hn26.zaradniaki.zusbaby.legalrules.application.dto.LegalParametersDto;
 import com.hn26.zaradniaki.zusbaby.legalrules.application.dto.ParameterDto;
@@ -33,6 +34,28 @@ class BenefitParametersMapperTest {
 
         assertThatIllegalStateException().isThrownBy(() -> mapper.toBenefitParameters(dto))
                 .withMessageContaining("EMPLOYEE_CONTRIBUTION_RATE");
+    }
+
+    @Test
+    void takesLeaveDimensionsFromLegalParameters() {
+        var dto = legalParameters(List.of(
+                new ParameterDto(ParameterKey.MATERNITY_LEAVE_WEEKS, ParameterKey.MATERNITY_LEAVE_WEEKS.kind(), "",
+                        null, List.of(new BigDecimal("20"), new BigDecimal("31"), new BigDecimal("33"),
+                                new BigDecimal("35"), new BigDecimal("37"))),
+                parameter(ParameterKey.PARENTAL_LEAVE_WEEKS_ONE_CHILD, "41"),
+                parameter(ParameterKey.PARENTAL_LEAVE_WEEKS_MULTIPLE_CHILDREN, "43"),
+                parameter(ParameterKey.PARENTAL_LEAVE_WEEKS_ZA_ZYCIEM_ONE_CHILD, "65"),
+                parameter(ParameterKey.PARENTAL_LEAVE_WEEKS_ZA_ZYCIEM_MULTIPLE_CHILDREN, "67"),
+                parameter(ParameterKey.ADOPTION_MINIMUM_WEEKS, "9"),
+                parameter(ParameterKey.ADOPTION_PARENTAL_MINIMUM_WEEKS, "38"),
+                parameter(ParameterKey.ADOPTION_PARENTAL_MINIMUM_WEEKS_ZA_ZYCIEM, "62"),
+                parameter(ParameterKey.FOSTER_CHILD_AGE_LIMIT, "7"),
+                parameter(ParameterKey.FOSTER_CHILD_AGE_LIMIT_DEFERRED_SCHOOL, "10"),
+                parameter(ParameterKey.ADOPTED_CHILD_AGE_LIMIT, "14"),
+                parameter(ParameterKey.SUPPLEMENTARY_LEAVE_MAX_WEEKS_EXTREME_PRETERM, "15"),
+                parameter(ParameterKey.SUPPLEMENTARY_LEAVE_MAX_WEEKS, "8")));
+
+        assertThat(mapper.toLeaveParameters(dto)).isEqualTo(LeaveParametersFixtures.legalState2026());
     }
 
     private static LegalParametersDto legalParameters(List<ParameterDto> parameters) {

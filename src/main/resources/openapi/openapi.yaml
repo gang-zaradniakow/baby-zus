@@ -178,6 +178,35 @@ paths:
         default:
           $ref: '#/components/responses/Problem'
 
+  /api/v1/calculations/leave-dimensions:
+    post:
+      tags: [Calculations]
+      operationId: calculateLeaveDimensions
+      summary: Length of maternity, parental and supplementary leave
+      description: |
+        Maternity leave by the number of children (20–37 weeks) and parental leave (41/43 weeks, 65/67 with the
+        "Za życiem" certificate). For a child taken in (`adoption`) the age limit applies (14 years for adoption,
+        7 or 10 for a foster family) with at least 9 weeks of leave. For a premature or hospitalised newborn
+        (`preterm`) the supplementary maternity leave is added (up to 15 or 8 weeks). `adoption` and `preterm`
+        exclude each other.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeaveDimensionsRequest'
+      responses:
+        '200':
+          description: Calculated leave lengths.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeaveDimensions'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        default:
+          $ref: '#/components/responses/Problem'
+
 components:
   responses:
     ValidationProblem:
@@ -389,6 +418,110 @@ components:
         note:
           type: string
           description: Polish explanation of how the base was calculated.
+
+    LeaveDimensionsRequest:
+      type: object
+      required: [children]
+      properties:
+        children:
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 10
+          description: Children born (or taken in) at once.
+        zaZyciem:
+          type: boolean
+          default: false
+          description: The child has the "Za życiem" certificate.
+        adoption:
+          $ref: '#/components/schemas/AdoptionDetails'
+        preterm:
+          $ref: '#/components/schemas/PretermDetails'
+
+    AdoptionDetails:
+      type: object
+      required: [type, childAge]
+      properties:
+        type:
+          type: string
+          enum: [ADOPTION, FOSTER_FAMILY]
+          description: Adoption (court proceedings started) or a non-professional foster family.
+        childAge:
+          type: number
+          minimum: 0
+          maximum: 18
+          description: Age of the child in years when taken in, e.g. 1.5.
+        deferredSchool:
+          type: boolean
+          default: false
+          description: Compulsory schooling deferred (foster family age limit 10 instead of 7 years).
+
+    PretermDetails:
+      type: object
+      required: [gestationWeek, birthWeightGrams, hospitalDays]
+      properties:
+        gestationWeek:
+          type: integer
+          format: int32
+          minimum: 20
+          maximum: 44
+        birthWeightGrams:
+          type: integer
+          format: int32
+          minimum: 300
+          maximum: 7000
+        hospitalDays:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 365
+          description: Days the child stayed in hospital (until the 8th / 15th week after birth).
+        hospitalStartDay:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 365
+          default: 5
+          description: Day after birth the stay started (matters for children born after the 37th week).
+
+    LeaveDimensions:
+      type: object
+      required: [maternityWeeks, parentalWeeks]
+      properties:
+        maternityWeeks:
+          type: integer
+          format: int32
+          description: Maternity leave (or leave on maternity terms for a child taken in).
+        parentalWeeks:
+          type: integer
+          format: int32
+        adoption:
+          $ref: '#/components/schemas/AdoptionLeave'
+        supplementary:
+          $ref: '#/components/schemas/SupplementaryLeave'
+
+    AdoptionLeave:
+      type: object
+      required: [ageLimit, note]
+      properties:
+        ageLimit:
+          type: integer
+          format: int32
+        note:
+          type: string
+
+    SupplementaryLeave:
+      type: object
+      required: [weeks, limit, rule]
+      properties:
+        weeks:
+          type: integer
+          format: int32
+        limit:
+          type: integer
+          format: int32
+        rule:
+          type: string
 
     ProblemDetail:
       type: object

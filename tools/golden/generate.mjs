@@ -171,6 +171,58 @@ areas.benefitBase = () => {
   };
 };
 
+// ---------------------------------------------------------------------------------------------------------------
+// Leave dimensions
+// ---------------------------------------------------------------------------------------------------------------
+areas.adoptionLeave = () => {
+  const inputs = [
+    ['adoption of a 1-year-old', { children: 1, zaZyciem: false, type: 'ADOPTION', childAge: 1, deferredSchool: false }],
+    ['adoption of a newborn', { children: 1, zaZyciem: false, type: 'ADOPTION', childAge: 0, deferredSchool: false }],
+    ['adoption close to the age limit', { children: 1, zaZyciem: false, type: 'ADOPTION', childAge: 13.8, deferredSchool: false }],
+    ['adoption just before the age limit (minimum 9 weeks)', { children: 1, zaZyciem: false, type: 'ADOPTION', childAge: 13.95, deferredSchool: false }],
+    ['adoption at the age limit', { children: 1, zaZyciem: false, type: 'ADOPTION', childAge: 14, deferredSchool: false }],
+    ['adoption of twins close to the age limit', { children: 2, zaZyciem: false, type: 'ADOPTION', childAge: 13.5, deferredSchool: false }],
+    ['adoption with Za zyciem close to the limit, full maternity', { children: 1, zaZyciem: true, type: 'ADOPTION', childAge: 13.5, deferredSchool: false }],
+    ['adoption of twins with Za zyciem close to the limit', { children: 2, zaZyciem: true, type: 'ADOPTION', childAge: 13.6, deferredSchool: false }],
+    ['foster family, 2-year-old', { children: 1, zaZyciem: false, type: 'FOSTER_FAMILY', childAge: 2, deferredSchool: false }],
+    ['foster family just before 7 years', { children: 1, zaZyciem: false, type: 'FOSTER_FAMILY', childAge: 6.9, deferredSchool: false }],
+    ['foster family at 7 years', { children: 1, zaZyciem: false, type: 'FOSTER_FAMILY', childAge: 7, deferredSchool: false }],
+    ['foster family at 7 years with deferred school', { children: 1, zaZyciem: false, type: 'FOSTER_FAMILY', childAge: 6.9, deferredSchool: true }],
+    ['foster family, three children', { children: 3, zaZyciem: false, type: 'FOSTER_FAMILY', childAge: 3, deferredSchool: false }],
+  ];
+  const MOCKUP_TYPE = { ADOPTION: 'przysp', FOSTER_FAMILY: 'rz' };
+  return {
+    source: 'js/calc.js: adoptWeeks()',
+    cases: inputs.map(([name, input]) => {
+      const r = C.adoptWeeks({ n: input.children, zz: input.zaZyciem, typ: MOCKUP_TYPE[input.type], wiek: input.childAge, odr: input.deferredSchool });
+      return { name, input, expected: { maternityWeeks: r.M, parentalWeeks: r.R, ageLimit: r.limit, note: r.note } };
+    }),
+  };
+};
+
+areas.supplementaryLeave = () => {
+  const inputs = [
+    ['27th week, 950 g, 49 days in hospital', { gestationWeek: 27, birthWeightGrams: 950, hospitalDays: 49, hospitalStartDay: 5 }],
+    ['26th week, 1200 g, 120 days (capped at 15)', { gestationWeek: 26, birthWeightGrams: 1200, hospitalDays: 120, hospitalStartDay: 5 }],
+    ['30th week, exactly 1000 g', { gestationWeek: 30, birthWeightGrams: 1000, hospitalDays: 30, hospitalStartDay: 5 }],
+    ['30th week, 1500 g, 40 days', { gestationWeek: 30, birthWeightGrams: 1500, hospitalDays: 40, hospitalStartDay: 5 }],
+    ['34th week, 2200 g, 70 days (capped at 8)', { gestationWeek: 34, birthWeightGrams: 2200, hospitalDays: 70, hospitalStartDay: 5 }],
+    ['36th week, no hospital stay', { gestationWeek: 36, birthWeightGrams: 2500, hospitalDays: 0, hospitalStartDay: 5 }],
+    ['full term, 3 days in hospital from day 6', { gestationWeek: 38, birthWeightGrams: 3500, hospitalDays: 3, hospitalStartDay: 6 }],
+    ['full term, 14 days from day 5', { gestationWeek: 39, birthWeightGrams: 3600, hospitalDays: 14, hospitalStartDay: 5 }],
+    ['full term, one day in hospital', { gestationWeek: 38, birthWeightGrams: 3500, hospitalDays: 1, hospitalStartDay: 5 }],
+    ['full term, stay started after day 28', { gestationWeek: 38, birthWeightGrams: 3500, hospitalDays: 10, hospitalStartDay: 30 }],
+    ['full term, stay started before day 5', { gestationWeek: 40, birthWeightGrams: 3400, hospitalDays: 10, hospitalStartDay: 2 }],
+  ];
+  return {
+    source: 'js/calc.js: uzupelniajacy()',
+    cases: inputs.map(([name, input]) => {
+      const r = C.uzupelniajacy({ tc: input.gestationWeek, waga: input.birthWeightGrams, dniSzpital: input.hospitalDays, startDzien: input.hospitalStartDay });
+      return { name, input, expected: { weeks: r.weeks, limit: r.limit, rule: r.rule } };
+    }),
+  };
+};
+
 mkdirSync(outDir, { recursive: true });
 for (const [area, build] of Object.entries(areas)) {
   const file = join(outDir, `${area}.json`);

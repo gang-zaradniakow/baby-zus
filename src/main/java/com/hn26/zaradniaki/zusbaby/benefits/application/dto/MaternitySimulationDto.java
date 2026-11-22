@@ -6,5 +6,6 @@ import java.util.List;
 
 public record MaternitySimulationDto(Weeks maternityWeeks, Weeks parentalWeeks, Weeks supplementaryWeeks,
         ParentLeaveShareDto mother, ParentLeaveShareDto father, boolean averagedVariant,
-        List<LeaveSegmentDto> segments, List<Check> checks, List<String> notes) {
+        List<LeaveSegmentDto> segments, MaternityTotalsDto totals, List<Check> checks, List<String> notes,
+        AlternativeBenefitDto alternative) {
 }

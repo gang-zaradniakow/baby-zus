@@ -141,6 +141,56 @@ class CalculationsIT {
     }
 
     @Test
+    void combinesParentalLeaveWithPartTimeWorkAndCountsAmounts() throws Exception {
+        mvc.perform(post("/api/v1/calculations/maternity").contentType(MediaType.APPLICATION_JSON).content("""
+                {
+                  "situation": "BIRTH", "startDate": "2026-03-02", "children": 1,
+                  "mother": {"employment": {"base": "5177.40"}},
+                  "father": {"titles": {"employment": {"base": "6040.40"}}},
+                  "work": {"parent": "MOTHER", "share": 0.5, "weeks": 8}
+                }
+                """)).andExpect(status().isOk()).andExpect(matchesContract())
+                .andExpect(jsonPath("$.segments[2].label").value("Rodzicielski + praca (50% etatu)"))
+                .andExpect(jsonPath("$.segments[2].workFactor").value(0.5))
+                .andExpect(jsonPath("$.segments[2].monthlyGross").value("1812.09"))
+                .andExpect(jsonPath("$.segments[2].monthlyNet").value("1595.09"))
+                .andExpect(jsonPath("$.segments[2].total").value("2977.50"))
+                .andExpect(jsonPath("$.segments[3].label").value("Wydłużenie rodzicielskiego (za pracę)"))
+                .andExpect(jsonPath("$.segments[3].weeks").value(4))
+                .andExpect(jsonPath("$.totals.mother").value("45076.68"))
+                .andExpect(jsonPath("$.totals.family").value("55371.89"))
+                .andExpect(jsonPath("$.alternative").doesNotExist());
+    }
+
+    @Test
+    void offersParentalAllowanceToMotherWithoutZusTitle() throws Exception {
+        mvc.perform(post("/api/v1/calculations/maternity").contentType(MediaType.APPLICATION_JSON).content("""
+                {
+                  "situation": "BIRTH", "startDate": "2026-03-02", "children": 1,
+                  "mother": {}, "father": {"titles": {"employment": {"base": "6040.40"}}}
+                }
+                """)).andExpect(status().isOk()).andExpect(matchesContract())
+                .andExpect(jsonPath("$.alternative.kind").value("MUNICIPALITY"))
+                .andExpect(jsonPath("$.alternative.monthly").value("1000.00"))
+                .andExpect(jsonPath("$.alternative.weeks").value(52))
+                .andExpect(jsonPath("$.checks.length()").value(1))
+                .andExpect(jsonPath("$.checks[0].message").value(
+                        "Tata: ubezpieczony — może wziąć urlop ojcowski, swoje 9 tygodni i część urlopu mamy."))
+                .andExpect(jsonPath("$.totals.mother").value("0.00"));
+    }
+
+    @Test
+    void rejectsWorkOverHalfTime() throws Exception {
+        mvc.perform(post("/api/v1/calculations/maternity").contentType(MediaType.APPLICATION_JSON).content("""
+                {
+                  "situation": "BIRTH", "startDate": "2026-03-02", "children": 1,
+                  "mother": {"employment": {"base": "5177.40"}}, "father": {"titles": {}},
+                  "work": {"parent": "MOTHER", "share": 0.75, "weeks": 8}
+                }
+                """)).andExpect(status().isBadRequest()).andExpect(jsonPath("$.code").value("validation-failed"));
+    }
+
+    @Test
     void rejectsTakenInChildWithoutAdoptionDetails() throws Exception {
         mvc.perform(post("/api/v1/calculations/maternity").contentType(MediaType.APPLICATION_JSON).content("""
                 {

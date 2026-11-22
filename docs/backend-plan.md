@@ -436,7 +436,7 @@ Od PR 05 każdy PR z endpointem zaczyna się od wpisu w `openapi.yaml` (patrz 2.
 | 09 | Wymiary urlopów | `LeaveDimensionsPolicy`, `AdoptionLeavePolicy`, `SupplementaryLeavePolicy`, `LeaveParameters`, `POST /calculations/leave-dimensions` | Jednostkowe + golden `adoptWeeks`, `uzupelniajacy` | P0 |
 | 10 | Zasiłek chorobowy w ciąży | `PregnancySicknessCalculator` (na tytułach z `InsuranceTitleResolver`), `SicknessParameters`, `IncomeTaxAdvance` (kwota na rękę), `POST /calculations/sickness-in-pregnancy` | Jednostkowe + golden `chorobowyCiaza`, `chorobowyMulti`, IT | P0 |
 | 11 | Symulator macierzyńskiego, cz. 1: segmenty | `MaternityBenefitSimulator`: podział urlopu, przejęcie, uzupełniający, ojcowski, segmenty z datami i stawkami, kontrole uprawnień; `POST /calculations/maternity` (bez kwot) | Jednostkowe + golden (`segs`, `checks`) | P0 |
-| 12 | Symulator macierzyńskiego, cz. 2: kwoty i praca | Kwoty segmentów i sumy, netto, minimum 1000 zł, łączenie z pracą i limity, `AlternativeBenefitPolicy`, komunikaty tytułów obojga rodziców; rozszerzenie `POST /calculations/maternity` | Jednostkowe + golden (`totals`, `notes`), IT | P0 |
+| 12 | Symulator macierzyńskiego, cz. 2: kwoty i praca | Kwoty segmentów i sumy, netto, minimum 1000 zł, łączenie z pracą i limity, `AlternativeBenefitPolicy`, komunikaty tytułów obojga rodziców złożone jak w `simOut()` (`MaternityBenefitCalculator`); rozszerzenie `POST /calculations/maternity` | Jednostkowe + golden `maternityBenefit` (z tytułów: segmenty z kwotami, `totals`, `checks`, `notes`, `zamiastZUS`), IT | P0 |
 
 ### Faza 2 — panel administracyjny
 | # | PR | Zawartość | Testy | P |

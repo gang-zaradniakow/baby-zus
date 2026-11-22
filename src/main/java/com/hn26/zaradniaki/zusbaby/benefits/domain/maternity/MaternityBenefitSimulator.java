@@ -2,6 +2,7 @@ package com.hn26.zaradniaki.zusbaby.benefits.domain.maternity;
 
 import static com.hn26.zaradniaki.zusbaby.shared.domain.PolishFormat.money;
 
+import com.hn26.zaradniaki.zusbaby.benefits.domain.IncomeTaxAdvance;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.LeaveParameters;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.MaternityParameters;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.insurance.InsuranceTitle;
@@ -12,6 +13,7 @@ import com.hn26.zaradniaki.zusbaby.benefits.domain.leave.LeaveDimensionsPolicy;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.leave.SupplementaryLeavePolicy;
 import com.hn26.zaradniaki.zusbaby.shared.domain.Check;
 import com.hn26.zaradniaki.zusbaby.shared.domain.DateRange;
+import com.hn26.zaradniaki.zusbaby.shared.domain.Money;
 import com.hn26.zaradniaki.zusbaby.shared.domain.Rate;
 import com.hn26.zaradniaki.zusbaby.shared.domain.Weeks;
 import java.math.BigDecimal;
@@ -34,12 +36,19 @@ import java.util.Objects;
  * father's when the mother is not insured),</li>
  * <li>paternity leave starts on the day of birth, alongside the mother's
  * maternity leave,</li>
- * <li>the 81.5% variant needs an insured mother.</li>
+ * <li>the 81.5% variant needs an insured mother,</li>
+ * <li>parental leave combined with part-time work: the benefit drops by the
+ * part worked and the leave is extended by the weeks worked times that
+ * part,</li>
+ * <li>monthly benefit = base × rate × part kept; after the income tax advance
+ * at least the minimum, unless combined with work.</li>
  * </ul>
  */
 public final class MaternityBenefitSimulator {
 
     private static final BigDecimal DAYS_IN_WEEK = BigDecimal.valueOf(7);
+    private static final int DAYS_IN_BENEFIT_MONTH = 30;
+    private static final MaternityTotals NO_BENEFIT = new MaternityTotals(Money.ZERO, Money.ZERO, Money.ZERO);
 
     private final LeaveDimensionsPolicy dimensions;
     private final AdoptionLeavePolicy adoptionPolicy;
@@ -79,7 +88,7 @@ public final class MaternityBenefitSimulator {
 
         if (maternity.isZero()) {
             return new MaternitySimulation(maternity, parental, Weeks.ZERO, ParentLeaveShare.NONE,
-                    ParentLeaveShare.NONE, false, List.of(), checks, notes);
+                    ParentLeaveShare.NONE, false, List.of(), NO_BENEFIT, checks, notes);
         }
 
         FatherLeaveChoices choices = family.fatherChoices();
@@ -111,7 +120,7 @@ public final class MaternityBenefitSimulator {
         Rate maternityRate = averaged ? parameters.averagedRate() : parameters.maternityRate();
         Rate parentalRate = averaged ? parameters.averagedRate() : parameters.parentalRate();
 
-        Timeline timeline = new Timeline(family.startDate());
+        Timeline timeline = new Timeline(family.startDate(), family.work());
         timeline.add(Parent.MOTHER, adoption ? "Urlop na warunkach macierzyńskiego" : "Urlop macierzyński",
                 motherMaternity, maternityRate);
         if (!fatherMaternity.isZero()) {
@@ -133,19 +142,40 @@ public final class MaternityBenefitSimulator {
         if (!motherParental.isZero()) {
             long motherSupplementaryDays = !supplementary.isZero() && motherInsured ? days(supplementary) : 0;
             timeline.motherDays = Math.max(timeline.motherDays, afterMaternity + motherSupplementaryDays);
-            timeline.add(Parent.MOTHER, "Urlop rodzicielski", motherParental, parentalRate);
+            timeline.addParental(Parent.MOTHER, motherParental, List.of(new RatedWeeks(motherParental, parentalRate)));
         }
         if (!fatherParental.isZero()) {
             timeline.fatherDays = Math.max(Math.max(timeline.fatherDays, timeline.motherDays), afterMaternity);
             Weeks own = fatherParental.min(nonTransferable);
             // the father's own non-transferable weeks are always paid at the parental rate
             // (70%)
-            timeline.add(Parent.FATHER, "Urlop rodzicielski", own, parameters.parentalRate());
-            timeline.add(Parent.FATHER, "Urlop rodzicielski", fatherParental.minus(own), parentalRate);
+            timeline.addParental(Parent.FATHER, fatherParental, List.of(
+                    new RatedWeeks(own, parameters.parentalRate()),
+                    new RatedWeeks(fatherParental.minus(own), parentalRate)));
         }
         if (fatherInsured && choices.paternityLeave()) {
             timeline.addFromStart(Parent.FATHER, "Urlop ojcowski", parameters.paternityWeeks(),
                     parameters.paternityRate());
+        }
+        PartTimeWork work = family.work();
+        if (work != null) {
+            Weeks workerParental = work.parent() == Parent.MOTHER ? motherParental : fatherParental;
+            Weeks extension = Weeks.of(work.weeks()).min(workerParental).times(work.share());
+            Weeks max = parentalWithWorkMax(children, family.zaZyciem(), parameters);
+            notes.add(
+                    "Łączenie z pracą: zasiłek w tym czasie maleje do %s%%, a urlop wydłuża się o %s tyg. Łączna kwota zasiłku się nie zmienia — jest rozłożona na dłużej, a do tego dostajesz wynagrodzenie. Limit urlopu: %s tyg."
+                            .formatted(work.share().complement().percent().setScale(0, RoundingMode.HALF_UP),
+                                    number(rounded(extension)), number(max)));
+            if (parental.plus(extension).compareTo(max) > 0) {
+                checks.add(Check.no("Przekroczono maksymalny wymiar urlopu rodzicielskiego przy pracy (%s tyg.)."
+                        .formatted(number(max))));
+            }
+        }
+        Amounts amounts = new Amounts(family, parameters);
+        List<LeaveSegment> segments = timeline.placements.stream().map(amounts::segment).toList();
+        if (amounts.minimumApplied) {
+            notes.add("Zastosowano minimum: zasiłek na rękę nie może być niższy niż %s miesięcznie (art. 31 ust. 3a)."
+                    .formatted(money(parameters.minimumMonthlyBenefit(), 0)));
         }
         if (averaged) {
             notes.add(
@@ -153,7 +183,31 @@ public final class MaternityBenefitSimulator {
         }
         return new MaternitySimulation(maternity, parental, supplementary,
                 new ParentLeaveShare(motherMaternity, motherParental),
-                new ParentLeaveShare(fatherMaternity, fatherParental), averaged, timeline.segments, checks, notes);
+                new ParentLeaveShare(fatherMaternity, fatherParental), averaged, segments, totals(segments), checks,
+                notes);
+    }
+
+    private static Weeks parentalWithWorkMax(int children, boolean zaZyciem, MaternityParameters parameters) {
+        boolean multiple = children > 1;
+        if (zaZyciem) {
+            return multiple
+                    ? parameters.parentalWithWorkMaxWeeksZaZyciemMultipleChildren()
+                    : parameters.parentalWithWorkMaxWeeksZaZyciemOneChild();
+        }
+        return multiple
+                ? parameters.parentalWithWorkMaxWeeksMultipleChildren()
+                : parameters.parentalWithWorkMaxWeeksOneChild();
+    }
+
+    private static MaternityTotals totals(List<LeaveSegment> segments) {
+        Money mother = total(segments, Parent.MOTHER);
+        Money father = total(segments, Parent.FATHER);
+        return new MaternityTotals(mother, father, mother.plus(father));
+    }
+
+    private static Money total(List<LeaveSegment> segments, Parent parent) {
+        return segments.stream().filter(segment -> segment.parent() == parent).map(LeaveSegment::total)
+                .reduce(Money.ZERO, Money::plus);
     }
 
     private static boolean isInsured(ResolvedInsurance insurance) {
@@ -205,6 +259,46 @@ public final class MaternityBenefitSimulator {
         return weeks.value().toPlainString();
     }
 
+    private static Weeks rounded(Weeks weeks) {
+        return new Weeks(weeks.value().setScale(1, RoundingMode.HALF_UP));
+    }
+
+    /** Part of a parent's parental leave paid at one rate. */
+    private record RatedWeeks(Weeks weeks, Rate rate) {
+    }
+
+    /** A leave placed on the timeline, before its amounts are known. */
+    private record Placement(Parent parent, String label, Weeks weeks, Rate rate, Rate workFactor,
+            DateRange period) {
+    }
+
+    /** Monthly benefits and totals of the placed leaves. */
+    private static final class Amounts {
+
+        private final MaternityCase family;
+        private final MaternityParameters parameters;
+        private boolean minimumApplied;
+
+        Amounts(MaternityCase family, MaternityParameters parameters) {
+            this.family = family;
+            this.parameters = parameters;
+        }
+
+        LeaveSegment segment(Placement placement) {
+            Money base = placement.parent() == Parent.MOTHER ? family.mother().base() : family.father().base();
+            Money gross = base.times(placement.rate()).times(placement.workFactor());
+            Money net = IncomeTaxAdvance.net(gross, parameters.incomeTaxAdvanceRate());
+            if (placement.workFactor().equals(Rate.ONE) && net.isLessThan(parameters.minimumMonthlyBenefit())
+                    && gross.isGreaterThan(Money.ZERO)) {
+                net = parameters.minimumMonthlyBenefit();
+                minimumApplied = true;
+            }
+            Money total = net.times(placement.weeks().value()).times(DAYS_IN_WEEK).dividedBy(DAYS_IN_BENEFIT_MONTH);
+            return new LeaveSegment(placement.parent(), placement.label(), placement.weeks(), placement.rate(),
+                    placement.workFactor(), placement.period(), gross, net, total);
+        }
+    }
+
     /**
      * Places leaves of each parent one after another, counting days from the start
      * date.
@@ -212,21 +306,56 @@ public final class MaternityBenefitSimulator {
     private static final class Timeline {
 
         private final LocalDate start;
-        private final List<LeaveSegment> segments = new ArrayList<>();
+        private final PartTimeWork work;
+        private final List<Placement> placements = new ArrayList<>();
         private long motherDays;
         private long fatherDays;
 
-        Timeline(LocalDate start) {
+        Timeline(LocalDate start, PartTimeWork work) {
             this.start = start;
+            this.work = work;
         }
 
         void add(Parent parent, String label, Weeks weeks, Rate rate) {
+            add(parent, label, weeks, rate, Rate.ONE);
+        }
+
+        /**
+         * Parental leave of a parent, paid at the given rates one after another; the
+         * first weeks worked part-time are paid less and extend the leave.
+         */
+        void addParental(Parent parent, Weeks weeks, List<RatedWeeks> rates) {
+            Weeks combined = work != null && work.parent() == parent ? Weeks.of(work.weeks()).min(weeks) : Weeks.ZERO;
+            for (RatedWeeks part : rates) {
+                if (part.weeks().isZero()) {
+                    continue;
+                }
+                Weeks withWork = combined.min(part.weeks());
+                combined = combined.minus(withWork);
+                add(parent, "Urlop rodzicielski", part.weeks().minus(withWork), part.rate());
+                if (!withWork.isZero()) {
+                    add(parent, "Rodzicielski + praca (%s%% etatu)"
+                            .formatted(work.share().percent().setScale(0, RoundingMode.HALF_UP)), withWork,
+                            part.rate(), work.share().complement());
+                    add(parent, "Wydłużenie rodzicielskiego (za pracę)", withWork.times(work.share()), part.rate());
+                }
+            }
+        }
+
+        /** Leave starting on the start date, without moving the parent's next leave. */
+        void addFromStart(Parent parent, String label, Weeks weeks, Rate rate) {
+            if (!weeks.isZero()) {
+                placements.add(placement(parent, label, weeks, rate, Rate.ONE, 0, days(weeks)));
+            }
+        }
+
+        private void add(Parent parent, String label, Weeks weeks, Rate rate, Rate workFactor) {
             if (weeks.isZero()) {
                 return;
             }
             long offset = parent == Parent.MOTHER ? motherDays : fatherDays;
             long length = days(weeks);
-            segments.add(segment(parent, label, weeks, rate, offset, length));
+            placements.add(placement(parent, label, weeks, rate, workFactor, offset, length));
             if (parent == Parent.MOTHER) {
                 motherDays += length;
             } else {
@@ -234,16 +363,9 @@ public final class MaternityBenefitSimulator {
             }
         }
 
-        /** Leave starting on the start date, without moving the parent's next leave. */
-        void addFromStart(Parent parent, String label, Weeks weeks, Rate rate) {
-            if (!weeks.isZero()) {
-                segments.add(segment(parent, label, weeks, rate, 0, days(weeks)));
-            }
-        }
-
-        private LeaveSegment segment(Parent parent, String label, Weeks weeks, Rate rate, long offset, long length) {
-            Weeks rounded = new Weeks(weeks.value().setScale(1, RoundingMode.HALF_UP));
-            return new LeaveSegment(parent, label, rounded, rate, Rate.ONE,
+        private Placement placement(Parent parent, String label, Weeks weeks, Rate rate, Rate workFactor,
+                long offset, long length) {
+            return new Placement(parent, label, rounded(weeks), rate, workFactor,
                     DateRange.startingAt(start.plusDays(offset), length));
         }
     }

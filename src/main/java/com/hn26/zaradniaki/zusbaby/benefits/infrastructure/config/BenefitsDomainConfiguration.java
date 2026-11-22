@@ -5,6 +5,8 @@ import com.hn26.zaradniaki.zusbaby.benefits.domain.insurance.InsuranceTitleResol
 import com.hn26.zaradniaki.zusbaby.benefits.domain.leave.AdoptionLeavePolicy;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.leave.LeaveDimensionsPolicy;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.leave.SupplementaryLeavePolicy;
+import com.hn26.zaradniaki.zusbaby.benefits.domain.maternity.AlternativeBenefitPolicy;
+import com.hn26.zaradniaki.zusbaby.benefits.domain.maternity.MaternityBenefitCalculator;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.maternity.MaternityBenefitSimulator;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.sickness.PregnancySicknessCalculator;
 import org.springframework.context.annotation.Bean;
@@ -51,5 +53,10 @@ class BenefitsDomainConfiguration {
     MaternityBenefitSimulator maternityBenefitSimulator(LeaveDimensionsPolicy dimensions,
             AdoptionLeavePolicy adoptionPolicy, SupplementaryLeavePolicy supplementaryPolicy) {
         return new MaternityBenefitSimulator(dimensions, adoptionPolicy, supplementaryPolicy);
+    }
+
+    @Bean
+    MaternityBenefitCalculator maternityBenefitCalculator(MaternityBenefitSimulator simulator) {
+        return new MaternityBenefitCalculator(simulator, new AlternativeBenefitPolicy());
     }
 }

@@ -14,7 +14,6 @@ import com.hn26.zaradniaki.zusbaby.benefits.domain.leave.TakenInChild;
 import com.hn26.zaradniaki.zusbaby.golden.GoldenCase;
 import com.hn26.zaradniaki.zusbaby.golden.GoldenCases;
 import com.hn26.zaradniaki.zusbaby.shared.domain.Check;
-import com.hn26.zaradniaki.zusbaby.shared.domain.DateRange;
 import com.hn26.zaradniaki.zusbaby.shared.domain.Money;
 import com.hn26.zaradniaki.zusbaby.shared.domain.Rate;
 import com.hn26.zaradniaki.zusbaby.shared.domain.Weeks;
@@ -48,7 +47,8 @@ class MaternityBenefitSimulatorTest {
         MaternityCase toCase() {
             return new MaternityCase(situation, startDate, children, zaZyciem, variant, preterm, adoption,
                     mother.toInsurance(), father.insurance().toInsurance(), new FatherLeaveChoices(
-                            father.paternityLeave(), father.parentalWeeks(), father.maternityWeeksTaken()));
+                            father.paternityLeave(), father.parentalWeeks(), father.maternityWeeksTaken()),
+                    null);
         }
     }
 
@@ -88,11 +88,16 @@ class MaternityBenefitSimulatorTest {
         assertThat(result.father()).isEqualTo(new ParentLeaveShare(Weeks.of(expected.fatherMaternityWeeks()),
                 Weeks.of(expected.fatherParentalWeeks())));
         assertThat(result.averagedVariant()).isEqualTo(expected.averagedVariant());
-        assertThat(result.segments()).isEqualTo(expected.segments().stream()
-                .map(segment -> new LeaveSegment(segment.parent(), segment.label(), new Weeks(segment.weeks()),
-                        new Rate(segment.rate()), new Rate(segment.workFactor()),
-                        new DateRange(segment.from(), segment.to())))
-                .toList());
+        // amounts are compared in MaternityBenefitCalculatorTest
+        assertThat(result.segments())
+                .extracting(segment -> new ExpectedSegment(segment.parent(), segment.label(),
+                        segment.weeks().value(), segment.rate().value(), segment.workFactor().value(),
+                        segment.period().from(), segment.period().to()))
+                .isEqualTo(expected.segments().stream()
+                        .map(segment -> new ExpectedSegment(segment.parent(), segment.label(),
+                                new Weeks(segment.weeks()).value(), new Rate(segment.rate()).value(),
+                                new Rate(segment.workFactor()).value(), segment.from(), segment.to()))
+                        .toList());
         assertThat(result.checks()).isEqualTo(expected.checks());
         assertThat(result.notes()).isEqualTo(expected.notes());
     }

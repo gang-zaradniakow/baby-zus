@@ -65,7 +65,15 @@ public class BenefitParametersMapper {
                 weeks(parameters, ParameterKey.NON_TRANSFERABLE_PARENTAL_WEEKS),
                 weeks(parameters, ParameterKey.PATERNITY_LEAVE_WEEKS),
                 weeks(parameters, ParameterKey.MOTHER_ONLY_MATERNITY_WEEKS),
-                new Money(value(parameters, ParameterKey.DEBT_THRESHOLD)));
+                new Money(value(parameters, ParameterKey.DEBT_THRESHOLD)),
+                weeks(parameters, ParameterKey.PARENTAL_LEAVE_WITH_WORK_MAX_WEEKS_ONE_CHILD),
+                weeks(parameters, ParameterKey.PARENTAL_LEAVE_WITH_WORK_MAX_WEEKS_MULTIPLE_CHILDREN),
+                weeks(parameters, ParameterKey.PARENTAL_LEAVE_WITH_WORK_MAX_WEEKS_ZA_ZYCIEM_ONE_CHILD),
+                weeks(parameters, ParameterKey.PARENTAL_LEAVE_WITH_WORK_MAX_WEEKS_ZA_ZYCIEM_MULTIPLE_CHILDREN),
+                new Money(value(parameters, ParameterKey.MINIMUM_MATERNITY_BENEFIT)),
+                rate(parameters, ParameterKey.INCOME_TAX_ADVANCE_RATE),
+                parameter(parameters, ParameterKey.PARENTAL_ALLOWANCE_WEEKS).values().stream().map(Weeks::new)
+                        .toList());
     }
 
     private static Rate rate(LegalParametersDto parameters, ParameterKey key) {

@@ -14,12 +14,13 @@ import java.util.List;
  * @param father father's share
  * @param averagedVariant the 81.5% variant applies
  * @param segments leaves on the timeline
+ * @param totals benefits of each parent and of the family
  * @param checks entitlement of each parent (Polish)
  * @param notes remarks (Polish)
  */
 public record MaternitySimulation(Weeks maternityWeeks, Weeks parentalWeeks, Weeks supplementaryWeeks,
         ParentLeaveShare mother, ParentLeaveShare father, boolean averagedVariant, List<LeaveSegment> segments,
-        List<Check> checks, List<String> notes) {
+        MaternityTotals totals, List<Check> checks, List<String> notes) {
 
     public MaternitySimulation {
         segments = List.copyOf(segments);

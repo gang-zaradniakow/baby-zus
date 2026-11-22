@@ -8,19 +8,21 @@ import com.hn26.zaradniaki.zusbaby.benefits.domain.leave.TakenInChild;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.maternity.BenefitVariant;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.maternity.CareSituation;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.maternity.FatherLeaveChoices;
+import com.hn26.zaradniaki.zusbaby.benefits.domain.maternity.PartTimeWork;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 /**
- * Leave split between the parents and its timeline, from both parents'
- * insurance titles.
+ * Leave split between the parents, its timeline and amounts, from both parents'
+ * insurance titles; optionally with parental leave combined with part-time
+ * work.
  */
 public record SimulateMaternityBenefitQuery(@NotNull CareSituation situation, @NotNull LocalDate startDate,
         @Min(1) int children, boolean zaZyciem, @NotNull BenefitVariant variant, PretermBirth preterm,
         TakenInChild adoption, @NotNull InsuranceTitles mother, @NotNull InsuranceTitles father,
-        @NotNull FatherLeaveChoices fatherChoices) implements Command<MaternitySimulationDto> {
+        @NotNull FatherLeaveChoices fatherChoices, PartTimeWork work) implements Command<MaternitySimulationDto> {
 
     @AssertTrue(message = "przy przyjęciu dziecka podaj dane adopcji lub rodziny zastępczej")
     boolean isAdoptionGivenForTakenInChild() {

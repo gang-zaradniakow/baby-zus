@@ -12,7 +12,7 @@ import com.hn26.zaradniaki.zusbaby.benefits.domain.insurance.ResolvedInsurance;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.leave.AdoptionLeave;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.leave.SupplementaryLeave;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.maternity.LeaveSegment;
-import com.hn26.zaradniaki.zusbaby.benefits.domain.maternity.MaternitySimulation;
+import com.hn26.zaradniaki.zusbaby.benefits.domain.maternity.MaternityBenefit;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.sickness.PregnancySickness;
 import com.hn26.zaradniaki.zusbaby.shared.mapping.MapStructConfig;
 import org.mapstruct.Mapper;
@@ -32,7 +32,9 @@ public interface BenefitsDtoMapper {
 
     PregnancySicknessDto toDto(PregnancySickness sickness);
 
-    MaternitySimulationDto toDto(MaternitySimulation simulation);
+    @Mapping(target = ".", source = "simulation")
+    @Mapping(target = "checks", source = "checks")
+    MaternitySimulationDto toDto(MaternityBenefit benefit);
 
     @Mapping(target = "from", source = "period.from")
     @Mapping(target = "to", source = "period.to")

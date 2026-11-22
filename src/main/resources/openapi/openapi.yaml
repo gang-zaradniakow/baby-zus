@@ -247,6 +247,11 @@ paths:
         parent has 9 non-transferable weeks of parental leave; supplementary leave for a premature baby follows the
         maternity leave; paternity leave (2 weeks) starts on the day of birth. Insurance titles of each parent are
         resolved as in `/calculations/insurance`.
+
+        Each leave has its monthly benefit (gross and after the 12% income tax advance, at least 1000 PLN net when
+        not working) and its total. One parent may combine parental leave with part-time work (up to half time):
+        the benefit drops by the part worked and the leave is extended accordingly. When the mother has no ZUS
+        title, the response names the benefit she gets instead (KRUS or the municipality).
       requestBody:
         required: true
         content:
@@ -255,7 +260,7 @@ paths:
               $ref: '#/components/schemas/MaternitySimulationRequest'
       responses:
         '200':
-          description: Leave split and timeline.
+          description: Leave split, timeline and amounts.
           content:
             application/json:
               schema:
@@ -679,6 +684,31 @@ components:
           $ref: '#/components/schemas/InsuranceTitlesRequest'
         father:
           $ref: '#/components/schemas/FatherLeaveRequest'
+        work:
+          $ref: '#/components/schemas/PartTimeWorkRequest'
+
+    PartTimeWorkRequest:
+      type: object
+      description: One parent combines parental leave with part-time work.
+      required: [parent, share, weeks]
+      properties:
+        parent:
+          $ref: '#/components/schemas/Parent'
+        share:
+          type: number
+          minimum: 0
+          exclusiveMinimum: true
+          maximum: 0.5
+          description: Part of full time worked (0.25 = quarter time, 0.5 = half time).
+        weeks:
+          type: integer
+          format: int32
+          minimum: 0
+          description: Weeks of parental leave combined with work.
+
+    Parent:
+      type: string
+      enum: [MOTHER, FATHER]
 
     FatherLeaveRequest:
       type: object
@@ -705,7 +735,7 @@ components:
     MaternitySimulation:
       type: object
       required: [maternityWeeks, parentalWeeks, supplementaryWeeks, mother, father, averagedVariant, segments,
-                 checks, notes]
+                 totals, checks, notes]
       properties:
         maternityWeeks:
           type: integer
@@ -727,6 +757,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/LeaveSegment'
+        totals:
+          $ref: '#/components/schemas/MaternityTotals'
         checks:
           type: array
           items:
@@ -735,6 +767,39 @@ components:
           type: array
           items:
             type: string
+        alternative:
+          $ref: '#/components/schemas/AlternativeBenefit'
+
+    MaternityTotals:
+      type: object
+      description: Benefits for the whole leave, after the income tax advance.
+      required: [mother, father, family]
+      properties:
+        mother:
+          $ref: '#/components/schemas/Money'
+        father:
+          $ref: '#/components/schemas/Money'
+        family:
+          $ref: '#/components/schemas/Money'
+
+    AlternativeBenefit:
+      type: object
+      description: What the mother gets instead of the ZUS maternity benefit when she has no ZUS title.
+      required: [kind, title, payer, monthly, weeks]
+      properties:
+        kind:
+          type: string
+          enum: [KRUS, MUNICIPALITY]
+        title:
+          type: string
+        payer:
+          type: string
+          description: Who pays it and where to apply (Polish).
+        monthly:
+          $ref: '#/components/schemas/Money'
+        weeks:
+          type: integer
+          format: int32
 
     ParentLeaveShare:
       type: object
@@ -749,11 +814,10 @@ components:
 
     LeaveSegment:
       type: object
-      required: [parent, label, weeks, rate, workFactor, from, to]
+      required: [parent, label, weeks, rate, workFactor, from, to, monthlyGross, monthlyNet, total]
       properties:
         parent:
-          type: string
-          enum: [MOTHER, FATHER]
+          $ref: '#/components/schemas/Parent'
         label:
           type: string
         weeks:
@@ -771,6 +835,12 @@ components:
         to:
           type: string
           format: date
+        monthlyGross:
+          $ref: '#/components/schemas/Money'
+        monthlyNet:
+          $ref: '#/components/schemas/Money'
+        total:
+          $ref: '#/components/schemas/Money'
 
     ProblemDetail:
       type: object

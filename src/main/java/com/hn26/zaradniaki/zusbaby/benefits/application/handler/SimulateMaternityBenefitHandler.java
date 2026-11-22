@@ -8,7 +8,7 @@ import com.hn26.zaradniaki.zusbaby.benefits.application.mapper.BenefitsDtoMapper
 import com.hn26.zaradniaki.zusbaby.benefits.application.query.SimulateMaternityBenefitQuery;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.BenefitParameters;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.insurance.InsuranceTitleResolver;
-import com.hn26.zaradniaki.zusbaby.benefits.domain.maternity.MaternityBenefitSimulator;
+import com.hn26.zaradniaki.zusbaby.benefits.domain.maternity.MaternityBenefitCalculator;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.maternity.MaternityCase;
 import com.hn26.zaradniaki.zusbaby.legalrules.application.dto.LegalParametersDto;
 import com.hn26.zaradniaki.zusbaby.legalrules.application.query.GetCurrentLegalParametersQuery;
@@ -22,7 +22,7 @@ class SimulateMaternityBenefitHandler implements Command.Handler<SimulateMaterni
 
     private final Pipeline pipeline;
     private final InsuranceTitleResolver resolver;
-    private final MaternityBenefitSimulator simulator;
+    private final MaternityBenefitCalculator calculator;
     private final BenefitParametersMapper parametersMapper;
     private final BenefitsDtoMapper mapper;
 
@@ -34,8 +34,8 @@ class SimulateMaternityBenefitHandler implements Command.Handler<SimulateMaterni
         MaternityCase family = new MaternityCase(query.situation(), query.startDate(), query.children(),
                 query.zaZyciem(), query.variant(), query.preterm(), query.adoption(),
                 resolver.resolve(query.mother(), benefitParameters), resolver.resolve(query.father(), benefitParameters),
-                query.fatherChoices());
-        return mapper.toDto(simulator.simulate(family, parametersMapper.toMaternityParameters(legalParameters),
+                query.fatherChoices(), query.work());
+        return mapper.toDto(calculator.calculate(family, parametersMapper.toMaternityParameters(legalParameters),
                 parametersMapper.toLeaveParameters(legalParameters)));
     }
 }

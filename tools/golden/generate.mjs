@@ -342,6 +342,77 @@ areas.maternitySegments = () => {
   };
 };
 
+// ---------------------------------------------------------------------------------------------------------------
+// Maternity benefit calculator screen: both parents' titles resolved, simulate() with work and amounts, checks
+// composed and the alternative benefit (simOut() in js/app.js)
+// ---------------------------------------------------------------------------------------------------------------
+const family = (o) => ({
+  situation: 'BIRTH', startDate: '2026-03-02', children: 1, zaZyciem: false, preterm: null, adoption: null, variant: 'STANDARD',
+  mother: titles({ e: employment(5177.4) }),
+  father: { titles: titles({ e: employment(6040.4) }), paternityLeave: true, parentalWeeks: 9, maternityWeeksTaken: 0 },
+  work: null, ...o,
+});
+const dad = (t, choices = {}) => ({ titles: t, paternityLeave: true, parentalWeeks: 9, maternityWeeksTaken: 0, ...choices });
+const work = (parent, share, weeks) => ({ parent, share, weeks });
+
+areas.maternityBenefit = () => {
+  const inputs = [
+    ['both parents employed, standard variant', family({})],
+    ['averaged variant 81.5%', family({ variant: 'AVERAGED' })],
+    ['low base: the 1000 PLN minimum applies', family({ mother: titles({ e: employment(1500, false) }) })],
+    ['mother self-employed, father takes 6 weeks of maternity', family({ mother: titles({ j: firm(4877.11) }), father: dad(titles({ e: employment(6040.4) }), { maternityWeeksTaken: 6 }) })],
+    ['mother works half-time for 8 weeks of parental leave', family({ work: work('MOTHER', 0.5, 8) })],
+    ['mother works quarter-time for 10 weeks', family({ work: work('MOTHER', 0.25, 10) })],
+    ['mother works half-time longer than her parental leave', family({ work: work('MOTHER', 0.5, 40) })],
+    ['father works half-time for 12 weeks (own and transferred weeks)', family({ father: dad(titles({ e: employment(6040.4) }), { parentalWeeks: 15 }), work: work('FATHER', 0.5, 12) })],
+    ['averaged variant with mother working quarter-time 5 weeks', family({ variant: 'AVERAGED', work: work('MOTHER', 0.25, 5) })],
+    ['mother not insured: parental allowance from the municipality', family({ mother: titles({}) })],
+    ['mother in KRUS: maternity benefit from KRUS', family({ mother: titles({ krus: true }) })],
+    ['mother with blocking debt', family({ mother: titles({ j: firm(4877.11, true, false, 62.4) }) })],
+    ['mother student on a mandate contract', family({ mother: titles({ z: mandate(3000, true, true) }) })],
+    ['father with two titles', family({ father: dad(titles({ e: employment(2000, false), j: firm(4877.11) })) })],
+    ['father not insured', family({ father: dad(titles({})) })],
+    ['twins, mother on minimum, father works half-time', family({ children: 2, mother: titles({ e: employment(1200, false) }), work: work('FATHER', 0.5, 6) })],
+    ['premature baby with supplementary leave', family({ preterm: { gestationWeek: 27, birthWeightGrams: 950, hospitalDays: 49, hospitalStartDay: 5 } })],
+    ['foster family, child of 2', family({ situation: 'ADOPTION', adoption: { type: 'FOSTER_FAMILY', childAge: 2, deferredSchool: false } })],
+    ['nobody insured, triplets', family({ children: 3, mother: titles({}), father: dad(titles({})) })],
+    ['Za zyciem, mother works half-time 20 weeks', family({ zaZyciem: true, work: work('MOTHER', 0.5, 20) })],
+  ];
+  const WHO = { mama: 'MOTHER', tata: 'FATHER' };
+  const KIND = { krus: 'KRUS', gmina: 'MUNICIPALITY' };
+  return {
+    source: 'js/app.js simOut(): resolvePerson() for both parents, simulate(), composed checks, zamiastZUS()',
+    cases: inputs.map(([name, input]) => {
+      const RM = C.resolvePerson({ t: mockupTitles(input.mother) });
+      const RT = C.resolvePerson({ t: mockupTitles(input.father.titles) });
+      const asIn = (R) => ({ tytul: R.tytul, podstawa: R.podstawa, debt: R.debt, krus: R.krus });
+      const sim = {
+        ...mockupSimulation({ ...input, mother: { mainTitle: 'NONE', base: 0, blockingDebt: 0, agriculturalInsurance: false }, father: { ...input.father, insurance: { mainTitle: 'NONE', base: 0, blockingDebt: 0, agriculturalInsurance: false } } }),
+      };
+      sim.mama = asIn(RM);
+      sim.tata = { ...asIn(RT), ojc: input.father.paternityLeave, rodz: input.father.parentalWeeks, macPrzejecie: input.father.maternityWeeksTaken };
+      sim.praca = input.work ? { kto: WHO_MOCKUP[input.work.parent], f: input.work.share, weeks: input.work.weeks } : { kto: 'none', f: 0.5, weeks: 8 };
+      const r = C.simulate(sim);
+      const pre = [...RM.checks.map((c) => ({ ...c, t: 'Mama: ' + c.t })), ...RT.checks.filter((c) => c.lvl !== 'ok' || RT.parts.length > 1).map((c) => ({ ...c, t: 'Tata: ' + c.t }))];
+      let all = [...pre.filter((c) => !(c.lvl === 'no' && /Rolnik w KRUS|Żaden z tytułów/.test(c.t))), ...r.checks];
+      const alt = C.zamiastZUS(RM, input.children);
+      all = all.filter((c) => !(alt && /^Mama: (brak ubezpieczenia|ubezpieczenie w KRUS)/.test(c.t)));
+      return {
+        name,
+        input,
+        expected: {
+          segments: r.segs.map((x) => ({ parent: WHO[x.who], label: x.label, weeks: x.weeks, rate: x.pct, workFactor: x.factor, from: iso(x.from), to: iso(x.to), monthlyGross: x.monthlyGross, monthlyNet: x.monthlyNet, total: x.total })),
+          totals: { mother: r.totals.mama, father: r.totals.tata, family: r.totals.razem },
+          checks: checks(all),
+          notes: r.notes,
+          alternative: alt ? { kind: KIND[alt.kind], title: alt.title, payer: alt.who, monthly: alt.monthly, weeks: alt.weeks } : null,
+        },
+      };
+    }),
+  };
+};
+const WHO_MOCKUP = { MOTHER: 'mama', FATHER: 'tata' };
+
 mkdirSync(outDir, { recursive: true });
 for (const [area, build] of Object.entries(areas)) {
   const file = join(outDir, `${area}.json`);

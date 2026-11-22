@@ -52,7 +52,16 @@ class BenefitParametersMapperTest {
                 parameter(ParameterKey.NON_TRANSFERABLE_PARENTAL_WEEKS, "9"),
                 parameter(ParameterKey.PATERNITY_LEAVE_WEEKS, "2"),
                 parameter(ParameterKey.MOTHER_ONLY_MATERNITY_WEEKS, "14"),
-                parameter(ParameterKey.DEBT_THRESHOLD, "48.06")));
+                parameter(ParameterKey.DEBT_THRESHOLD, "48.06"),
+                parameter(ParameterKey.PARENTAL_LEAVE_WITH_WORK_MAX_WEEKS_ONE_CHILD, "82"),
+                parameter(ParameterKey.PARENTAL_LEAVE_WITH_WORK_MAX_WEEKS_MULTIPLE_CHILDREN, "86"),
+                parameter(ParameterKey.PARENTAL_LEAVE_WITH_WORK_MAX_WEEKS_ZA_ZYCIEM_ONE_CHILD, "130"),
+                parameter(ParameterKey.PARENTAL_LEAVE_WITH_WORK_MAX_WEEKS_ZA_ZYCIEM_MULTIPLE_CHILDREN, "134"),
+                parameter(ParameterKey.MINIMUM_MATERNITY_BENEFIT, "1000"),
+                parameter(ParameterKey.INCOME_TAX_ADVANCE_RATE, "0.12"),
+                new ParameterDto(ParameterKey.PARENTAL_ALLOWANCE_WEEKS, ParameterKey.PARENTAL_ALLOWANCE_WEEKS.kind(),
+                        "", null, List.of(new BigDecimal("52"), new BigDecimal("65"), new BigDecimal("67"),
+                                new BigDecimal("69"), new BigDecimal("71")))));
 
         assertThat(mapper.toMaternityParameters(dto)).isEqualTo(MaternityParametersFixtures.legalState2026());
     }

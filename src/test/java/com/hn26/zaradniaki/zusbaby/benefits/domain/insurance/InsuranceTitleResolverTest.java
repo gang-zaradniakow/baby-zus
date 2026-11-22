@@ -18,37 +18,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 class InsuranceTitleResolverTest {
 
-    record EmploymentInput(BigDecimal base, boolean atLeastMinimumWage) {
-    }
-
-    record MandateInput(BigDecimal base, boolean voluntarySickness, boolean student) {
-    }
-
-    record FirmInput(BigDecimal base, boolean voluntarySickness, boolean startupRelief, BigDecimal debt) {
-    }
-
-    record Input(EmploymentInput employment, MandateInput mandateContract, FirmInput selfEmployment,
-            boolean agriculturalInsurance) {
-
-        InsuranceTitles toTitles() {
-            return new InsuranceTitles(
-                    employment == null
-                            ? null
-                            : new InsuranceTitles.Employment(new Money(employment.base()),
-                                    employment.atLeastMinimumWage()),
-                    mandateContract == null
-                            ? null
-                            : new InsuranceTitles.MandateContract(new Money(mandateContract.base()),
-                                    mandateContract.voluntarySickness(), mandateContract.student()),
-                    selfEmployment == null
-                            ? null
-                            : new InsuranceTitles.SelfEmployment(new Money(selfEmployment.base()),
-                                    selfEmployment.voluntarySickness(), selfEmployment.startupRelief(),
-                                    new Money(selfEmployment.debt())),
-                    agriculturalInsurance);
-        }
-    }
-
     record ExpectedPart(String title, BigDecimal base) {
     }
 
@@ -62,13 +31,13 @@ class InsuranceTitleResolverTest {
      * Expected results of {@code resolvePerson()} in the frontend prototype
      * (golden/insuranceTitles.json).
      */
-    static Stream<GoldenCase<Input, Expected>> mockupCases() {
-        return GoldenCases.load("insuranceTitles", Input.class, Expected.class);
+    static Stream<GoldenCase<InsuranceTitlesInput, Expected>> mockupCases() {
+        return GoldenCases.load("insuranceTitles", InsuranceTitlesInput.class, Expected.class);
     }
 
     @ParameterizedTest(name = "{0}")
     @MethodSource("mockupCases")
-    void resolvesTitlesLikeTheMockup(GoldenCase<Input, Expected> golden) {
+    void resolvesTitlesLikeTheMockup(GoldenCase<InsuranceTitlesInput, Expected> golden) {
         Expected expected = golden.expected();
 
         ResolvedInsurance resolved = resolver.resolve(golden.input().toTitles(),

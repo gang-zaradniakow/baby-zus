@@ -18,10 +18,11 @@ import java.util.Objects;
  * @param mother mother's resolved insurance
  * @param father father's resolved insurance
  * @param fatherChoices how the father uses his leave
+ * @param work parental leave combined with part-time work, may be {@code null}
  */
 public record MaternityCase(CareSituation situation, LocalDate startDate, int children, boolean zaZyciem,
         BenefitVariant variant, PretermBirth preterm, TakenInChild adoption, ResolvedInsurance mother,
-        ResolvedInsurance father, FatherLeaveChoices fatherChoices) {
+        ResolvedInsurance father, FatherLeaveChoices fatherChoices, PartTimeWork work) {
 
     public MaternityCase {
         Objects.requireNonNull(situation, "situation");

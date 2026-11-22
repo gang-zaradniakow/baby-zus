@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import an.awesome.pipelinr.Command;
 import an.awesome.pipelinr.Notification;
 import an.awesome.pipelinr.Pipeline;
+import com.hn26.zaradniaki.zusbaby.benefits.application.dto.AlternativeBenefitDto;
 import com.hn26.zaradniaki.zusbaby.benefits.application.mapper.BenefitParametersMapper;
 import com.hn26.zaradniaki.zusbaby.benefits.application.mapper.BenefitsDtoMapper;
 import com.hn26.zaradniaki.zusbaby.benefits.application.query.CalculateBenefitBaseQuery;
@@ -23,9 +24,12 @@ import com.hn26.zaradniaki.zusbaby.benefits.domain.leave.LeaveDimensionsPolicy;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.leave.PretermBirth;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.leave.SupplementaryLeavePolicy;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.leave.TakenInChild;
+import com.hn26.zaradniaki.zusbaby.benefits.domain.maternity.AlternativeBenefitKind;
+import com.hn26.zaradniaki.zusbaby.benefits.domain.maternity.AlternativeBenefitPolicy;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.maternity.BenefitVariant;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.maternity.CareSituation;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.maternity.FatherLeaveChoices;
+import com.hn26.zaradniaki.zusbaby.benefits.domain.maternity.MaternityBenefitCalculator;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.maternity.MaternityBenefitSimulator;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.sickness.PregnancySicknessCalculator;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.sickness.SickLeave;
@@ -76,7 +80,12 @@ class BenefitsHandlersTest {
             Map.entry(ParameterKey.PARENTAL_LEAVE_RATE, "0.75"), Map.entry(ParameterKey.AVERAGED_RATE, "0.815"),
             Map.entry(ParameterKey.SUPPLEMENTARY_LEAVE_RATE, "1"), Map.entry(ParameterKey.PATERNITY_LEAVE_RATE, "1"),
             Map.entry(ParameterKey.NON_TRANSFERABLE_PARENTAL_WEEKS, "9"),
-            Map.entry(ParameterKey.PATERNITY_LEAVE_WEEKS, "2"), Map.entry(ParameterKey.MOTHER_ONLY_MATERNITY_WEEKS, "14"));
+            Map.entry(ParameterKey.PATERNITY_LEAVE_WEEKS, "2"), Map.entry(ParameterKey.MOTHER_ONLY_MATERNITY_WEEKS, "14"),
+            Map.entry(ParameterKey.PARENTAL_LEAVE_WITH_WORK_MAX_WEEKS_ONE_CHILD, "82"),
+            Map.entry(ParameterKey.PARENTAL_LEAVE_WITH_WORK_MAX_WEEKS_MULTIPLE_CHILDREN, "86"),
+            Map.entry(ParameterKey.PARENTAL_LEAVE_WITH_WORK_MAX_WEEKS_ZA_ZYCIEM_ONE_CHILD, "130"),
+            Map.entry(ParameterKey.PARENTAL_LEAVE_WITH_WORK_MAX_WEEKS_ZA_ZYCIEM_MULTIPLE_CHILDREN, "134"),
+            Map.entry(ParameterKey.MINIMUM_MATERNITY_BENEFIT, "1100"));
 
     private final Pipeline pipeline = new Pipeline() {
         @Override
@@ -90,6 +99,10 @@ class BenefitsHandlersTest {
                     ParameterKey.MATERNITY_LEAVE_WEEKS.kind(), ParameterKey.MATERNITY_LEAVE_WEEKS.label(), null,
                     List.of(BigDecimal.valueOf(20), BigDecimal.valueOf(31), BigDecimal.valueOf(33),
                             BigDecimal.valueOf(35), BigDecimal.valueOf(37))));
+            parameters.add(new ParameterDto(ParameterKey.PARENTAL_ALLOWANCE_WEEKS,
+                    ParameterKey.PARENTAL_ALLOWANCE_WEEKS.kind(), ParameterKey.PARENTAL_ALLOWANCE_WEEKS.label(), null,
+                    List.of(BigDecimal.valueOf(54), BigDecimal.valueOf(65), BigDecimal.valueOf(67),
+                            BigDecimal.valueOf(69), BigDecimal.valueOf(71))));
             return (R) new LegalParametersDto(2, LocalDate.of(2027, 1, 1), "Stan prawny 2027", parameters);
         }
 
@@ -170,14 +183,15 @@ class BenefitsHandlersTest {
     void simulatesMaternityLeaveWithBothParentsResolvedAndCurrentRates() {
         var dimensions = new LeaveDimensionsPolicy();
         var handler = new SimulateMaternityBenefitHandler(pipeline, new InsuranceTitleResolver(),
-                new MaternityBenefitSimulator(dimensions, new AdoptionLeavePolicy(dimensions),
-                        new SupplementaryLeavePolicy()),
+                new MaternityBenefitCalculator(new MaternityBenefitSimulator(dimensions,
+                        new AdoptionLeavePolicy(dimensions), new SupplementaryLeavePolicy()),
+                        new AlternativeBenefitPolicy()),
                 parametersMapper, mapper);
         var employed = new InsuranceTitles(new InsuranceTitles.Employment(Money.of(6000), true), null, null, false);
 
         var result = handler.handle(new SimulateMaternityBenefitQuery(CareSituation.BIRTH, LocalDate.of(2027, 3, 1),
                 1, false, BenefitVariant.STANDARD, null, null, employed,
-                new InsuranceTitles(null, null, null, false), new FatherLeaveChoices(true, 9, 0)));
+                new InsuranceTitles(null, null, null, false), new FatherLeaveChoices(true, 9, 0), null));
 
         // father without insurance: only the mother's leave, parental paid at the
         // changed 75% rate
@@ -186,6 +200,28 @@ class BenefitsHandlersTest {
         assertThat(result.segments().get(1).rate()).isEqualTo(Rate.of("0.75"));
         assertThat(result.segments().getFirst().from()).isEqualTo(LocalDate.of(2027, 3, 1));
         assertThat(result.father().parentalWeeks()).isEqualTo(Weeks.ZERO);
+        // 6000 × 75% = 4500, minus the 540 tax advance, for 32 weeks
+        assertThat(result.segments().get(1).monthlyNet()).isEqualTo(Money.of(3960));
+        assertThat(result.totals().father()).isEqualTo(Money.ZERO);
+        assertThat(result.alternative()).isNull();
+    }
+
+    @Test
+    void offersTheParentalAllowanceOfTheCurrentLegalStateToAMotherWithoutZusTitle() {
+        var dimensions = new LeaveDimensionsPolicy();
+        var handler = new SimulateMaternityBenefitHandler(pipeline, new InsuranceTitleResolver(),
+                new MaternityBenefitCalculator(new MaternityBenefitSimulator(dimensions,
+                        new AdoptionLeavePolicy(dimensions), new SupplementaryLeavePolicy()),
+                        new AlternativeBenefitPolicy()),
+                parametersMapper, mapper);
+        var none = new InsuranceTitles(null, null, null, false);
+
+        var result = handler.handle(new SimulateMaternityBenefitQuery(CareSituation.BIRTH, LocalDate.of(2027, 3, 1),
+                1, false, BenefitVariant.STANDARD, null, null, none, none, new FatherLeaveChoices(true, 9, 0), null));
+
+        assertThat(result.alternative()).isEqualTo(new AlternativeBenefitDto(AlternativeBenefitKind.MUNICIPALITY,
+                "Świadczenie rodzicielskie", "wniosek w gminie / MOPS (nie ZUS)", Money.of(1100), Weeks.of(54)));
+        assertThat(result.segments()).isEmpty();
     }
 
     private CalculateLeaveDimensionsHandler leaveHandler() {

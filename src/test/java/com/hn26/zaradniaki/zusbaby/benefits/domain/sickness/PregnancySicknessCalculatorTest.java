@@ -7,6 +7,7 @@ import com.hn26.zaradniaki.zusbaby.benefits.domain.BenefitParametersFixtures;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.SicknessParametersFixtures;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.insurance.InsuranceTitleResolver;
 import com.hn26.zaradniaki.zusbaby.benefits.domain.insurance.InsuranceTitles;
+import com.hn26.zaradniaki.zusbaby.benefits.domain.insurance.InsuranceTitlesInput;
 import com.hn26.zaradniaki.zusbaby.golden.GoldenCase;
 import com.hn26.zaradniaki.zusbaby.golden.GoldenCases;
 import com.hn26.zaradniaki.zusbaby.shared.domain.Check;
@@ -23,38 +24,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 class PregnancySicknessCalculatorTest {
 
-    record EmploymentInput(BigDecimal base, boolean atLeastMinimumWage) {
-    }
-
-    record MandateInput(BigDecimal base, boolean voluntarySickness, boolean student) {
-    }
-
-    record FirmInput(BigDecimal base, boolean voluntarySickness, boolean startupRelief, BigDecimal debt) {
-    }
-
-    record TitlesInput(EmploymentInput employment, MandateInput mandateContract, FirmInput selfEmployment,
-            boolean agriculturalInsurance) {
-
-        InsuranceTitles toTitles() {
-            return new InsuranceTitles(
-                    employment == null
-                            ? null
-                            : new InsuranceTitles.Employment(new Money(employment.base()),
-                                    employment.atLeastMinimumWage()),
-                    mandateContract == null
-                            ? null
-                            : new InsuranceTitles.MandateContract(new Money(mandateContract.base()),
-                                    mandateContract.voluntarySickness(), mandateContract.student()),
-                    selfEmployment == null
-                            ? null
-                            : new InsuranceTitles.SelfEmployment(new Money(selfEmployment.base()),
-                                    selfEmployment.voluntarySickness(), selfEmployment.startupRelief(),
-                                    new Money(selfEmployment.debt())),
-                    agriculturalInsurance);
-        }
-    }
-
-    record Input(TitlesInput titles, SickLeave leave) {
+    record Input(InsuranceTitlesInput titles, SickLeave leave) {
     }
 
     record ExpectedPart(String label, int days, BigDecimal rate, BigDecimal amount) {

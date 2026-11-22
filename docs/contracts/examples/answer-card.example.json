@@ -31,6 +31,6 @@
     {"type": "SIMULATE", "label": "Porównaj warianty", "ref": "B.04_warianty_urlopu"},
     {"type": "ESCALATE", "label": "Zapytaj urzędnika"}
   ],
-  "engineVersion": "params-2026-10-24",
+  "engineVersion": "params-2025-03-19",
   "generatedBy": "RULES"
 }

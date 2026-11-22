@@ -73,7 +73,7 @@ IntentId = Annotated[
 """Identyfikator intencji z katalogu A–H albo ``OUT_OF_CATALOG`` dla pytań spoza katalogu."""
 
 EngineVersion = Annotated[
-    str, Field(pattern=r"^params-\d{4}-\d{2}-\d{2}$", examples=["params-2026-10-24"])
+    str, Field(pattern=r"^params-\d{4}-\d{2}-\d{2}$", examples=["params-2025-03-19"])
 ]
 """Identyfikator zestawu parametrów prawnych użytego do wyliczenia (ZUS-10)."""
 

@@ -13,7 +13,7 @@ from datetime import date
 from decimal import Decimal
 
 from rules_engine.params import v2023_04_26
-from rules_engine.params.base import ParamSet, kp, param, uz
+from rules_engine.params.base import ParamSet, SupplementaryCriteria, kp, param, uz
 
 PARAMS: ParamSet = replace(
     v2023_04_26.PARAMS,
@@ -28,6 +28,21 @@ PARAMS: ParamSet = replace(
         (8, 15),
         "Maksymalny wymiar uzupełniającego urlopu macierzyńskiego (do 8 albo do 15 tygodni – "
         "zależnie od tygodnia ciąży, masy urodzeniowej i hospitalizacji; szczegóły: ZUS-18)",
+        kp("przepisy o uzupełniającym urlopie macierzyńskim", to_verify=True),
+    ),
+    supplementary_maternity_criteria=param(
+        SupplementaryCriteria(
+            very_preterm_weeks=28,
+            term_weeks=37,
+            low_weight_g=1000,
+            long_window_weeks=15,
+            short_window_weeks=8,
+            term_first_day=5,
+            term_first_day_last=28,
+            term_min_stay_days=2,
+        ),
+        "Kryteria uzupełniającego urlopu macierzyńskiego: tydzień ciąży, masa urodzeniowa, "
+        "okres pobytu dziecka w szpitalu (tydzień urlopu za każdy rozpoczęty tydzień pobytu)",
         kp("przepisy o uzupełniającym urlopie macierzyńskim", to_verify=True),
     ),
 )

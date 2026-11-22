@@ -7,7 +7,12 @@ name = "zus-profile-source"
 version = "0.1.0"
 description = "Port i adaptery (mock, http) do zewnętrznego backendu z danymi profilu"
 requires-python = ">=3.14"
-dependencies = ["zus-contracts", "httpx>=0.28,<1"]
+dependencies = [
+  "zus-contracts",
+  "zus-rules-engine",  # mock liczy etap silnikiem (silnik nie zależy od profile_source)
+  "httpx>=0.28,<1",
+  "tzdata>=2025.2",  # baza stref czasowych dla zoneinfo na Windows
+]
 
 [tool.setuptools.package-data]
 profile_source = ["py.typed"]

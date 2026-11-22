@@ -22,6 +22,8 @@ FIELD_QUESTIONS: Final[dict[str, str]] = {
     "child.birthDate": "Kiedy urodziło się dziecko?",
     "child.childrenCount": "Ile dzieci urodziło się przy jednym porodzie?",
     "child.zaZyciem": "Czy masz zaświadczenie lekarskie „Za życiem” dotyczące dziecka?",
+    "child.gestationalWeeks": "W którym tygodniu ciąży urodziło się dziecko (ukończone tygodnie)?",
+    "child.birthWeightG": "Jaka była masa urodzeniowa dziecka (w gramach)?",
     "child.placement": (
         "Kiedy dziecko zostało przyjęte na wychowanie i jaka jest jego data urodzenia?"
     ),

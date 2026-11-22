@@ -21,4 +21,5 @@ dependencies = [
 ]
 
 [tool.setuptools.package-data]
-api = ["py.typed"]
+# Migracje Alembic jadą w pakiecie – obraz Dockera nie ma alembic.ini ani źródeł repo.
+api = ["py.typed", "db/migrations/*.py", "db/migrations/*.mako", "db/migrations/versions/*.py"]

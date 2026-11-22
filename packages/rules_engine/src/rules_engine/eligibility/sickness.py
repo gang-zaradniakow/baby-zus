@@ -129,8 +129,9 @@ def check_sickness_in_pregnancy(profile: Profile, today: date, params: ParamSet)
     rate = params.rate_sickness_pregnancy.value
     return Decision(
         verdict=Verdict.YES,
-        summary=f"Tak – okres wyczekiwania jest spełniony ({days} z {required} dni). "
-        f"Zasiłek chorobowy w ciąży wynosi {format_percent(rate)} podstawy wymiaru.",
+        summary=f"Tak – okres wyczekiwania jest spełniony ({days} dni ubezpieczenia, "
+        f"wymagane {required}). Zasiłek chorobowy w ciąży wynosi {format_percent(rate)} "
+        "podstawy wymiaru.",
         facts=tuple(facts),
         legal_basis=BASIS_WAITING + BASIS_PREGNANCY_RATE,
         warnings=warnings,

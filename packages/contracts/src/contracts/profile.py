@@ -133,6 +133,10 @@ class ChildInfo(ContractModel):
     birth_date: date | None = None
     children_count: int = Field(default=1, ge=1, le=MAX_CHILDREN_PER_BIRTH)
     za_zyciem: bool = False
+    gestational_weeks: int | None = Field(default=None, ge=20, le=45)
+    """Ukończone tygodnie ciąży w dniu porodu (urlop uzupełniający, ZUS-18)."""
+    birth_weight_g: int | None = Field(default=None, ge=200, le=7000)
+    """Masa urodzeniowa w gramach; przy porodzie mnogim – najmniejsza z mas dzieci."""
     placement: Placement | None = None
 
 

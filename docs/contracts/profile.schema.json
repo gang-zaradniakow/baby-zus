@@ -46,6 +46,36 @@
           "title": "Zazyciem",
           "type": "boolean"
         },
+        "gestationalWeeks": {
+          "anyOf": [
+            {
+              "maximum": 45,
+              "minimum": 20,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Ukończone tygodnie ciąży w dniu porodu (urlop uzupełniający, ZUS-18).",
+          "title": "Gestationalweeks"
+        },
+        "birthWeightG": {
+          "anyOf": [
+            {
+              "maximum": 7000,
+              "minimum": 200,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Masa urodzeniowa w gramach; przy porodzie mnogim – najmniejsza z mas dzieci.",
+          "title": "Birthweightg"
+        },
         "placement": {
           "anyOf": [
             {

@@ -58,8 +58,16 @@ PARAMS = ParamSet(
     waiting_period_voluntary_days=param(
         90, "Okres wyczekiwania – dobrowolne ubezpieczenie chorobowe", uz("art. 4")
     ),
+    sickness_period_days=param(182, "Okres zasiłkowy – zasada ogólna", uz("art. 8")),
     sickness_period_pregnancy_days=param(
         270, "Okres zasiłkowy, gdy niezdolność przypada w czasie ciąży", uz("art. 8")
+    ),
+    sickness_period_max_break_days=param(
+        60,
+        "Poprzednie niezdolności wlicza się do okresu zasiłkowego, jeśli przerwa nie "
+        "przekroczyła tylu dni (bez względu na przyczynę; wyjątek: niezdolność w ciąży "
+        "po przerwie)",
+        uz("art. 9"),
     ),
     employer_sick_pay_days=param(
         33, "Dni wynagrodzenia chorobowego płaconego przez pracodawcę w roku", kp("art. 92")
@@ -100,6 +108,7 @@ PARAMS = ParamSet(
         7, "Minimalny urlop od dnia zgonu dziecka", kp("art. 180¹ § 1")
     ),
     supplementary_maternity_max_weeks=None,
+    supplementary_maternity_criteria=None,
     # --- urlop rodzicielski ---
     parental_leave_weeks_single=param(
         41, "Urlop rodzicielski – jedno dziecko (łącznie dla obojga rodziców)", kp("art. 182¹a")

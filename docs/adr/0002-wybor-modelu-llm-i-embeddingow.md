@@ -109,7 +109,9 @@ Limity (nagłówki, liczba 429, seria): …
   w dokumentacji OVHcloud AI Endpoints przed użyciem prawdziwych danych.
 - **Ryzyko dostawcy:** model nowy i bezpłatny – warunki mogą się zmienić. Mitygacja:
   wymiana modelu konfiguracją, ten sam skrypt pomiarowy dla następcy.
-- **ZUS-35 (pgvector):** indeksy HNSW/IVFFlat mają limit wymiaru wektora (do potwierdzenia
-  dla wersji z ZUS-02). Przy wektorach o kilku tysiącach wymiarów: `halfvec`, wyszukiwanie
+- **ZUS-35 (pgvector):** w ZUS-02 przyjęto obraz `pgvector/pgvector:0.8.0-pg17`. Kolumna
+  `vector` mieści do 16 000 wymiarów, ale indeksy HNSW i IVFFlat obsługują najwyżej
+  2 000 wymiarów dla `vector` i 4 000 dla `halfvec`. Typowe modele wielojęzyczne (1024, 1536)
+  mieszczą się w limicie. Przy wektorach o kilku tysiącach wymiarów: `halfvec`, wyszukiwanie
   bez indeksu (przy kilku tysiącach fragmentów wystarczy) albo model o mniejszym wymiarze.
 - **ZUS-56:** pytania z tego spike'u są zalążkiem zestawu do testów `live_llm`.

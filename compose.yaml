@@ -1,0 +1,75 @@
+# Lokalne uruchomienie: docker compose up --build  (ZUS-02)
+# Sekrety i konfiguracja z .env (wzór: .env.example); domyślne hasła tylko do pracy lokalnej.
+# Kolejne usługi (mcp_servers – ZUS-32, admin – ZUS-60) dochodzą razem z ich aplikacjami.
+
+name: zus-asystent
+
+x-app: &app
+  env_file:
+    - path: .env
+      required: false
+  restart: unless-stopped
+  healthcheck:
+    test: ["CMD", "python", "-c", "import urllib.request as u; u.urlopen('http://127.0.0.1:8000/health', timeout=3)"]
+    interval: 10s
+    timeout: 5s
+    retries: 5
+    start_period: 15s
+
+services:
+  db:
+    # PostgreSQL 17 z rozszerzeniem pgvector (RAG, ZUS-35). Ta sama wersja w testcontainers.
+    image: pgvector/pgvector:0.8.0-pg17
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-zus}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-zus}
+      POSTGRES_DB: ${POSTGRES_DB:-zus}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  migrate:
+    # Jednorazowo: migracje Alembic (ZUS-40), potem kontener kończy pracę.
+    image: zus-api:local
+    build: &api-build
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP: api
+    env_file:
+      - path: .env
+        required: false
+    environment: &db-url
+      # Adres bazy w sieci compose (w .env jest wariant dla uruchomienia poza Dockerem).
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-zus}:${POSTGRES_PASSWORD:-zus}@db:5432/${POSTGRES_DB:-zus}
+    command: ["python", "-m", "api.db.migrate", "upgrade", "head"]
+    healthcheck:
+      disable: true
+    restart: "no"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  api:
+    <<: *app
+    image: zus-api:local
+    build: *api-build
+    environment: *db-url
+    ports:
+      - "${API_PORT:-8000}:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+
+volumes:
+  db-data:

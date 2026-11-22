@@ -43,6 +43,7 @@ ignore = [
 "scripts/spike_llm.py" = ["T20", "E501"]   # tabele danych testowych w jednym pliku
 "tasks.py" = ["T20", "S603", "S607"]   # skrypt CLI: print i uruchamianie narzędzi
 "**/contracts/schema.py" = ["T20"]      # CLI eksportu schematów
+"**/profile_source/openapi.py" = ["T20"]  # CLI eksportu kontraktu OpenAPI
 
 [tool.ruff.lint.isort]
 known-first-party = [
@@ -101,7 +102,7 @@ markers = [
   "integration: wymaga Postgresa (testcontainers) lub serwera MCP w pamięci",
   "e2e: wymaga docker compose; uruchamiane osobnym jobem CI",
   "live_llm: prawdziwy model przez API; wymaga LLM_API_KEY; domyślnie wyłączone",
-  "golden: sprawy ZUS z data/golden",
+  "golden: sprawy golden T1–T12 z data/personas",
 ]
 
 [tool.coverage.run]

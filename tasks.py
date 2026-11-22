@@ -25,9 +25,13 @@ BIN = VENV / ("Scripts" if IS_WINDOWS else "bin")
 REQUIRED = (3, 14)
 
 APPS = ["api", "mcp_servers", "assistant", "admin"]
-# mypy --strict tylko dla kontraktów i silnika; reszta w trybie zwykłym.
-STRICT_SRC = ["packages/contracts/src", "packages/rules_engine/src"]
-OTHER_SRC = ["packages/profile_source/src", *(f"apps/{app}/src" for app in APPS)]
+# mypy --strict dla pakietów (contracts, rules_engine, profile_source); aplikacje zwykły.
+STRICT_SRC = [
+    "packages/contracts/src",
+    "packages/rules_engine/src",
+    "packages/profile_source/src",
+]
+OTHER_SRC = [*(f"apps/{app}/src" for app in APPS)]
 CACHE_DIRS = [".pytest_cache", ".mypy_cache", ".ruff_cache", ".hypothesis", "htmlcov"]
 CACHE_FILES = ["coverage.xml", ".coverage"]
 
@@ -126,7 +130,7 @@ def cmd_format() -> None:
 
 
 def cmd_typecheck() -> None:
-    """mypy: --strict dla contracts i rules_engine, zwykły dla reszty."""
+    """mypy: --strict dla pakietów, zwykły dla aplikacji."""
     mypy = tool("mypy")
     run(mypy, "--strict", *STRICT_SRC)
     run(mypy, *OTHER_SRC)
@@ -153,8 +157,9 @@ def cmd_test_e2e() -> None:
 
 
 def cmd_schemas() -> None:
-    """Wygeneruj JSON Schema kontraktów do docs/contracts."""
+    """Wygeneruj JSON Schema kontraktów i OpenAPI backendu profilu do docs/contracts."""
     run(venv_python(), "-m", "contracts.schema")
+    run(venv_python(), "-m", "profile_source.openapi")
 
 
 def cmd_check() -> None:

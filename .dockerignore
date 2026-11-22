@@ -1,10 +1,11 @@
-# Do obrazu trafiają tylko packages/ i apps/<APP> (zob. Dockerfile).
+# Do obrazu trafiają tylko packages/, apps/<APP> i data/personas (zob. Dockerfile).
 # Reszta nie powinna nawet trafić do kontekstu budowania.
 .git
 .venv
 .forgejo
 hackaton
-data
+data/*
+!data/personas
 docs
 scripts
 tests

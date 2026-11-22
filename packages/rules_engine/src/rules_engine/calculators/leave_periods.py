@@ -7,8 +7,8 @@ Konwencje:
 - wymiary pochodzą z ``ParamSet`` (ZUS-10); błędne plany zgłaszają ``LeavePlanError``
   z komunikatem dla użytkownika.
 
-Przypadki adopcji, wcześniaków i przejęcia urlopu przez ojca – ZUS-18; podział urlopu
-rodzicielskiego na części i łączenie z pracą – ZUS-17.
+Przypadki adopcji, wcześniaków i przejęcia urlopu przez ojca – ``special_leaves`` (ZUS-18);
+podział urlopu rodzicielskiego na części i łączenie z pracą – ZUS-17.
 """
 
 from collections.abc import Sequence

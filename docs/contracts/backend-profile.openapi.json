@@ -1,0 +1,883 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Backend profilu – proponowany kontrakt (ZUS-30)",
+    "version": "0.1.0",
+    "description": "Kontrakt, którego oczekuje adapter HttpProfileSource. userRef to pseudonim użytkownika – nigdy PESEL. Dane drugiego rodzica tylko za jego zgodą."
+  },
+  "security": [
+    {
+      "bearer": []
+    }
+  ],
+  "paths": {
+    "/v1/profiles/{userRef}": {
+      "get": {
+        "operationId": "getProfile",
+        "summary": "Profil sprawy",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/UserRef"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Profile"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nieznany użytkownik (code: NOT_FOUND)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Za dużo żądań – klient ponawia po Retry-After",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Backend chwilowo niedostępny – klient ponawia",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/profiles/{userRef}/partner": {
+      "get": {
+        "operationId": "getPartnerProfile",
+        "summary": "Dane drugiego rodzica",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/UserRef"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ParentProfile"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Brak zgody drugiego rodzica (code: CONSENT_REQUIRED)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nieznany użytkownik (code: NOT_FOUND)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Za dużo żądań – klient ponawia po Retry-After",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Backend chwilowo niedostępny – klient ponawia",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/profiles/{userRef}/stage": {
+      "get": {
+        "operationId": "getChildStage",
+        "summary": "Etap i flagi",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/UserRef"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StageInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nieznany użytkownik (code: NOT_FOUND)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Za dużo żądań – klient ponawia po Retry-After",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Backend chwilowo niedostępny – klient ponawia",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ChildInfo": {
+        "additionalProperties": false,
+        "description": "Dane ciąży lub dziecka. Wszystkie daty opcjonalne – brak oznacza NEED_INFO.",
+        "properties": {
+          "source": {
+            "$ref": "#/components/schemas/FactSource"
+          },
+          "expectedBirthDate": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Expectedbirthdate"
+          },
+          "birthDate": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Birthdate"
+          },
+          "childrenCount": {
+            "default": 1,
+            "maximum": 10,
+            "minimum": 1,
+            "title": "Childrencount",
+            "type": "integer"
+          },
+          "zaZyciem": {
+            "default": false,
+            "title": "Zazyciem",
+            "type": "boolean"
+          },
+          "gestationalWeeks": {
+            "anyOf": [
+              {
+                "maximum": 45,
+                "minimum": 20,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Ukończone tygodnie ciąży w dniu porodu (urlop uzupełniający, ZUS-18).",
+            "title": "Gestationalweeks"
+          },
+          "birthWeightG": {
+            "anyOf": [
+              {
+                "maximum": 7000,
+                "minimum": 200,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Masa urodzeniowa w gramach; przy porodzie mnogim – najmniejsza z mas dzieci.",
+            "title": "Birthweightg"
+          },
+          "placement": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Placement"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "source"
+        ],
+        "title": "ChildInfo",
+        "type": "object"
+      },
+      "EmploymentEndReason": {
+        "enum": [
+          "BANKRUPTCY",
+          "LIQUIDATION",
+          "EMPLOYER_DEATH",
+          "COURT_RULING",
+          "CONTRACT_EXPIRY",
+          "OTHER"
+        ],
+        "title": "EmploymentEndReason",
+        "type": "string"
+      },
+      "ErrorBody": {
+        "additionalProperties": false,
+        "description": "Treść odpowiedzi błędu backendu.",
+        "properties": {
+          "code": {
+            "examples": [
+              "NOT_FOUND",
+              "CONSENT_REQUIRED"
+            ],
+            "title": "Code",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ],
+        "title": "ErrorBody",
+        "type": "object"
+      },
+      "FactSource": {
+        "description": "Skąd pochodzi fakt: pobrany z ZUS, wpisany przez użytkownika, odczytany z dokumentu.",
+        "enum": [
+          "ZUS",
+          "USER",
+          "DOCUMENT"
+        ],
+        "title": "FactSource",
+        "type": "string"
+      },
+      "Flag": {
+        "description": "Flagi nakładane na etap (ustalenie U3).",
+        "enum": [
+          "ADOPTION",
+          "DIFFICULT"
+        ],
+        "title": "Flag",
+        "type": "string"
+      },
+      "InsurancePeriod": {
+        "additionalProperties": false,
+        "description": "Okres podlegania ubezpieczeniu z jednego tytułu.",
+        "properties": {
+          "title": {
+            "$ref": "#/components/schemas/InsuranceTitle"
+          },
+          "sickness": {
+            "$ref": "#/components/schemas/SicknessInsurance"
+          },
+          "dateFrom": {
+            "format": "date",
+            "title": "Datefrom",
+            "type": "string"
+          },
+          "dateTo": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Dateto"
+          },
+          "endReason": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/EmploymentEndReason"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "title",
+          "sickness",
+          "dateFrom"
+        ],
+        "title": "InsurancePeriod",
+        "type": "object"
+      },
+      "InsuranceProfile": {
+        "additionalProperties": false,
+        "description": "Dane ubezpieczeniowe jednego rodzica (pobrane z ZUS albo wpisane w formularzu).",
+        "properties": {
+          "source": {
+            "$ref": "#/components/schemas/FactSource"
+          },
+          "periods": {
+            "items": {
+              "$ref": "#/components/schemas/InsurancePeriod"
+            },
+            "title": "Periods",
+            "type": "array"
+          },
+          "payer": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PayerInfo"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "salaries": {
+            "items": {
+              "$ref": "#/components/schemas/MonthlySalary"
+            },
+            "title": "Salaries",
+            "type": "array"
+          },
+          "deductionRate": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Procent potrąconych składek ze sprawy (U7); brak → wartość domyślna z parametrów.",
+            "title": "Deductionrate"
+          },
+          "contributionDebt": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Contributiondebt"
+          },
+          "sickLeaves": {
+            "items": {
+              "$ref": "#/components/schemas/SickLeave"
+            },
+            "title": "Sickleaves",
+            "type": "array"
+          }
+        },
+        "required": [
+          "source"
+        ],
+        "title": "InsuranceProfile",
+        "type": "object"
+      },
+      "InsuranceTitle": {
+        "enum": [
+          "EMPLOYMENT",
+          "MANDATE_CONTRACT",
+          "BUSINESS"
+        ],
+        "title": "InsuranceTitle",
+        "type": "string"
+      },
+      "LeavePart": {
+        "additionalProperties": false,
+        "description": "Część planowanego urlopu (podział między rodziców, łączenie z pracą).",
+        "properties": {
+          "parent": {
+            "$ref": "#/components/schemas/ParentRole"
+          },
+          "type": {
+            "$ref": "#/components/schemas/PeriodType"
+          },
+          "dateFrom": {
+            "format": "date",
+            "title": "Datefrom",
+            "type": "string"
+          },
+          "dateTo": {
+            "format": "date",
+            "title": "Dateto",
+            "type": "string"
+          },
+          "workFraction": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "default": "0",
+            "description": "Wymiar pracy w trakcie tej części urlopu (0 = bez pracy, maks. 0.5 sprawdza silnik).",
+            "title": "Workfraction"
+          }
+        },
+        "required": [
+          "parent",
+          "type",
+          "dateFrom",
+          "dateTo"
+        ],
+        "title": "LeavePart",
+        "type": "object"
+      },
+      "MonthlySalary": {
+        "additionalProperties": false,
+        "description": "Przychód brutto za miesiąc (podstawa wymiaru liczona w silniku, ZUS-12).",
+        "properties": {
+          "month": {
+            "examples": [
+              "2026-03"
+            ],
+            "pattern": "^\\d{4}-(0[1-9]|1[0-2])$",
+            "title": "Month",
+            "type": "string"
+          },
+          "gross": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Gross"
+          }
+        },
+        "required": [
+          "month",
+          "gross"
+        ],
+        "title": "MonthlySalary",
+        "type": "object"
+      },
+      "ParentProfile": {
+        "additionalProperties": false,
+        "properties": {
+          "role": {
+            "$ref": "#/components/schemas/ParentRole"
+          },
+          "birthDate": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Potrzebna tylko do progu 50 lat (wynagrodzenie chorobowe 14 zamiast 33 dni).",
+            "title": "Birthdate"
+          },
+          "insurance": {
+            "$ref": "#/components/schemas/InsuranceProfile"
+          }
+        },
+        "required": [
+          "role",
+          "insurance"
+        ],
+        "title": "ParentProfile",
+        "type": "object"
+      },
+      "ParentRole": {
+        "enum": [
+          "MOTHER",
+          "FATHER"
+        ],
+        "title": "ParentRole",
+        "type": "string"
+      },
+      "PayerInfo": {
+        "additionalProperties": false,
+        "description": "Liczba ubezpieczonych u płatnika – decyduje, kto wypłaca zasiłek (art. 61).",
+        "properties": {
+          "insuredCountNov30": {
+            "minimum": 0,
+            "title": "Insuredcountnov30",
+            "type": "integer"
+          },
+          "countDate": {
+            "format": "date",
+            "title": "Countdate",
+            "type": "string"
+          }
+        },
+        "required": [
+          "insuredCountNov30",
+          "countDate"
+        ],
+        "title": "PayerInfo",
+        "type": "object"
+      },
+      "PeriodType": {
+        "description": "Rodzaj świadczenia w okresie wyliczenia albo w planie urlopu.",
+        "enum": [
+          "MACIERZYNSKI",
+          "NA_WARUNKACH_MACIERZYNSKIEGO",
+          "UZUPELNIAJACY_MACIERZYNSKI",
+          "RODZICIELSKI",
+          "OJCOWSKI",
+          "CHOROBOWY",
+          "W_WYSOKOSCI_MACIERZYNSKIEGO",
+          "OPIEKUNCZY",
+          "SWIADCZENIE_REHABILITACYJNE"
+        ],
+        "title": "PeriodType",
+        "type": "string"
+      },
+      "Placement": {
+        "additionalProperties": false,
+        "description": "Przyjęcie dziecka na wychowanie: przysposobienie albo rodzina zastępcza (E4 → flaga).",
+        "properties": {
+          "kind": {
+            "$ref": "#/components/schemas/PlacementKind"
+          },
+          "childBirthDate": {
+            "format": "date",
+            "title": "Childbirthdate",
+            "type": "string"
+          },
+          "placementDate": {
+            "format": "date",
+            "title": "Placementdate",
+            "type": "string"
+          },
+          "rulingFinalDate": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Rulingfinaldate"
+          },
+          "schoolDeferral": {
+            "default": false,
+            "title": "Schooldeferral",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "kind",
+          "childBirthDate",
+          "placementDate"
+        ],
+        "title": "Placement",
+        "type": "object"
+      },
+      "PlacementKind": {
+        "enum": [
+          "ADOPTION",
+          "FOSTER_FAMILY"
+        ],
+        "title": "PlacementKind",
+        "type": "string"
+      },
+      "Profile": {
+        "additionalProperties": false,
+        "description": "Kompletny kontekst sprawy przekazywany do silnika reguł.",
+        "properties": {
+          "profileId": {
+            "description": "Pseudonimowy identyfikator – nigdy PESEL.",
+            "minLength": 1,
+            "title": "Profileid",
+            "type": "string"
+          },
+          "applicant": {
+            "$ref": "#/components/schemas/ParentProfile"
+          },
+          "partner": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ParentProfile"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "partnerConsent": {
+            "default": false,
+            "title": "Partnerconsent",
+            "type": "boolean"
+          },
+          "child": {
+            "$ref": "#/components/schemas/ChildInfo"
+          },
+          "specialEvents": {
+            "items": {
+              "$ref": "#/components/schemas/SpecialEvent"
+            },
+            "title": "Specialevents",
+            "type": "array"
+          },
+          "leavePlan": {
+            "items": {
+              "$ref": "#/components/schemas/LeavePart"
+            },
+            "title": "Leaveplan",
+            "type": "array"
+          }
+        },
+        "required": [
+          "profileId",
+          "applicant",
+          "child"
+        ],
+        "title": "Profile",
+        "type": "object"
+      },
+      "SickLeave": {
+        "additionalProperties": false,
+        "description": "Zwolnienie lekarskie e-ZLA.",
+        "properties": {
+          "dateFrom": {
+            "format": "date",
+            "title": "Datefrom",
+            "type": "string"
+          },
+          "dateTo": {
+            "format": "date",
+            "title": "Dateto",
+            "type": "string"
+          },
+          "code": {
+            "anyOf": [
+              {
+                "pattern": "^[A-E]$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Code"
+          }
+        },
+        "required": [
+          "dateFrom",
+          "dateTo"
+        ],
+        "title": "SickLeave",
+        "type": "object"
+      },
+      "SicknessInsurance": {
+        "enum": [
+          "MANDATORY",
+          "VOLUNTARY",
+          "NONE"
+        ],
+        "title": "SicknessInsurance",
+        "type": "string"
+      },
+      "SpecialEvent": {
+        "additionalProperties": false,
+        "description": "Zdarzenie szczególne (§3.1 E5, kategoria F): hospitalizacja, zgon, wcześniak itp.",
+        "properties": {
+          "kind": {
+            "$ref": "#/components/schemas/SpecialEventKind"
+          },
+          "dateFrom": {
+            "format": "date",
+            "title": "Datefrom",
+            "type": "string"
+          },
+          "dateTo": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Dateto"
+          }
+        },
+        "required": [
+          "kind",
+          "dateFrom"
+        ],
+        "title": "SpecialEvent",
+        "type": "object"
+      },
+      "SpecialEventKind": {
+        "enum": [
+          "MISCARRIAGE",
+          "STILLBIRTH",
+          "CHILD_DEATH",
+          "PREMATURE_BIRTH",
+          "CHILD_HOSPITALIZATION",
+          "MOTHER_HOSPITALIZATION",
+          "MOTHER_UNABLE_TO_CARE",
+          "MOTHER_DEATH",
+          "CHILD_ABANDONMENT"
+        ],
+        "title": "SpecialEventKind",
+        "type": "string"
+      },
+      "Stage": {
+        "description": "Etap ścieżki rodzica (ustalenie U3).",
+        "enum": [
+          "E0",
+          "E1",
+          "E2",
+          "E3"
+        ],
+        "title": "Stage",
+        "type": "string"
+      },
+      "StageInfo": {
+        "additionalProperties": false,
+        "description": "Etap i flagi wyliczone dla dziecka. ``stage = None`` – za mało danych, by go ustalić.",
+        "properties": {
+          "stage": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Stage"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "flags": {
+            "items": {
+              "$ref": "#/components/schemas/Flag"
+            },
+            "title": "Flags",
+            "type": "array"
+          }
+        },
+        "required": [
+          "stage"
+        ],
+        "title": "StageInfo",
+        "type": "object"
+      }
+    },
+    "parameters": {
+      "UserRef": {
+        "name": "userRef",
+        "in": "path",
+        "required": true,
+        "description": "Pseudonimowy identyfikator użytkownika (URL-encoded).",
+        "schema": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearer": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

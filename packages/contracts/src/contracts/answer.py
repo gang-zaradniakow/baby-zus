@@ -93,6 +93,10 @@ class AnswerCard(ContractModel):
     calculation: Calculation | None = None
     missing: list[MissingField] = Field(default_factory=list)
     legal_basis: list[LegalRef] = Field(min_length=1)
+    warnings: list[NonEmptyStr] = Field(default_factory=list)
+    """Ryzyka i założenia, które nie zmieniają werdyktu (np. umowa zawarta w ciąży)."""
+    alternatives: list[NonEmptyStr] = Field(default_factory=list)
+    """„Co zamiast” – głównie przy werdykcie NO."""
     actions: list[Action] = Field(min_length=1, max_length=3)
     engine_version: EngineVersion
     generated_by: GeneratedBy

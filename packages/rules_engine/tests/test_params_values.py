@@ -31,7 +31,9 @@ SPEC_TABLE: dict[str, Any] = {
     "uniform_rate_application_days": 21,
     "waiting_period_mandatory_days": 30,
     "waiting_period_voluntary_days": 90,
+    "sickness_period_days": 182,
     "sickness_period_pregnancy_days": 270,
+    "sickness_period_max_break_days": 60,
     "employer_sick_pay_days": 33,
     "employer_sick_pay_days_after_threshold": 14,
     "employer_sick_pay_days_age_threshold": 50,
@@ -69,12 +71,20 @@ def test_params_match_spec_table(param_set: ParamSet, name: str) -> None:
 def test_supplementary_maternity_leave_exists_only_from_2025_03_19() -> None:
     assert v2023_04_26.PARAMS.rate_supplementary_maternity is None
     assert v2023_04_26.PARAMS.supplementary_maternity_max_weeks is None
+    assert v2023_04_26.PARAMS.supplementary_maternity_criteria is None
 
     current = v2025_03_19.PARAMS
     assert current.rate_supplementary_maternity is not None
     assert current.rate_supplementary_maternity.value == Decimal("1.00")
     assert current.supplementary_maternity_max_weeks is not None
     assert current.supplementary_maternity_max_weeks.value == (8, 15)
+    criteria = current.supplementary_maternity_criteria
+    assert criteria is not None
+    assert (criteria.value.very_preterm_weeks, criteria.value.term_weeks) == (28, 37)
+    assert criteria.value.low_weight_g == 1000
+    assert (criteria.value.long_window_weeks, criteria.value.short_window_weeks) == (15, 8)
+    assert (criteria.value.term_first_day, criteria.value.term_first_day_last) == (5, 28)
+    assert criteria.value.term_min_stay_days == 2
 
 
 def test_2025_set_changes_only_supplementary_leave() -> None:
@@ -85,7 +95,11 @@ def test_2025_set_changes_only_supplementary_leave() -> None:
         for name, value in vars_of(new).items()
         if name not in {"valid_from", "valid_to"} and value != vars_of(old)[name]
     }
-    assert changed == {"rate_supplementary_maternity", "supplementary_maternity_max_weeks"}
+    assert changed == {
+        "rate_supplementary_maternity",
+        "supplementary_maternity_max_weeks",
+        "supplementary_maternity_criteria",
+    }
 
 
 def vars_of(param_set: ParamSet) -> dict[str, Any]:

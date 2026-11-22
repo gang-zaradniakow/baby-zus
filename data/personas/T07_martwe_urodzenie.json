@@ -1,0 +1,126 @@
+{
+  "id": "T07",
+  "title": "Martwe urodzenie",
+  "scenario": "Martwe urodzenie → 8 tygodni, ścieżka E6 (DIFFICULT), organizacje wsparcia",
+  "scope": "ENGINE",
+  "source": {
+    "kind": "MANUAL",
+    "note": "8 tyg. = 56 dni od porodu; 100%: 6040,30/30 = 201,34/dzień × 56 = 11 275,04"
+  },
+  "today": "2026-11-22",
+  "profile": {
+    "profileId": "persona-t07",
+    "applicant": {
+      "role": "MOTHER",
+      "insurance": {
+        "source": "ZUS",
+        "periods": [
+          {
+            "title": "EMPLOYMENT",
+            "sickness": "MANDATORY",
+            "dateFrom": "2023-01-02"
+          }
+        ],
+        "salaries": [
+          {
+            "month": "2025-11",
+            "gross": "7000.00"
+          },
+          {
+            "month": "2025-12",
+            "gross": "7000.00"
+          },
+          {
+            "month": "2026-01",
+            "gross": "7000.00"
+          },
+          {
+            "month": "2026-02",
+            "gross": "7000.00"
+          },
+          {
+            "month": "2026-03",
+            "gross": "7000.00"
+          },
+          {
+            "month": "2026-04",
+            "gross": "7000.00"
+          },
+          {
+            "month": "2026-05",
+            "gross": "7000.00"
+          },
+          {
+            "month": "2026-06",
+            "gross": "7000.00"
+          },
+          {
+            "month": "2026-07",
+            "gross": "7000.00"
+          },
+          {
+            "month": "2026-08",
+            "gross": "7000.00"
+          },
+          {
+            "month": "2026-09",
+            "gross": "7000.00"
+          },
+          {
+            "month": "2026-10",
+            "gross": "7000.00"
+          }
+        ],
+        "payer": {
+          "insuredCountNov30": 45,
+          "countDate": "2025-11-30"
+        },
+        "deductionRate": "0.1371"
+      }
+    },
+    "child": {
+      "source": "ZUS",
+      "birthDate": "2026-11-12"
+    },
+    "specialEvents": [
+      {
+        "kind": "STILLBIRTH",
+        "dateFrom": "2026-11-12"
+      }
+    ]
+  },
+  "stage": {
+    "stage": "E2",
+    "flags": [
+      "DIFFICULT"
+    ]
+  },
+  "expected": [
+    {
+      "intentId": "F.06_martwe_urodzenie_smierc_dziecka",
+      "verdict": "YES",
+      "summaryContains": [
+        "od 12.11.2026 do 06.01.2027",
+        "56 dni"
+      ]
+    },
+    {
+      "intentId": "B.01_wysokosc_macierzynskiego",
+      "verdict": "YES",
+      "calculation": {
+        "base": "6040.30",
+        "rate": "1.00",
+        "total": "11275.04",
+        "periods": [
+          {
+            "type": "MACIERZYNSKI",
+            "from": "2026-11-12",
+            "to": "2027-01-06",
+            "rate": "1.00",
+            "amount": "11275.04"
+          }
+        ]
+      }
+    }
+  ]
+}

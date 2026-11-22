@@ -25,6 +25,7 @@ class Act(StrEnum):
     USTAWA_ZASILKOWA = "ustawa zasiłkowa"
     USTAWA_O_SYSTEMIE = "ustawa o systemie ubezpieczeń społecznych"
     ROZPORZADZENIE_ZASILKOWE = "rozporządzenie w sprawie dokumentów zasiłkowych"
+    PRAWO_ASC = "Prawo o aktach stanu cywilnego"
 
 
 #: Strony aktów w ISAP (Internetowy System Aktów Prawnych, isap.sejm.gov.pl).
@@ -39,6 +40,8 @@ ACT_URLS: Final[dict[Act, str]] = {
     # rozporządzenie o dokumentach zasiłkowych obowiązujące od 24.10.2026 (Dz. U. poz. 1316)
     # – identyfikator ISAP do potwierdzenia
     Act.ROZPORZADZENIE_ZASILKOWE: "https://isap.sejm.gov.pl/isap.nsf/DocDetails.xsp?id=WDU20260001316",
+    # ustawa z 28 listopada 2014 r. – Prawo o aktach stanu cywilnego
+    Act.PRAWO_ASC: "https://isap.sejm.gov.pl/isap.nsf/DocDetails.xsp?id=WDU20140001741",
 }
 
 
@@ -92,6 +95,29 @@ type WeeksByChildren = tuple[tuple[int, int], ...]
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)
+class SupplementaryCriteria:
+    """Kryteria uzupełniającego urlopu macierzyńskiego (od 19.03.2025).
+
+    Grupy: (1) poród przed ukończeniem ``very_preterm_weeks`` tygodnia ciąży lub masa
+    ≤ ``low_weight_g`` → pobyty do końca ``long_window_weeks`` tygodnia po porodzie;
+    (2) poród od ``very_preterm_weeks`` do przed ukończeniem ``term_weeks`` i masa większa
+    → do końca ``short_window_weeks``; (3) poród po ukończeniu ``term_weeks`` → pobyt
+    ≥ ``term_min_stay_days`` kolejnych dni, pierwszy z nich w dniach ``term_first_day`` –
+    ``term_first_day_last`` po porodzie; liczy się pobyt od ``term_first_day`` do końca
+    ``short_window_weeks`` tygodnia.
+    """
+
+    very_preterm_weeks: int
+    term_weeks: int
+    low_weight_g: int
+    long_window_weeks: int
+    short_window_weeks: int
+    term_first_day: int
+    term_first_day_last: int
+    term_min_stay_days: int
+
+
+@dataclass(frozen=True, slots=True, kw_only=True)
 class ParamSet:
     """Komplet parametrów obowiązujących w przedziale dat ``[valid_from, valid_to]``."""
 
@@ -112,7 +138,10 @@ class ParamSet:
     # --- zasiłek chorobowy ---------------------------------------------------------
     waiting_period_mandatory_days: Param[int]
     waiting_period_voluntary_days: Param[int]
+    sickness_period_days: Param[int]
     sickness_period_pregnancy_days: Param[int]
+    sickness_period_max_break_days: Param[int]
+    """Przerwa, do której poprzednie niezdolności wlicza się do okresu zasiłkowego."""
     employer_sick_pay_days: Param[int]
     employer_sick_pay_days_age_threshold: Param[int]
     employer_sick_pay_days_after_threshold: Param[int]
@@ -126,6 +155,7 @@ class ParamSet:
     child_death_min_leave_days: Param[int]
     supplementary_maternity_max_weeks: Param[tuple[int, int]] | None
     """(krótszy, dłuższy) maksymalny wymiar uzupełniającego urlopu macierzyńskiego."""
+    supplementary_maternity_criteria: Param[SupplementaryCriteria] | None
 
     # --- urlop rodzicielski ---------------------------------------------------------
     parental_leave_weeks_single: Param[int]

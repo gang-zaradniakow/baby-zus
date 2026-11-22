@@ -24,6 +24,8 @@ tags:
     description: Statutory deadlines counted with the Polish calendar of public holidays.
   - name: Calculations
     description: Benefit calculations (insurance titles, benefit base, sickness and maternity benefits).
+  - name: Knowledge
+    description: Guide for parents ("Wiedza"), chapters and articles based on the ZUS guide for parents.
 
 paths:
   /api/v1/ping:
@@ -265,6 +267,79 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MaternitySimulation'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/knowledge/chapters:
+    get:
+      tags: [Knowledge]
+      operationId: getKnowledgeChapters
+      summary: Chapters of the guide with their articles
+      description: Chapters in reading order, each with the summaries of its articles (also in reading order).
+      responses:
+        '200':
+          description: All chapters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KnowledgeChapters'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/knowledge/articles/{id}:
+    get:
+      tags: [Knowledge]
+      operationId: getKnowledgeArticle
+      summary: One article of the guide
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: urlop-mac
+      responses:
+        '200':
+          description: The article, with the next article of its chapter.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KnowledgeArticle'
+        '404':
+          description: No such article (`code` = `article-not-found`).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/knowledge/search:
+    get:
+      tags: [Knowledge]
+      operationId: searchKnowledge
+      summary: Search the articles
+      description: |
+        Finds articles whose title, lead or text (without HTML tags) contains the phrase. Case and Polish
+        diacritics are ignored ("zasilek" finds "Zasiłek"). Results keep the reading order.
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+            minLength: 2
+            maxLength: 100
+          example: kod B
+      responses:
+        '200':
+          description: Matching articles (possibly none).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KnowledgeSearchResult'
         '400':
           $ref: '#/components/responses/ValidationProblem'
         default:
@@ -841,6 +916,106 @@ components:
           $ref: '#/components/schemas/Money'
         total:
           $ref: '#/components/schemas/Money'
+
+    KnowledgeChapters:
+      type: object
+      required: [chapters]
+      properties:
+        chapters:
+          type: array
+          items:
+            $ref: '#/components/schemas/KnowledgeChapter'
+
+    KnowledgeChapter:
+      type: object
+      required: [id, title, icon, lead, articles]
+      properties:
+        id:
+          type: string
+          example: po
+        title:
+          type: string
+        icon:
+          type: string
+          description: Name of the frontend icon.
+        lead:
+          type: string
+        articles:
+          type: array
+          items:
+            $ref: '#/components/schemas/KnowledgeArticleSummary'
+
+    KnowledgeArticleSummary:
+      type: object
+      required: [id, chapterId, title, lead]
+      properties:
+        id:
+          type: string
+        chapterId:
+          type: string
+        title:
+          type: string
+        lead:
+          type: string
+
+    KnowledgeArticle:
+      type: object
+      required: [id, chapterId, title, lead, body, source, links]
+      properties:
+        id:
+          type: string
+        chapterId:
+          type: string
+        title:
+          type: string
+        lead:
+          type: string
+        body:
+          type: string
+          description: Article text as HTML (paragraphs, lists, "WAŻNE!" and "Przykład" boxes).
+        source:
+          type: string
+          description: Where the content comes from (pages of the ZUS guide).
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/KnowledgeLink'
+        action:
+          $ref: '#/components/schemas/KnowledgeAction'
+        next:
+          $ref: '#/components/schemas/KnowledgeArticleSummary'
+
+    KnowledgeLink:
+      type: object
+      description: External page (zus.pl, gov.pl).
+      required: [url, label]
+      properties:
+        url:
+          type: string
+        label:
+          type: string
+
+    KnowledgeAction:
+      type: object
+      description: Button leading to a screen of the application.
+      required: [href, label]
+      properties:
+        href:
+          type: string
+          description: Frontend route, e.g. `#/kontakt`.
+        label:
+          type: string
+
+    KnowledgeSearchResult:
+      type: object
+      required: [query, articles]
+      properties:
+        query:
+          type: string
+        articles:
+          type: array
+          items:
+            $ref: '#/components/schemas/KnowledgeArticleSummary'
 
     ProblemDetail:
       type: object

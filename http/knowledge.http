@@ -1,0 +1,8 @@
+### Chapters of the guide with their articles
+GET {{baseUrl}}/api/v1/knowledge/chapters
+
+### One article (with the next one of its chapter)
+GET {{baseUrl}}/api/v1/knowledge/articles/urlop-mac
+
+### Search without Polish diacritics
+GET {{baseUrl}}/api/v1/knowledge/search?q=zasilek%20macierzynski

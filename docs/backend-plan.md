@@ -246,7 +246,7 @@ Precyzyjnie: Spring jest w każdym module, ale **nie w warstwie `domain`**. Hand
 3. **Łatwe dla agenta.** Czysta funkcja „wejście → wynik” jest najprostsza do wygenerowania, przeglądu i porównania z `calc.js` w testach golden.
 4. **Wymuszone testem.** ArchUnit: `domain` nie importuje `org.springframework..`, `jakarta.persistence..` ani `infrastructure..`.
 
-Wyjątek pragmatyczny: moduł `knowledge` nie ma warstwy `domain` i jest zwykłym odczytem.
+Wyjątek pragmatyczny: moduł `knowledge` nie ma warstwy `domain` i jest zwykłym odczytem. Model treści i port `KnowledgeCatalog` leżą w `application.content`, adapter JSON w `infrastructure.content`.
 
 ### 2.7 Struktura pakietów
 
@@ -446,7 +446,7 @@ Od PR 05 każdy PR z endpointem zaczyna się od wpisu w `openapi.yaml` (patrz 2.
 ### Faza 3 — przewodnik bez logowania
 | # | PR | Zawartość | Testy | P |
 |---|---|---|---|---|
-| 14 | Treści: Wiedza | Eksport `wiedza.js` → JSON, rozdziały, artykuły, wyszukiwarka | Jednostkowe normalizacji i wyszukiwania, IT | P1 |
+| 14 | Treści: Wiedza | Eksport `wiedza.js` → `content/knowledge.json` (`tools/content/export-knowledge.mjs`), port `KnowledgeCatalog` z adapterem JSON, `GET /knowledge/chapters`, `GET /knowledge/articles/{id}`, `GET /knowledge/search?q=` (normalizacja jak `normTxt()`) | Jednostkowe normalizacji i wyszukiwania, IT | P1 |
 | 15 | Treści: słowniki | Formularze, ciekawostki, karty tygodnia, organizacje, telefony, linki, katalog świadczeń | IT | P1 |
 | 16 | Przewodnik gościa | `Survey`, `TimelinePolicy`, `AlertPolicy`, `BenefitPlanPolicy`, `WeekCardPolicy`, `PreviewGuide`, `POST /guide/preview` | Snapshot osi czasu dla każdej persony (`FixedDateTimeGenerator`), IT | P0 |
 

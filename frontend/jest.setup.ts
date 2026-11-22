@@ -13,3 +13,10 @@ process.env.EXPO_PUBLIC_API_URL = '';
 
 // Gdyby test ustawił adres, ale nie podmienił `fetch`, zapytanie kończy się błędem sieci (a nie prawdziwym ruchem).
 globalThis.fetch = jest.fn(() => Promise.reject(new Error('Brak sieci w testach'))) as jest.Mock;
+
+// Powrót do danych lokalnych to w testach oczekiwana ścieżka — wyciszamy jej ostrzeżenia, resztę przepuszczamy.
+const warn = console.warn;
+jest.spyOn(console, 'warn').mockImplementation((message?: unknown, ...rest: unknown[]) => {
+  if (typeof message === 'string' && /z backendu niedostęp/.test(message)) return;
+  warn(message, ...rest);
+});
